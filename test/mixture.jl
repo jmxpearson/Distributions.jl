@@ -120,7 +120,19 @@ function test_mixture(g::MultivariateMixture, n::Int, ns::Int)
     @test_approx_eq_eps vec(mean(Xs, 2)) mean(g) 0.01
 end
 
+function test_params(g::AbstractMixtureModel)
+    C = eltype(g.components)
+    pars = params(g)
+    mm = MixtureModel(C, pars...)
+    @test g.prior == mm.prior
+    @test g.components == mm.components
+end
 
+function test_params(g::UnivariateGMM)
+    pars = params(g)
+    mm = UnivariateGMM(pars...)
+    @test g == mm
+end
 
 # Tests
 
@@ -130,11 +142,13 @@ g_u = MixtureModel(Normal, [(0.0, 1.0), (2.0, 1.0), (-4.0, 1.5)], [0.2, 0.5, 0.3
 @test isa(g_u, MixtureModel{Univariate, Continuous, Normal})
 @test ncomponents(g_u) == 3
 test_mixture(g_u, 1000, 10^6)
+test_params(g_u)
 
 g_u = UnivariateGMM([0.0, 2.0, -4.0], [1.0, 1.2, 1.5], Categorical([0.2, 0.5, 0.3]))
 @test isa(g_u, UnivariateGMM)
 @test ncomponents(g_u) == 3
 test_mixture(g_u, 1000, 10^6)
+test_params(g_u)
 
 println("    testing MultivariateMixture")
 g_m = MixtureModel(
@@ -146,3 +160,4 @@ g_m = MixtureModel(
 @test length(components(g_m)) == 3
 @test length(g_m) == 2
 test_mixture(g_m, 1000, 10^6)
+test_params(g_m)

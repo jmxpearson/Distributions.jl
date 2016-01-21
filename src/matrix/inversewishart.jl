@@ -35,7 +35,7 @@ insupport(d::InverseWishart, X::Matrix{Float64}) = size(X) == size(d) && isposde
 
 dim(d::InverseWishart) = dim(d.Ψ)
 size(d::InverseWishart) = (p = dim(d); (p, p))
-
+params(d::InverseWishart) = (d.df, d.Ψ, d.c0)
 
 #### Show
 
