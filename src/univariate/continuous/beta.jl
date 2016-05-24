@@ -1,16 +1,27 @@
-immutable Beta <: ContinuousUnivariateDistribution
-    α::Float64
-    β::Float64
+immutable Beta{T <: Real} <: ContinuousUnivariateDistribution
+    α::T
+    β::T
 
-    function Beta(α::Real, β::Real)
+    function Beta(α::T, β::T)
         @check_args(Beta, α > zero(α) && β > zero(β))
         new(α, β)
     end
-    Beta(α::Real) = Beta(α, α)
-    Beta() = new(1.0, 1.0)
 end
 
+Beta{T <: Real}(α::T, β::T) = Beta{T}(α, β)
+Beta(α::Real, β::Real) = Beta(promote(α, β)...)
+Beta(α::Real) = Beta(α, α)
+Beta() = Beta(1.0, 1.0)
+
 @distr_support Beta 0.0 1.0
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Beta{T}}, α::S, β::S)
+    Beta(T(α), T(β))
+end
+function convert{T <: Real, S <: Real}(::Type{Beta{T}}, d::Beta{S})
+    Beta(T(d.α), T(d.β))
+end
 
 #### Parameters
 
@@ -43,7 +54,7 @@ stdlogx(d::Beta) = sqrt(varlogx(d))
 function skewness(d::Beta)
     (α, β) = params(d)
     if α == β
-        return 0.0
+        return zero(α)
     else
         s = α + β
         (2.0 * (β - α) * sqrt(s + 1.0)) / ((s + 2.0) * sqrt(α * β))

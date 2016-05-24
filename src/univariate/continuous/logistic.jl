@@ -1,14 +1,24 @@
-immutable Logistic <: ContinuousUnivariateDistribution
-    μ::Float64
-    θ::Float64
+immutable Logistic{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    θ::T
 
-    Logistic(μ::Real, θ::Real) = (@check_args(Logistic, θ > zero(θ)); new(μ, θ))
-    Logistic(μ::Real) = new(μ, 1.0)
-    Logistic() = new(0.0, 1.0)
+    Logistic(μ::T, θ::T) = (@check_args(Logistic, θ > zero(θ)); new(μ, θ))
 end
+
+Logistic{T <: Real}(μ::T, Θ::T) = Logistic{T}(μ, Θ)
+Logistic(μ::Real, Θ::Real) = Logistic(promote(μ, ϴ)...)
+Logistic(μ::Real) = Logistic(μ, 1.0)
+Logistic() = Logistic(0.0, 1.0)
 
 @distr_support Logistic -Inf Inf
 
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Logistic{T}}, μ::S, Θ::S)
+    Logistic(T(μ), T(Θ))
+end
+function convert{T <: Real, S <: Real}(::Type{Logistic{T}}, d::Logistic{S})
+    Logistic(T(d.μ), T(d.Θ))
+end
 
 #### Parameters
 
