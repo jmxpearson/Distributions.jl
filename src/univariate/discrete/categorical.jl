@@ -9,34 +9,27 @@ probs(d)         # Get the probability vector, i.e. p
 ncategories(d)   # Get the number of categories, i.e. K
 ```
 Here, `p` must be a real vector, of which all components are nonnegative and sum to one.
-
 **Note:** The input vector `p` is directly used as a field of the constructed distribution, without being copied.
-
 External links:
-
 * [Categorical distribution on Wikipedia](http://en.wikipedia.org/wiki/Categorical_distribution)
-
 """
 
 immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
     K::Int
-    p::Vector{T}
+    p::Vector{Float64}
 
-    function Categorical(p::Vector{T})
+    Categorical(p::Vector{Float64}, ::NoArgCheck) = new(length(p), p)
+
+    function Categorical(p::Vector{Float64})
         @check_args(Categorical, isprobvec(p))
         new(length(p), p)
     end
 
     function Categorical(k::Integer)
         @check_args(Categorical, k >= 1)
-        new(k, fill(one(T)/k, k))
+        new(k, fill(1.0/k, k))
     end
-
-    Categorical(p::Vector{T}, ::NoArgCheck) = new(length(p), p)
-
 end
-
-Categorical{T <: Real}(p::Vector{T}) = Categorical{T}(p)
 
 @distr_support Categorical 1 d.K
 
