@@ -19,13 +19,20 @@ External links
 * [Chi distribution on Wikipedia](http://en.wikipedia.org/wiki/Chi_distribution)
 
 """
-immutable Chi <: ContinuousUnivariateDistribution
-    ν::Float64
+immutable Chi{T <: Real} <: ContinuousUnivariateDistribution
+    ν::T
 
-    Chi(ν::Real) = (@check_args(Chi, ν > zero(ν)); new(ν))
+    Chi(ν::T) = (@check_args(Chi, ν > zero(ν)); new(ν))
 end
 
+Chi{T <: Real}(ν::T) = Chi{T}(ν)
+Chi(ν::Int) = Chi(Float64(ν))
+
 @distr_support Chi 0.0 Inf
+
+### Conversions
+convert{T <: Real, S <: Real}(::Type{Chi{T}}, ν::S) = Chi(T(ν))
+convert{T <: Real, S <: Real}(::Type{Chi{T}}, d::Chi{S}) = Chi(T(d.ν))
 
 #### Parameters
 

@@ -1,6 +1,5 @@
 doc"""
     Chisq(ν)
-
 The *Chi squared distribution* (typically written χ²) with `ν` degrees of freedom has the
 probability density function
 
@@ -18,7 +17,6 @@ dof(d)       # Get the degrees of freedom, i.e. k
 External links
 
 * [Chi-squared distribution on Wikipedia](http://en.wikipedia.org/wiki/Chi-squared_distribution)
-
 """
 immutable Chisq <: ContinuousUnivariateDistribution
     ν::Float64
