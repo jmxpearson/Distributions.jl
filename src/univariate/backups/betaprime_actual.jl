@@ -1,54 +1,33 @@
 doc"""
     BetaPrime(α,β)
-
 The *Beta prime distribution* has probability density function
-
 $f(x; \alpha, \beta) = \frac{1}{B(\alpha, \beta)}
 x^{\alpha - 1} (1 + x)^{- (\alpha + \beta)}, \quad x > 0$
-
-
 The Beta prime distribution is related to the [`Beta`](:func:`Beta`) distribution via the
 relation ship that if $X \sim \operatorname{Beta}(\alpha, \beta)$ then $\frac{X}{1 - X}
 \sim \operatorname{BetaPrime}(\alpha, \beta)$
-
 ```julia
 BetaPrime()        # equivalent to BetaPrime(0.0, 1.0)
 BetaPrime(a)       # equivalent to BetaPrime(a, a)
 BetaPrime(a, b)    # Beta prime distribution with shape parameters a and b
-
 params(d)          # Get the parameters, i.e. (a, b)
 ```
-
 External links
-
 * [Beta prime distribution on Wikipedia](http://en.wikipedia.org/wiki/Beta_prime_distribution)
-
     """
+immutable BetaPrime <: ContinuousUnivariateDistribution
+    α::Float64
+    β::Float64
 
-immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
-    α::T
-    β::T
-
-    function BetaPrime(α::T, β::T)
+    function BetaPrime(α::Real, β::Real)
         @check_args(BetaPrime, α > zero(α) && β > zero(β))
         new(α, β)
     end
+    BetaPrime(α::Real) = BetaPrime(α,α)
+    BetaPrime() = new(1.0, 1.0)
 end
-
-BetaPrime{T <: Real}(α::T, β::T) = BetaPrime{T}(α, β)
-BetaPrime(α::Real, β::Real) = BetaPrime(promote(α, β)...)
-BetaPrime(α::Real) = BetaPrime(α, α)
-BetaPrime() = BetaPrime(1.0, 1.0)
 
 @distr_support BetaPrime 0.0 Inf
-
-#### Conversions
-function convert{T <: Real, S <: Real}(::Type{BetaPrime{T}}, α::S, β::S)
-    BetaPrime(T(α), T(β))
-end
-function convert{T <: Real, S <: Real}(::Type{BetaPrime{T}}, d::BetaPrime{S})
-    BetaPrime(T(d.α), T(d.β))
-end
 
 #### Parameters
 
