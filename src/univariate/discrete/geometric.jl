@@ -41,11 +41,8 @@ convert{T <: Real, S <: Real}(::Type{Geometric{T}}, d::Geometric{S}) = Geometric
 ### Parameters
 
 succprob(d::Geometric) = d.p
-<<<<<<< 652cd77935b0e393519a9a444a2b707c6bcf9af9
-failprob(d::Geometric) = 1.0 - d.p
-=======
 failprob(d::Geometric) = one(d.p) - d.p
->>>>>>> Updated distributions to support dual nums
+failprob(d::Geometric) = one(d.p) - d.p
 params(d::Geometric) = (d.p,)
 
 
