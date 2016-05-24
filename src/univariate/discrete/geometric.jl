@@ -19,23 +19,33 @@ External links
 *  [Geometric distribution on Wikipedia](http://en.wikipedia.org/wiki/Geometric_distribution)
 
 """
-immutable Geometric <: DiscreteUnivariateDistribution
-    p::Float64
 
-    function Geometric(p::Real)
+immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
+    p::T
+
+    function Geometric(p::T)
         @check_args(Geometric, zero(p) < p < one(p))
     	new(p)
     end
-    Geometric() = new(0.5)
 end
+
+Geometric{T <: Real}(p::T) = Geometric{T}(p)
+Geometric() = Geometric(0.5)
 
 @distr_support Geometric 0 Inf
 
+### Conversions
+convert{T <: Real, S <: Real}(::Type{Geometric{T}}, p::S) = Geometric(T(p))
+convert{T <: Real, S <: Real}(::Type{Geometric{T}}, d::Geometric{S}) = Geometric(T(d.p))
 
 ### Parameters
 
 succprob(d::Geometric) = d.p
+<<<<<<< 652cd77935b0e393519a9a444a2b707c6bcf9af9
 failprob(d::Geometric) = 1.0 - d.p
+=======
+failprob(d::Geometric) = one(d.p) - d.p
+>>>>>>> Updated distributions to support dual nums
 params(d::Geometric) = (d.p,)
 
 
@@ -43,15 +53,15 @@ params(d::Geometric) = (d.p,)
 
 mean(d::Geometric) = failprob(d) / succprob(d)
 
-median(d::Geometric) = -fld(logtwo, log1p(-d.p)) - 1.0
+median(d::Geometric) = -fld(logtwo, log1p(-d.p)) - 1
 
 mode(d::Geometric) = 0
 
-var(d::Geometric) = (1.0 - d.p) / abs2(d.p)
+var(d::Geometric) = (one(d.p) - d.p) / abs2(d.p)
 
-skewness(d::Geometric) = (2.0 - d.p) / sqrt(1.0 - d.p)
+skewness(d::Geometric) = (2*one(d.p) - d.p) / sqrt(one(d.p) - d.p)
 
-kurtosis(d::Geometric) = 6.0 + abs2(d.p) / (1.0 - d.p)
+kurtosis(d::Geometric) = 6*one(d.p) + abs2(d.p) / (one(d.p) - d.p)
 
 entropy(d::Geometric) = (-xlogx(succprob(d)) - xlogx(failprob(d))) / d.p
 
@@ -61,9 +71,9 @@ entropy(d::Geometric) = (-xlogx(succprob(d)) - xlogx(failprob(d))) / d.p
 function pdf(d::Geometric, x::Int)
     if x >= 0
         p = d.p
-        return p < 0.1 ? p * exp(log1p(-p) * x) : d.p * (1.0 - p)^x
+        return p < one(p) / 10 ? p * exp(log1p(-p) * x) : d.p * (one(p) - p)^x
     else
-        return 0.0
+        return zero(p)
     end
 end
 
@@ -79,22 +89,22 @@ _pdf!(r::AbstractArray, d::Geometric, rgn::UnitRange) = _pdf!(r, d, rgn, Recursi
 
 
 function cdf(d::Geometric, x::Int)
-    x < 0 && return 0.0
+    x < 0 && return zero(d.p)
     p = succprob(d)
     n = x + 1
-    p < 0.5 ? -expm1(log1p(-p)*n) : 1.0-(1.0-p)^n
+    p < one(d.p)/2 ? -expm1(log1p(-p)*n) : one(d.p)-(one(d.p)-p)^n
 end
 
 function ccdf(d::Geometric, x::Int)
-    x < 0 && return 1.0
+    x < 0 && return one(d.p)
     p = succprob(d)
     n = x + 1
-    p < 0.5 ? exp(log1p(-p)*n) : (1.0-p)^n
+    p < one(d.p)/2 ? exp(log1p(-p)*n) : (one(d.p)-p)^n
 end
 
 logcdf(d::Geometric, x::Int) = x < 0 ? -Inf : log1mexp(log1p(-d.p) * (x + 1))
 
-logccdf(d::Geometric, x::Int) =  x < 0 ? 0.0 : log1p(-d.p) * (x + 1)
+logccdf(d::Geometric, x::Int) =  x < 0 ? zero(d.p) : log1p(-d.p) * (x + 1)
 
 quantile(d::Geometric, p::Float64) = invlogccdf(d, log1p(-p))
 
@@ -103,14 +113,14 @@ cquantile(d::Geometric, p::Float64) = invlogccdf(d, log(p))
 invlogcdf(d::Geometric, lp::Float64) = invlogccdf(d, log1mexp(lp))
 
 function invlogccdf(d::Geometric, lp::Float64)
-    if (lp > 0.0) || isnan(lp)
+    if (lp > zero(d.p)) || isnan(lp)
         return NaN
     elseif isinf(lp)
         return Inf
-    elseif lp == 0.0
-        return 0.0
+    elseif lp == zero(d.p)
+        return zero(d.p)
     end
-    max(ceil(lp/log1p(-d.p))-1.0,0.0)
+    max(ceil(lp/log1p(-d.p))-one(d.p),zero(d.p))
 end
 
 function mgf(d::Geometric, t::Real)
@@ -121,7 +131,7 @@ end
 function cf(d::Geometric, t::Real)
     p = succprob(d)
     # replace with expm1 when complex version available
-    p / (exp(-t*im) - 1.0 + p)
+    p / (exp(-t*im) - one(d.p) + p)
 end
 
 

@@ -22,16 +22,28 @@ External links
 * [Arcsine distribution on Wikipedia](http://en.wikipedia.org/wiki/Arcsine_distribution)
 
 """
-immutable Arcsine <: ContinuousUnivariateDistribution
-    a::Float64
-    b::Float64
 
-    Arcsine(a::Real, b::Real) = (@check_args(Arcsine, a < b); new(a, b))
-    Arcsine(b::Real) = (@check_args(Arcsine, b > zero(b)); new(0.0, b))
-    Arcsine() = new(0.0, 1.0)
+immutable Arcsine{T <: Real} <: ContinuousUnivariateDistribution
+    a::T
+    b::T
+
+    Arcsine(a::T, b::T) = (@check_args(Arcsine, a < b); new(a, b))
 end
 
+Arcsine{T <: Real}(a::T, b::T) = Arcsine{T}(a, b)
+Arcsine(a::Real, b::Real) = Arcsine(promote(a, b)...)
+Arcsine(b::Real) = (@check_args(Arcsine, b > zero(b)); Arcsine(0.0, b))
+Arcsine() = Arcsine(0.0, 1.0)
+
 @distr_support Arcsine d.a d.b
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Arcsine{T}}, a::S, b::S)
+    Arcsine(T(a), T(b))
+end
+function convert{T <: Real, S <: Real}(::Type{Arcsine{T}}, d::Arcsine{S})
+    Arcsine(T(d.a), T(d.b))
+end
 
 ### Parameters
 
@@ -56,7 +68,7 @@ entropy(d::Arcsine) = -0.24156447527049044469 + log(scale(d))
 
 ### Evaluation
 
-pdf(d::Arcsine, x::Float64) = insupport(d, x) ? 1.0 / (π * sqrt((x - d.a) * (d.b - x))) : 0.0
+pdf(d::Arcsine, x::Float64) = insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
 
 logpdf(d::Arcsine, x::Float64) = insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -Inf
 

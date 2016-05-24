@@ -22,18 +22,25 @@ External links:
 
 * [Bernoulli distribution on Wikipedia](http://en.wikipedia.org/wiki/Bernoulli_distribution)
 """
-immutable Bernoulli <: DiscreteUnivariateDistribution
-    p::Float64
 
-    function Bernoulli(p::Real)
+immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
+    p::T
+
+    function Bernoulli(p::T)
         @check_args(Bernoulli, zero(p) <= p <= one(p))
         new(p)
     end
-    Bernoulli() = new(0.5)
 end
+
+Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
+Bernoulli{T <: Int}(p::T) = Bernoulli(Float64(p))
+Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1
 
+#### Conversions
+convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, p::S) = Bernoulli(T(p))
+convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, d::Bernoulli{S}) = Bernoulli(T(d.p))
 
 #### Parameters
 
@@ -64,24 +71,24 @@ median(d::Bernoulli) = ifelse(succprob(d) <= 0.5, 0, 1)
 function entropy(d::Bernoulli)
     p0 = failprob(d)
     p1 = succprob(d)
-    (p0 == 0.0 || p0 == 1.0) ? 0.0 : -(p0 * log(p0) + p1 * log(p1))
+    (p0 == 0 || p0 == 1) ? zero(d.p) : -(p0 * log(p0) + p1 * log(p1))
 end
 
 #### Evaluation
 
 pdf(d::Bernoulli, x::Bool) = x ? succprob(d) : failprob(d)
 pdf(d::Bernoulli, x::Int) = x == 0 ? failprob(d) :
-                            x == 1 ? succprob(d) : 0.0
+                            x == 1 ? succprob(d) : zero(d.p)
 
 pdf(d::Bernoulli) = Float64[failprob(d), succprob(d)]
 
-cdf(d::Bernoulli, x::Bool) = x ? failprob(d) : 1.0
-cdf(d::Bernoulli, x::Int) = x < 0 ? 0.0 :
-                            x < 1 ? failprob(d) : 1.0
+cdf(d::Bernoulli, x::Bool) = x ? failprob(d) : one(d.p)
+cdf(d::Bernoulli, x::Int) = x < 0 ? zero(d.p) :
+                            x < 1 ? failprob(d) : one(d.p)
 
-ccdf(d::Bernoulli, x::Bool) = x ? succprob(d) : 1.0
-ccdf(d::Bernoulli, x::Int) = x < 0 ? 1.0 :
-                             x < 1 ? succprob(d) : 0.0
+ccdf(d::Bernoulli, x::Bool) = x ? succprob(d) : one(d.p)
+ccdf(d::Bernoulli, x::Int) = x < 0 ? one(d.p) :
+                             x < 1 ? succprob(d) : zero(d.p)
 
 quantile(d::Bernoulli, p::Float64) = 0.0 <= p <= 1.0 ? (p <= failprob(d) ? 0 : 1) : NaN
 cquantile(d::Bernoulli, p::Float64) = 0.0 <= p <= 1.0 ? (p >= succprob(d) ? 0 : 1) : NaN

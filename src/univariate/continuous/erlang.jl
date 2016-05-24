@@ -14,19 +14,30 @@ External links
 * [Erlang distribution on Wikipedia](http://en.wikipedia.org/wiki/Erlang_distribution)
 
 """
-immutable Erlang <: ContinuousUnivariateDistribution
-    α::Int
-    θ::Float64
 
-    function Erlang(α::Real, θ::Real)
+immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
+    α::Int
+    θ::T
+
+    function Erlang(α::Real, θ::T)
         @check_args(Erlang, isinteger(α) && α >= zero(α))
         new(α, θ)
     end
-    Erlang(α::Real) = Erlang(α, 1.0)
-    Erlang() = new(1, 1.0)
 end
 
+Erlang{T <: Real}(α::Int, Θ::T) = Erlang{T}(α, Θ)
+Erlang(α::Real) = Erlang(α, 1.0)
+Erlang() = Erlang(1, 1.0)
+
 @distr_support Erlang 0.0 Inf
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, α::Int, Θ::S)
+    Erlang(α, T(Θ))
+end
+function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, d::Erlang{S})
+    Erlang(d.α, T(d.Θ))
+end
 
 #### Parameters
 
@@ -44,7 +55,7 @@ kurtosis(d::Erlang) = 6.0 / d.α
 
 function mode(d::Erlang)
     (α, θ) = params(d)
-    α >= 1.0 ? θ * (α - 1.0) : error("Erlang has no mode when α < 1.0")
+    α >= 1 ? θ * (α - 1) : error("Erlang has no mode when α < 1.0")
 end
 
 function entropy(d::Erlang)
