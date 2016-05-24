@@ -3,17 +3,27 @@
 # Ref: http://en.wikipedia.org/wiki/Raised_cosine_distribution
 #
 
-immutable Cosine <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
+immutable Cosine{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
 
-    Cosine(μ::Real, σ::Real) = (@check_args(Cosine, σ > zero(σ)); new(μ, σ))
-    Cosine(μ::Real) = new(μ, 1.0)
-    Cosine() = new(0.0, 1.0)
+    Cosine(μ::T, σ::T) = (@check_args(Cosine, σ > zero(σ)); new(μ, σ))
 end
+
+Cosine{T <: Real}(μ::T, σ::T) = Cosine{T}(μ, σ)
+Cosine(μ::Real, σ::Real) = Cosine(promote(μ, σ)...)
+Cosine(μ::Real) = Cosine(μ, 1.0)
+Cosine() = Cosine(0.0, 1.0)
 
 @distr_support Cosine d.μ - d.σ d.μ + d.σ
 
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Cosine{T}}, μ::S, σ::S)
+    Cosine(T(μ), T(σ))
+end
+function convert{T <: Real, S <: Real}(::Type{Cosine{T}}, d::Cosine{S})
+    Cosine(T(d.μ), T(d.σ))
+end
 
 #### Parameters
 

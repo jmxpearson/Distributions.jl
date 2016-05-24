@@ -20,30 +20,38 @@ External links:
 
 * [Binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Binomial_distribution)
 """
-immutable Binomial <: DiscreteUnivariateDistribution
+immutable Binomial{T <: Real} <: DiscreteUnivariateDistribution
     n::Int
-    p::Float64
+    p::T
 
-    function Binomial(n::Real, p::Real)
+    function Binomial(n::Int, p::T)
         @check_args(Binomial, n >= zero(n))
         @check_args(Binomial, zero(p) <= p <= one(p))
         new(n, p)
     end
-    function Binomial(n::Real)
-        @check_args(Binomial, n >= zero(n))
-        new(n, 0.5)
-    end
-    Binomial() = new(1, 0.5)
 end
 
+Binomial{T <: Real}(n::Int, p::T) = Binomial{T}(n, p)
+Binomial{T <: Int}(n::Int, p::T) = Binomial(n, Float64(p))
+Binomial(n::Int) = Binomial(n, 0.5)
+Binomial() = Binomial(1, 0.5)
+
 @distr_support Binomial 0 d.n
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Binomial{T}}, n::Int, p::S)
+    Binomial(n, T(p))
+end
+function convert{T <: Real, S <: Real}(::Type{Binomial{T}}, d::Binomial{S})
+    Binomial(d.n, T(d.p))
+end
 
 
 #### Parameters
 
 ntrials(d::Binomial) = d.n
 succprob(d::Binomial) = d.p
-failprob(d::Binomial) = 1.0 - d.p
+failprob(d::Binomial) = 1 - d.p
 
 params(d::Binomial) = (d.n, d.p)
 
@@ -71,7 +79,7 @@ end
 
 function entropy(d::Binomial; approx::Bool=false)
     n, p1 = params(d)
-    (p1 == 0.0 || p1 == 1.0 || n == 0) && return 0.0
+    (p1 == 0.0 || p1 == 1.0 || n == 0) && return zero(p1)
     p0 = 1.0 - p1
     if approx
         return 0.5 * (log(twoπ * n * p0 * p1) + 1.0)
@@ -134,12 +142,12 @@ end
 
 function mgf(d::Binomial, t::Real)
     n, p = params(d)
-    (1.0 - p + p * exp(t)) ^ n
+    (one(p) - p + p * exp(t)) ^ n
 end
 
 function cf(d::Binomial, t::Real)
     n, p = params(d)
-    (1.0 - p + p * cis(t)) ^ n
+    (one(p) - p + p * cis(t)) ^ n
 end
 
 

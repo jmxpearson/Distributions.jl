@@ -20,18 +20,29 @@ External links
 * [Laplace distribution on Wikipedia](http://en.wikipedia.org/wiki/Laplace_distribution)
 
 """
-immutable Laplace <: ContinuousUnivariateDistribution
-    μ::Float64
-    θ::Float64
+immutable Laplace{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    θ::T
 
-    Laplace(μ::Real, θ::Real) = (@check_args(Laplace, θ > zero(θ)); new(μ, θ))
-    Laplace(μ::Real) = new(μ, 1.0)
-    Laplace() = new(0.0, 1.0)
+    Laplace(μ::T, θ::T) = (@check_args(Laplace, θ > zero(θ)); new(μ, θ))
 end
+
+Laplace{T <: Real}(μ::T, Θ::T) = Laplace{T}(μ, Θ)
+Laplace(μ::Real, Θ::Real) = Laplace(promote(μ, Θ)...)
+Laplace(μ::Real) = Laplace(μ, 1.0)
+Laplace() = Laplace(0.0, 1.0)
 
 typealias Biexponential Laplace
 
 @distr_support Laplace -Inf Inf
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Laplace{T}}, μ::S, Θ::S)
+    Laplace(T(μ), T(Θ))
+end
+function convert{T <: Real, S <: Real}(::Type{Laplace{T}}, d::Laplace{S})
+    Laplace(T(d.μ), T(d.Θ))
+end
 
 
 #### Parameters

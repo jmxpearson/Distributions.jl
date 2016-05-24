@@ -1,45 +1,28 @@
 doc"""
     BetaBinomial(n,α,β)
-
 A *Beta-binomial distribution* is the compound distribution of the [`Binomial`](:func:`Binomial`) distribution where the probability of success `p` is distributed according to the [`Beta`](:func:`Beta`). It has three parameters: `n`, the number of trials and two shape parameters `α`, `β`
-
 $P(X = k) = {n \choose k} B(k + \alpha, n - k + \beta) / B(\alpha, \beta),  \quad \text{ for } k = 0,1,2, \ldots, n.$
-
 ```julia
 BetaBinomial(n, a, b)      # BetaBinomial distribution with n trials and shape parameters a, b
-
 params(d)       # Get the parameters, i.e. (n, a, b)
 ntrials(d)      # Get the number of trials, i.e. n
 ```
-
 External links:
-
 * [Beta-binomial distribution on Wikipedia](https://en.wikipedia.org/wiki/Beta-binomial_distribution)
 """
-immutable BetaBinomial{T <: Real} <: DiscreteUnivariateDistribution
+immutable BetaBinomial <: DiscreteUnivariateDistribution
     n::Int
-    α::T
-    β::T
+    α::Float64
+    β::Float64
 
-    function BetaBinomial(n::Int, α::T, β::T)
+    function BetaBinomial(n::Real, α::Real, β::Real)
         @check_args(BetaBinomial, n >= zero(n) && α >= zero(α) && β >= zero(β))
         new(n, α, β)
     end
 end
 
-BetaBinomial{T <: Real}(n::Int, α::T, β::T) = BetaBinomial{T}(n, α, β)
-BetaBinomial(n::Int, α::Real, β::Real) = BetaBinomial(n, promote(α, β)...)
-
 @distr_support BetaBinomial 0 d.n
 insupport(d::BetaBinomial, x::Real) = 0 <= x <= d.n
-
-#### Conversions
-function convert{T <: Real, S <: Real}(::Type{BetaBinomial{T}}, n::Int, α::S, β::S)
-    BetaBinomial(n, T(α), T(β))
-end
-function convert{T <: Real, S <: Real}(::Type{BetaBinomial{T}}, d::BetaBinomial{S})
-    BetaBinomial(n, T(d.α), T(d.β))
-end
 
 #### Parameters
 
@@ -95,7 +78,7 @@ end
 
 entropy(d::BetaBinomial) = entropy(Categorical(pdf(d)))
 median(d::BetaBinomial) = median(Categorical(pdf(d))) - 1
-mode(d::BetaBinomial) = indmax(pdf(d)) - one(d.α)
+mode(d::BetaBinomial) = indmax(pdf(d)) - 1
 modes(d::BetaBinomial) = [x - 1 for x in modes(Categorical(pdf(d)))]
 
 quantile(d::BetaBinomial, p::Float64) = quantile(Categorical(pdf(d)), p) - 1

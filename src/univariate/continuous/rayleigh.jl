@@ -20,15 +20,22 @@ External links
 * [Rayleigh distribution on Wikipedia](http://en.wikipedia.org/wiki/Rayleigh_distribution)
 
 """
-immutable Rayleigh <: ContinuousUnivariateDistribution
-    σ::Float64
+immutable Rayleigh{T <: Real} <: ContinuousUnivariateDistribution
+    σ::T
 
-    Rayleigh(σ::Real) = (@check_args(Rayleigh, σ > zero(σ)); new(σ))
-    Rayleigh() = new(1.0)
+    Rayleigh(σ::T) = (@check_args(Rayleigh, σ > zero(σ)); new(σ))
+
 end
+
+Rayleigh{T <: Real}(σ::T) = Rayleigh{T}(σ)
+Rayleigh{T <: Int}(σ::T) = Rayleigh(Float64(σ))
+Rayleigh() = Rayleigh(1.0)
 
 @distr_support Rayleigh 0.0 Inf
 
+#### Conversions
+Rayleigh{T <: Real, S <: Real}(::Type{Rayleigh{T}}, σ::S) = Rayleigh(T(σ))
+Rayleigh{T <: Real, S <: Real}(::Type{Rayleigh{T}}, d::Rayleigh{S}) = Rayleigh(T(d.σ))
 
 #### Parameters
 
@@ -55,7 +62,7 @@ entropy(d::Rayleigh) = 0.942034242170793776 + log(d.σ)
 
 function pdf(d::Rayleigh, x::Float64)
 	σ2 = d.σ^2
-	x > 0.0 ? (x / σ2) * exp(- (x^2) / (2.0 * σ2)) : 0.0
+	x > 0.0 ? (x / σ2) * exp(- (x^2) / (2.0 * σ2)) : zero(d.σ)
 end
 
 function logpdf(d::Rayleigh, x::Float64)
