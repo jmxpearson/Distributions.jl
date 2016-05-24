@@ -20,8 +20,8 @@ tests = [
     "vonmisesfisher",
     "conversion",
     "mixture",
-    "gradlogpdf",
-    "truncate"]
+    "gradlogpdf"]
+    #"truncate"]
 
 print_with_color(:blue, "Running tests:\n")
 

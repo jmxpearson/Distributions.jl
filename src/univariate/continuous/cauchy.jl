@@ -1,13 +1,27 @@
-immutable Cauchy <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
+immutable Cauchy{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
 
-    Cauchy(μ::Real, σ::Real) = (@check_args(Cauchy, σ > zero(σ)); new(μ, σ))
-    Cauchy(μ::Real) = new(μ, 1.0)
-    Cauchy() = new(0.0, 1.0)
+    function Cauchy(μ::T, σ::T)
+        @check_args(Cauchy, σ > zero(σ))
+        new(μ, σ)
+    end
 end
 
+Cauchy{T <: Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
+Cauchy(μ::Real, σ::Real) = Cauchy(promote(μ, σ)...)
+Cauchy(μ::Real) = Cauchy(μ, 1.0)
+Cauchy() = Cauchy(0.0, 1.0)
+
 @distr_support Cauchy -Inf Inf
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Cauchy{T}}, μ::S, σ::S)
+    Cauchy(T(μ), T(σ))
+end
+function convert{T <: Real, S <: Real}(::Type{Cauchy{T}}, d::Cauchy{S})
+    Cauchy(T(d.μ), T(d.σ))
+end
 
 #### Parameters
 

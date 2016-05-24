@@ -1,13 +1,25 @@
-immutable Epanechnikov <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
+immutable Epanechnikov{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
 
-    Epanechnikov(μ::Real, σ::Real) = (@check_args(Epanechnikov, σ > zero(σ)); new(μ, σ))
-    Epanechnikov(μ::Real) = new(μ, 1.0)
-    Epanechnikov() = new(0.0, 1.0)
+    Epanechnikov(μ::T, σ::T) = (@check_args(Epanechnikov, σ > zero(σ)); new(μ, σ))
 end
 
+Epanechnikov{T <: Real}(μ::T, σ::T) = Epanechnikov{T}(μ, σ)
+Epanechnikov(μ::Real, σ::Real) = Epanechnikov(promote(μ, σ)...)
+Epanechnikov(μ::Real) = Epanechnikov(μ, 1.0)
+Epanechnikov() = Epanechnikov(0.0, 1.0)
+
+
 @distr_support Epanechnikov d.μ - d.σ d.μ + d.σ
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Epanechnikov{T}}, μ::S, σ::S)
+    Epanechnikov(T(μ), T(σ))
+end
+function convert{T <: Real, S <: Real}(::Type{Epanechnikov{T}}, d::Epanechnikov{S})
+    Epanechnikov(T(d.μ), T(d.σ))
+end
 
 ## Parameters
 

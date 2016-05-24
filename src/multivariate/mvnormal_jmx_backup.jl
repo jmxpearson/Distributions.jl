@@ -32,15 +32,15 @@ insupport{T<:Real}(d::AbstractMvNormal, x::AbstractVector{T}) =
 mode(d::AbstractMvNormal) = mean(d)
 modes(d::AbstractMvNormal) = [mean(d)]
 
-entropy(d::AbstractMvNormal) = 0.5 * (length(d) * (Float64(log2π) + 1.0) + logdetcov(d))
+@compat entropy(d::AbstractMvNormal) = 0.5 * (length(d) * (Float64(log2π) + 1.0) + logdetcov(d))
 
-mvnormal_c0(g::AbstractMvNormal) = -0.5 * (length(g) * Float64(log2π) + logdetcov(g))
+@compat mvnormal_c0(g::AbstractMvNormal) = -0.5 * (length(g) * Float64(log2π) + logdetcov(g))
 
-sqmahal{T<:Real}(d::AbstractMvNormal, x::AbstractMatrix{T}) = sqmahal!(Array(Float64, size(x, 2)), d, x)
+sqmahal{T<:Real}(d::AbstractMvNormal, x::DenseMatrix{T}) = sqmahal!(Array(Float64, size(x, 2)), d, x)
 
-_logpdf{T<:Real}(d::AbstractMvNormal, x::AbstractVector{T}) = mvnormal_c0(d) - 0.5 * sqmahal(d, x)
+_logpdf{T<:Real}(d::AbstractMvNormal, x::DenseVector{T}) = mvnormal_c0(d) - 0.5 * sqmahal(d, x)
 
-function _logpdf!{T<:Real}(r::AbstractArray, d::AbstractMvNormal, x::AbstractMatrix{T})
+function _logpdf!{T<:Real}(r::DenseArray, d::AbstractMvNormal, x::AbstractMatrix{T})
     sqmahal!(r, d, x)
     c0::Float64 = mvnormal_c0(d)
     for i = 1:size(x, 2)
@@ -49,7 +49,7 @@ function _logpdf!{T<:Real}(r::AbstractArray, d::AbstractMvNormal, x::AbstractMat
     r
 end
 
-_pdf!{T<:Real}(r::AbstractArray, d::AbstractMvNormal, x::AbstractMatrix{T}) = exp!(_logpdf!(r, d, x))
+_pdf!{T<:Real}(r::DenseArray, d::AbstractMvNormal, x::AbstractMatrix{T}) = exp!(_logpdf!(r, d, x))
 
 
 ###########################################################
@@ -59,37 +59,38 @@ _pdf!{T<:Real}(r::AbstractArray, d::AbstractMvNormal, x::AbstractMatrix{T}) = ex
 #   Multivariate normal distribution with mean parameters
 #
 ###########################################################
-immutable MvNormal{Cov<:AbstractPDMat,Mean<:Union{Vector, ZeroVector}} <: AbstractMvNormal
+
+@compat immutable MvNormal{Cov<:AbstractPDMat,Mean<:Union{Vector{Float64},ZeroVector{Float64}}} <: AbstractMvNormal
     μ::Mean
     Σ::Cov
 end
 
 const MultivariateNormal = MvNormal  # for the purpose of backward compatibility
 
-typealias IsoNormal  MvNormal{ScalMat{Float64},Vector{Float64}}
-typealias DiagNormal MvNormal{PDiagMat{Float64,Vector{Float64}},Vector{Float64}}
-typealias FullNormal MvNormal{PDMat{Float64,Matrix{Float64}},Vector{Float64}}
+typealias IsoNormal  MvNormal{ScalMat,Vector{Float64}}
+typealias DiagNormal MvNormal{PDiagMat,Vector{Float64}}
+typealias FullNormal MvNormal{PDMat,Vector{Float64}}
 
-typealias ZeroMeanIsoNormal  MvNormal{ScalMat{Float64},ZeroVector{Float64}}
-typealias ZeroMeanDiagNormal MvNormal{PDiagMat{Float64,Vector{Float64}},ZeroVector{Float64}}
-typealias ZeroMeanFullNormal MvNormal{PDMat{Float64,Matrix{Float64}},ZeroVector{Float64}}
+typealias ZeroMeanIsoNormal  MvNormal{ScalMat,ZeroVector{Float64}}
+typealias ZeroMeanDiagNormal MvNormal{PDiagMat,ZeroVector{Float64}}
+typealias ZeroMeanFullNormal MvNormal{PDMat,ZeroVector{Float64}}
 
 ### Construction
 
-function MvNormal{Cov<:AbstractPDMat, T<:Real}(μ::Vector{T}, Σ::Cov)
+function MvNormal{Cov<:AbstractPDMat}(μ::Vector{Float64}, Σ::Cov)
     dim(Σ) == length(μ) || throw(DimensionMismatch("The dimensions of mu and Sigma are inconsistent."))
-    MvNormal{Cov,Vector{T}}(μ, Σ)
+    MvNormal{Cov,Vector{Float64}}(μ, Σ)
 end
 
 MvNormal{Cov<:AbstractPDMat}(Σ::Cov) = MvNormal{Cov,ZeroVector{Float64}}(ZeroVector(Float64, dim(Σ)), Σ)
 
-MvNormal{T<:Real,S<:Real}(μ::Vector{T}, Σ::Matrix{S}) = MvNormal(μ, PDMat(Σ))
-MvNormal{T<:Real,S<:Real}(μ::Vector{T}, σ::Vector{S}) = MvNormal(μ, PDiagMat(abs2(σ)))
-MvNormal{T<:Real}(μ::Vector{T}, σ::Real) = MvNormal(μ, ScalMat(length(μ), abs2(Float64(σ))))
+MvNormal(μ::Vector{Float64}, Σ::Matrix{Float64}) = MvNormal(μ, PDMat(Σ))
+MvNormal(μ::Vector{Float64}, σ::Vector{Float64}) = MvNormal(μ, PDiagMat(abs2(σ)))
+@compat MvNormal(μ::Vector{Float64}, σ::Real) = MvNormal(μ, ScalMat(length(μ), abs2(Float64(σ))))
 
-MvNormal{T<:Real}(Σ::Matrix{T}) = MvNormal(PDMat(Σ))
-MvNormal{T<:Real}(σ::Vector{T}) = MvNormal(PDiagMat(abs2(σ)))
-MvNormal(d::Int, σ::Real) = MvNormal(ScalMat(d, abs2(Float64(σ))))
+MvNormal(Σ::Matrix{Float64}) = MvNormal(PDMat(Σ))
+MvNormal(σ::Vector{Float64}) = MvNormal(PDiagMat(abs2(σ)))
+@compat MvNormal(d::Int, σ::Real) = MvNormal(ScalMat(d, abs2(Float64(σ))))
 
 ### Show
 
@@ -108,7 +109,6 @@ Base.show(io::IO, d::MvNormal) =
 
 length(d::MvNormal) = length(d.μ)
 mean(d::MvNormal) = convert(Vector{Float64}, d.μ)
-params(d::MvNormal) = (d.μ, d.Σ)
 
 var(d::MvNormal) = diag(d.Σ)
 cov(d::MvNormal) = full(d.Σ)
@@ -117,9 +117,9 @@ logdetcov(d::MvNormal) = logdet(d.Σ)
 
 ### Evaluation
 
-sqmahal{T<:Real}(d::MvNormal, x::AbstractVector{T}) = invquad(d.Σ, x - d.μ)
+sqmahal{T<:Real}(d::MvNormal, x::DenseVector{T}) = invquad(d.Σ, x - d.μ)
 
-sqmahal!{T<:Real}(r::AbstractVector, d::MvNormal, x::AbstractMatrix{T}) =
+sqmahal!{T<:Real}(r::DenseVector, d::MvNormal, x::DenseMatrix{T}) =
     invquad!(r, d.Σ, x .- d.μ)
 
 gradlogpdf(d::MvNormal, x::Vector{Float64}) = -(d.Σ \ (x - d.μ))
@@ -128,8 +128,8 @@ gradlogpdf(d::MvNormal, x::Vector{Float64}) = -(d.Σ \ (x - d.μ))
 
 _rand!(d::MvNormal, x::VecOrMat{Float64}) = add!(unwhiten!(d.Σ, randn!(x)), d.μ)
 
-# Workaround: randn! only works for Array, but not generally for AbstractArray
-function _rand!(d::MvNormal, x::AbstractVecOrMat{Float64})
+# Workaround: randn! only works for Array, but not generally for DenseArray
+function _rand!(d::MvNormal, x::DenseVecOrMat{Float64})
     for i = 1:length(x)
         @inbounds x[i] = randn()
     end
@@ -148,7 +148,8 @@ immutable MvNormalKnownCov{Cov<:AbstractPDMat}
     Σ::Cov
 end
 
-MvNormalKnownCov(d::Int, σ::Real) = MvNormalKnownCov(ScalMat(d, abs2(Float64(σ))))
+MvNormalKnownCov{Cov<:AbstractPDMat}(C::Cov) = MvNormalKnownCov{Cov}(C)
+@compat MvNormalKnownCov(d::Int, σ::Real) = MvNormalKnownCov(ScalMat(d, abs2(Float64(σ))))
 MvNormalKnownCov(σ::Vector{Float64}) = MvNormalKnownCov(PDiagMat(abs2(σ)))
 MvNormalKnownCov(Σ::Matrix{Float64}) = MvNormalKnownCov(PDMat(Σ))
 
@@ -164,7 +165,7 @@ function suffstats{Cov<:AbstractPDMat}(g::MvNormalKnownCov{Cov}, x::AbstractMatr
     size(x,1) == length(g) || throw(DimensionMismatch("Invalid argument dimensions."))
     invΣ = inv(g.Σ)
     sx = vec(sum(x, 2))
-    tw = Float64(size(x, 2))
+    @compat tw = Float64(size(x, 2))
     MvNormalKnownCovStats{Cov}(invΣ, sx, tw)
 end
 
@@ -214,7 +215,7 @@ function suffstats(D::Type{MvNormal}, x::AbstractMatrix{Float64})
     m = s * inv(n)
     z = x .- m
     s2 = A_mul_Bt(z, z)
-    MvNormalStats(s, m, s2, Float64(n))
+    @compat MvNormalStats(s, m, s2, Float64(n))
 end
 
 function suffstats(D::Type{MvNormal}, x::AbstractMatrix{Float64}, w::Array{Float64})
@@ -227,8 +228,8 @@ function suffstats(D::Type{MvNormal}, x::AbstractMatrix{Float64}, w::Array{Float
     m = s * inv(tw)
     z = similar(x)
     for j = 1:n
-        xj = slice(x,:,j)
-        zj = slice(z,:,j)
+        xj = view(x,:,j)
+        zj = view(z,:,j)
         swj = sqrt(w[j])
         for i = 1:d
             @inbounds zj[i] = swj * (xj[i] - m[i])
@@ -255,8 +256,7 @@ function fit_mle(D::Type{FullNormal}, x::AbstractMatrix{Float64})
     n = size(x, 2)
     mu = vec(mean(x, 2))
     z = x .- mu
-    C = Base.LinAlg.BLAS.syrk('U', 'N', 1.0/n, z)
-    Base.LinAlg.copytri!(C, 'U')
+    C = Base.LinAlg.BLAS.gemm('N', 'T', 1.0/n, z, z)
     MvNormal(mu, PDMat(C))
 end
 
@@ -275,8 +275,7 @@ function fit_mle(D::Type{FullNormal}, x::AbstractMatrix{Float64}, w::AbstractVec
             @inbounds z[i,j] = (x[i,j] - mu[i]) * cj
         end
     end
-    C = Base.LinAlg.BLAS.syrk('U', 'N', inv_sw, z)
-    Base.LinAlg.copytri!(C, 'U')
+    C = Base.LinAlg.BLAS.gemm('N', 'T', inv_sw, z, z)
     MvNormal(mu, PDMat(C))
 end
 
