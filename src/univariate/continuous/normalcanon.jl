@@ -10,6 +10,7 @@ immutable NormalCanon{T<:Real} <: ContinuousUnivariateDistribution
     	new(η, λ, η / λ)
     end
 end
+
 NormalCanon{T<:Real}(η::T, λ::T) = NormalCanon{typeof(η/λ)}(η, λ)
 NormalCanon(η::Real, λ::Real) = NormalCanon(promote(η, λ)...)
 NormalCanon() = NormalCanon(0.0, 1.0, 0.0)
