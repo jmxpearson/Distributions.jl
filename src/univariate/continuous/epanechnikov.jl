@@ -37,19 +37,19 @@ skewness(d::Epanechnikov) = 0.0
 kurtosis(d::Epanechnikov) = -2.914285714285714  # 3/35-3
 
 ## Functions
-function pdf(d::Epanechnikov, x::Float64)
+function pdf(d::Epanechnikov, x::Real)
     u = abs(x - d.μ) / d.σ
     u >= 1 ? 0.0 : 0.75 * (1 - u^2) / d.σ
 end
 
-function cdf(d::Epanechnikov, x::Float64)
+function cdf(d::Epanechnikov, x::Real)
     u = (x - d.μ) / d.σ
     u <= -1 ? 0.0 :
     u >= 1 ? 1.0 :
     0.5 + u * (0.75 - 0.25 * u^2)
 end
 
-function ccdf(d::Epanechnikov, x::Float64)
+function ccdf(d::Epanechnikov, x::Real)
     u = (d.μ - x) / d.σ
     u <= -1 ? 1.0 :
     u >= 1 ? 0.0 :
@@ -58,13 +58,13 @@ end
 
 @quantile_newton Epanechnikov
 
-function mgf(d::Epanechnikov, t::Float64)
+function mgf(d::Epanechnikov, t::Real)
     a = d.σ * t
     a == 0 ? 1.0 :
     3.0 * exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
 end
 
-function cf(d::Epanechnikov, t::Float64)
+function cf(d::Epanechnikov, t::Real)
     a = d.σ * t
     a == 0 ? 1.0+0.0im :
     -3.0 * exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
