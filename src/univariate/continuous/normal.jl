@@ -1,13 +1,44 @@
-immutable Normal <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
+doc"""
+    Normal(μ,σ)
 
-    Normal(μ::Real, σ::Real) = (@check_args(Normal, σ > zero(σ)); new(μ, σ))
-    Normal(μ::Real) = Normal(μ, 1.0)
-    Normal() = Normal(0.0, 1.0)
+The *Normal distribution* with mean `μ` and standard deviation `σ` has probability density function
+
+$f(x; \mu, \sigma) = \frac{1}{\sqrt{2 \pi \sigma^2}}
+\exp \left( - \frac{(x - \mu)^2}{2 \sigma^2} \right)$
+
+```julia
+Normal()          # standard Normal distribution with zero mean and unit variance
+Normal(mu)        # Normal distribution with mean mu and unit variance
+Normal(mu, sig)   # Normal distribution with mean mu and variance sig^2
+
+params(d)         # Get the parameters, i.e. (mu, sig)
+mean(d)           # Get the mean, i.e. mu
+std(d)            # Get the standard deviation, i.e. sig
+```
+
+External links
+
+* [Normal distribution on Wikipedia](http://en.wikipedia.org/wiki/Normal_distribution)
+
+"""
+immutable Normal{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
+
+    Normal(μ, σ) = (@check_args(Normal, σ > zero(σ)); new(μ, σ))
 end
 
+#### Outer constructors
+Normal{T<:Real}(μ::T, σ::T) = Normal{T}(μ, σ)
+Normal(μ::Real, σ::Real) = Normal(promote(μ, σ)...)
+Normal(μ::Real) = Normal(μ, one(μ))
+Normal() = Normal(0.0, 1.0)
+
 typealias Gaussian Normal
+
+# #### Conversions
+convert{T <: Real, S <: Real}(::Type{Normal{T}}, μ::S, σ::S) = Normal(T(μ), T(σ))
+convert{T <: Real, S <: Real}(::Type{Normal{T}}, d::Normal{S}) = Normal(T(d.μ), T(d.σ))
 
 @distr_support Normal -Inf Inf
 
@@ -146,7 +177,7 @@ immutable NormalKnownSigmaStats <: SufficientStats
 end
 
 function suffstats{T<:Real}(g::NormalKnownSigma, x::AbstractArray{T})
-    @compat NormalKnownSigmaStats(g.σ, sum(x), Float64(length(x)))
+    NormalKnownSigmaStats(g.σ, sum(x), Float64(length(x)))
 end
 
 function suffstats{T<:Real}(g::NormalKnownSigma, x::AbstractArray{T}, w::AbstractArray{T})

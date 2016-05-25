@@ -1,18 +1,49 @@
-immutable InverseGamma <: ContinuousUnivariateDistribution
-    invd::Gamma
-    θ::Float64
+doc"""
+    InverseGamma(α, θ)
 
-    function InverseGamma(α::Real, θ::Real)
+The *inverse gamma distribution* with shape parameter `α` and scale `θ` has probability
+density function
+
+$f(x; \alpha, \theta) = \frac{\theta^\alpha x^{-(\alpha + 1)}}{\Gamma(\alpha)}
+e^{-\frac{\theta}{x}}, \quad x > 0$
+
+It is related to the [`Gamma`](:func:`Gamma`) distribution: if $X \sim \operatorname{Gamma}(\alpha, \beta)$, then $1 / X \sim \operatorname{InverseGamma}(\alpha, \beta^{-1})$.
+
+.. code-block:: julia
+
+    InverseGamma()        # Inverse Gamma distribution with unit shape and unit scale, i.e. InverseGamma(1.0, 1.0)
+    InverseGamma(a)       # Inverse Gamma distribution with shape a and unit scale, i.e. InverseGamma(a, 1.0)
+    InverseGamma(a, b)    # Inverse Gamma distribution with shape a and scale b
+
+    params(d)        # Get the parameters, i.e. (a, b)
+    shape(d)         # Get the shape parameter, i.e. a
+    scale(d)         # Get the scale parameter, i.e. b
+
+External links
+
+* [Inverse gamma distribution on Wikipedia](http://en.wikipedia.org/wiki/Inverse-gamma_distribution)
+
+"""
+immutable InverseGamma{T <: Real} <: ContinuousUnivariateDistribution
+    invd::Gamma{T}
+    θ::T
+
+    function InverseGamma(α, θ)
         @check_args(InverseGamma, α > zero(α) && θ > zero(θ))
         new(Gamma(α, 1.0 / θ), θ)
     end
-
-    InverseGamma(α::Real) = InverseGamma(α, 1.0)
-    InverseGamma() = InverseGamma(1.0, 1.0)
 end
+
+InverseGamma{T<:Real}(α::T, θ::T) = InverseGamma{T}(α, θ)
+InverseGamma(α::Real, θ::Real) = InverseGamma(promote(α, θ)...)
+InverseGamma(α::Real) = InverseGamma(α, 1.0)
+InverseGamma() = InverseGamma(1.0, 1.0)
 
 @distr_support InverseGamma 0.0 Inf
 
+#### Conversions
+convert{T <: Real, S <: Real}(::Type{InverseGamma{T}}, α::S, θ::S) = InverseGamma(T(α), T(θ))
+convert{T <: Real, S <: Real}(::Type{InverseGamma{T}}, d::InverseGamma{S}) = InverseGamma(T(shape(d.invd)), T(d.θ))
 
 #### Parameters
 

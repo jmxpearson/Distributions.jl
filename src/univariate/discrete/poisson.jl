@@ -1,12 +1,37 @@
-immutable Poisson <: DiscreteUnivariateDistribution
-    λ::Float64
+doc"""
+    Poisson(λ)
+
+A *Poisson distribution* descibes the number of independent events occurring within a unit time interval, given the average rate of occurrence `λ`.
+
+$P(X = k) = \frac{\lambda^k}{k!} e^{-\lambda}, \quad \text{ for } k = 0,1,2,\ldots.$
+
+```julia
+Poisson()        # Poisson distribution with rate parameter 1
+Poisson(lambda)       # Poisson distribution with rate parameter lambda
+
+params(d)        # Get the parameters, i.e. (λ,)
+mean(d)          # Get the mean arrival rate, i.e. λ
+```
+
+External links:
+
+* [Poisson distribution on Wikipedia](http://en.wikipedia.org/wiki/Poisson_distribution)
+
+"""
+immutable Poisson{T<:Real} <: DiscreteUnivariateDistribution
+    λ::T
 
     Poisson(λ::Real) = (@check_args(Poisson, λ >= zero(λ)); new(λ))
-    Poisson() = new(1.0)
 end
 
-@distr_support Poisson 0 (d.λ == 0.0 ? 0 : Inf)
+Poisson{T<:Real}(λ::T) = Poisson{T}(λ)
+Poisson() = Poisson(1.0)
 
+@distr_support Poisson 0 (d.λ == zero(typeof(d.λ)) ? 0 : Inf)
+
+# #### Conversions
+convert{T <: Real, S <: Real}(::Type{Poisson{T}}, λ::S) = Poisson(T(λ))
+convert{T <: Real, S <: Real}(::Type{Poisson{T}}, d::Poisson{S}) = Poisson(T(d.λ))
 
 ### Parameters
 
@@ -23,18 +48,18 @@ mode(d::Poisson) = floor(Int,d.λ)
 
 function modes(d::Poisson)
     λ = d.λ
-    @compat isinteger(λ) ? [round(Int, λ)-1, round(Int, λ)] : [floor(Int, λ)]
+    isinteger(λ) ? [round(Int, λ)-1, round(Int, λ)] : [floor(Int, λ)]
 end
 
 var(d::Poisson) = d.λ
 
-skewness(d::Poisson) = 1.0 / sqrt(d.λ)
+skewness(d::Poisson) = one(typeof(d.λ)) / sqrt(d.λ)
 
-kurtosis(d::Poisson) = 1.0 / d.λ
+kurtosis(d::Poisson) = one(typeof(d.λ)) / d.λ
 
 function entropy(d::Poisson)
     λ = rate(d)
-    if λ == 0.0
+    if λ == zero(typeof(λ))
         return 0.0
     elseif λ < 50.0
         s = 0.0

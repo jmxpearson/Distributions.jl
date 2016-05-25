@@ -11,6 +11,7 @@ tests = [
     "poissonbinomial",
     "dirichlet",
     "mvnormal",
+    "mvlognormal",
     "mvtdist",
     "normalinversegaussian",
     "kolmogorov",
@@ -20,8 +21,9 @@ tests = [
     "vonmisesfisher",
     "conversion",
     "mixture",
-    "gradlogpdf"]
-    #"truncate"]
+    "gradlogpdf",
+    #"truncate",
+	"generalizedextremevalue"]
 
 print_with_color(:blue, "Running tests:\n")
 

@@ -23,7 +23,7 @@ function verify_and_test_drive(jsonfile, selected, n_tsamples::Int)
         dtype = eval(dsym)
         d = eval(parse(ex))
         if dtype == TruncatedNormal
-            @test isa(d, Truncated{Normal})
+            @test isa(d, Truncated{Normal{Float64}})
         else
             @assert isa(dtype, Type) && dtype <: UnivariateDistribution
             @test isa(d, dtype)
@@ -35,8 +35,8 @@ function verify_and_test_drive(jsonfile, selected, n_tsamples::Int)
 end
 
 
-@compat _parse_x(d::DiscreteUnivariateDistribution, x) = round(Int, x)
-@compat _parse_x(d::ContinuousUnivariateDistribution, x) = Float64(x)
+_parse_x(d::DiscreteUnivariateDistribution, x) = round(Int, x)
+_parse_x(d::ContinuousUnivariateDistribution, x) = Float64(x)
 
 _json_value(x::Number) = x
 
@@ -59,8 +59,8 @@ function verify_and_test(d::UnivariateDistribution, dct::Dict, n_tsamples::Int)
     # verify stats
     @test_approx_eq minimum(d) _json_value(dct["minimum"])
     @test_approx_eq maximum(d) _json_value(dct["maximum"])
-    @compat @test_approx_eq_eps mean(d) _json_value(dct["mean"]) 1.0e-8
-    @compat @test_approx_eq_eps var(d) _json_value(dct["var"]) 1.0e-8
+    @test_approx_eq_eps mean(d) _json_value(dct["mean"]) 1.0e-8
+    @test_approx_eq_eps var(d) _json_value(dct["var"]) 1.0e-8
     @test_approx_eq_eps median(d) _json_value(dct["median"]) 1.0
 
     if applicable(entropy, d)
@@ -78,8 +78,8 @@ function verify_and_test(d::UnivariateDistribution, dct::Dict, n_tsamples::Int)
     pts = dct["points"]
     for pt in pts
         x = _parse_x(d, pt["x"])
-        @compat lp = Float64(pt["logpdf"])
-        @compat cf = Float64(pt["cdf"])
+        lp = Float64(pt["logpdf"])
+        cf = Float64(pt["cdf"])
         Base.Test.test_approx_eq(logpdf(d, x), lp, "logpdf(d, $x)", "lp")
         Base.Test.test_approx_eq(cdf(d, x), cf, "cdf(d, $x)", "cf")
     end
@@ -99,6 +99,12 @@ function verify_and_test(d::UnivariateDistribution, dct::Dict, n_tsamples::Int)
         end
     catch e
         isa(e, MethodError) || throw(e)
+    end
+
+    # test conversions between type parameters
+    if isa(d, Normal)  # remove this check when all distributions parameterized
+        @test isa(convert(Normal{Float64}, Normal(1, 2)), Normal{Float64})
+        @test isa(convert(Normal{Float64}, 1, 2), Normal{Float64})
     end
 
     # generic testing

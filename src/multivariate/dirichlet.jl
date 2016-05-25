@@ -1,11 +1,11 @@
-immutable Dirichlet <: ContinuousMultivariateDistribution
-    alpha::Vector{Float64}
-    alpha0::Float64
-    lmnB::Float64
+immutable Dirichlet{T <: Real} <: ContinuousMultivariateDistribution
+    alpha::Vector{T}
+    alpha0::T
+    lmnB::T
 
-    function Dirichlet{T <: Real}(alpha::Vector{T})
-        alpha0::Float64 = 0.0
-        lmnB::Float64 = 0.0
+    function Dirichlet(alpha::Vector{T})
+        alpha0::T = zero(T)
+        lmnB::T = zero(T)
         for i in 1:length(alpha)
             ai = alpha[i]
             ai > 0 || throw(ArgumentError("Dirichlet: alpha must be a positive vector."))
@@ -13,23 +13,31 @@ immutable Dirichlet <: ContinuousMultivariateDistribution
             lmnB += lgamma(ai)
         end
         lmnB -= lgamma(alpha0)
-        new(convert(Vector{Float64}, alpha), alpha0, lmnB)
+        new(alpha, alpha0, lmnB)
     end
 
-    function Dirichlet(d::Integer, alpha::Float64)
+    function Dirichlet(d::Integer, alpha::T)
         alpha0 = alpha * d
         new(fill(alpha, d), alpha0, lgamma(alpha) * d - lgamma(alpha0))
     end
-
-    @compat Dirichlet(d::Integer, alpha::Real) = Dirichlet(d, Float64(alpha))
 end
+
+Dirichlet{T <: Real}(alpha::Vector{T}) = Dirichlet{T}(alpha)
+Dirichlet{T <: Real}(d::Integer, alpha::T) = Dirichlet{T}(d, alpha)
+Dirichlet{T <: Integer}(alpha::Vector{T}) = Dirichlet{Float64}(alpha)
+Dirichlet(d::Integer, alpha::Integer) = Dirichlet{Float64}(d, Float64(alpha))
 
 immutable DirichletCanon
     alpha::Vector{Float64}
 end
 
 length(d::DirichletCanon) = length(d.alpha)
-Base.convert(::Type{Dirichlet}, cf::DirichletCanon) = Dirichlet(cf.alpha)
+
+#### Conversions
+convert(::Type{Dirichlet{Float64}}, cf::DirichletCanon) = Dirichlet(cf.alpha)
+convert{T <: Real, S <: Real}(::Type{Dirichlet{T}}, alpha::Vector{S}) = Dirichlet(convert(Vector{T}, alpha))
+convert{T <: Real, S <: Real}(::Type{Dirichlet{T}}, d::Dirichlet{S}) = Dirichlet(convert(Vector{T}, d.alpha))
+
 
 
 Base.show(io::IO, d::Dirichlet) = show(io, d, (:alpha,))
@@ -38,6 +46,7 @@ Base.show(io::IO, d::Dirichlet) = show(io, d, (:alpha,))
 
 length(d::Dirichlet) = length(d.alpha)
 mean(d::Dirichlet) = d.alpha .* inv(d.alpha0)
+params(d::Dirichlet) = (d.alpha,)
 
 function var(d::Dirichlet)
     α = d.alpha
@@ -90,20 +99,20 @@ function entropy(d::Dirichlet)
 end
 
 
-function dirichlet_mode!(r::Vector{Float64}, α::Vector{Float64}, α0::Float64)
+function dirichlet_mode!{T <: Real}(r::Vector{T}, α::Vector{T}, α0::T)
     k = length(α)
     s = α0 - k
     for i = 1:k
         @inbounds αi = α[i]
-        if αi <= 1.
+        if αi <= one(T)
             error("Dirichlet has a mode only when alpha[i] > 1 for all i" )
         end
-        @inbounds r[i] = (αi - 1.0) / s
+        @inbounds r[i] = (αi - one(T)) / s
     end
     return r
 end
 
-dirichlet_mode(α::Vector{Float64}, α0::Float64) = dirichlet_mode!(Array(Float64, length(α)), α, α0)
+dirichlet_mode{T <: Real}(α::Vector{T}, α0::T) = dirichlet_mode!(Array(T, length(α)), α, α0)
 
 mode(d::Dirichlet) = dirichlet_mode(d.alpha, d.alpha0)
 mode(d::DirichletCanon) = dirichlet_mode(d.alpha, sum(d.alpha))
@@ -143,7 +152,7 @@ end
 
 # sampling
 
-@compat function _rand!{T<:Real}(d::Union{Dirichlet,DirichletCanon}, x::AbstractVector{T})
+function _rand!{T<:Real}(d::Union{Dirichlet,DirichletCanon}, x::AbstractVector{T})
     s = 0.0
     n = length(x)
     α = d.alpha
@@ -163,7 +172,7 @@ immutable DirichletStats <: SufficientStats
     slogp::Vector{Float64}   # (weighted) sum of log(p)
     tw::Float64              # total sample weights
 
-    @compat DirichletStats(slogp::Vector{Float64}, tw::Real) = new(slogp, Float64(tw))
+    DirichletStats(slogp::Vector{Float64}, tw::Real) = new(slogp, Float64(tw))
 end
 
 length(ss::DirichletStats) = length(s.slogp)

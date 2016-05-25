@@ -1,8 +1,40 @@
+doc"""
+    GeneralizedExtremeValue(μ, σ, ξ)
+
+The *Generalized extreme value distribution* with shape parameter `ξ`, scale `σ` and location `μ` has probability density function
+
+$f(x; \xi, \sigma, \mu) = \begin{cases}
+        \frac{1}{\sigma} \left[ 1+\left(\frac{x-\mu}{\sigma}\right)\xi\right]^{-1/\xi-1} \exp\left\{-\left[ 1+ \left(\frac{x-\mu}{\sigma}\right)\xi\right]^{-1/\xi} \right\} & \text{for } \xi \neq 0 \\
+        \frac{1}{\sigma} \exp\left\{-\frac{x-\mu}{\sigma}\right\} \exp\left\{-\exp\left[-\frac{x-\mu}{\sigma}\right]\right\} & \text{for } \xi = 0
+    \end{cases}$
+
+for
+
+$x \in \begin{cases}
+        \left[ \mu - \frac{\sigma}{\xi}, + \infty \right) & \text{for } \xi > 0 \\
+        \left( - \infty, + \infty \right) & \text{for } \xi = 0 \\
+        \left( - \infty, \mu - \frac{\sigma}{\xi} \right] & \text{for } \xi < 0
+    \end{cases}$
+
+```julia
+GeneralizedExtremeValue(k, s, m)      # Generalized Pareto distribution with shape k, scale s and location m.
+
+params(d)       # Get the parameters, i.e. (k, s, m)
+shape(d)        # Get the shape parameter, i.e. k (sometimes called c)
+scale(d)        # Get the scale parameter, i.e. s
+location(d)     # Get the location parameter, i.e. m
+```
+
+External links
+
+* [Generalized extreme value distribution on Wikipedia](https://en.wikipedia.org/wiki/Generalized_extreme_value_distribution)
+
+"""
 immutable GeneralizedExtremeValue <: ContinuousUnivariateDistribution
     μ::Float64
     σ::Float64
     ξ::Float64
-    
+
     function GeneralizedExtremeValue(μ::Real, σ::Real, ξ::Real)
         σ > zero(σ) || error("Scale must be positive")
         new(μ, σ, ξ)
@@ -22,11 +54,11 @@ params(d::GeneralizedExtremeValue) = (d.μ, d.σ, d.ξ)
 
 
 #### Statistics
-g(d::GeneralizedExtremeValue, k::Real) = gamma(1 - k * d.ξ) # This should not be exported. 
+g(d::GeneralizedExtremeValue, k::Real) = gamma(1 - k * d.ξ) # This should not be exported.
 
 function median(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return μ - σ * log(log(2.0))
     else
@@ -36,7 +68,7 @@ end
 
 function mean(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return μ + σ * γ
     elseif ξ < 1.0
@@ -48,7 +80,7 @@ end
 
 function mode(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return μ
     else
@@ -58,7 +90,7 @@ end
 
 function var(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return σ ^ 2.0 * π ^ 2.0 / 6.0
     elseif ξ < 0.5
@@ -70,20 +102,22 @@ end
 
 function skewness(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return 12.0 * sqrt(6.0) * zeta(3.0) / pi ^ 3.0
-    else
+    elseif ξ < 1.0 / 3.0
         g1 = g(d, 1)
         g2 = g(d, 2)
         g3 = g(d, 3)
         return sign(ξ) * (g3 - 3.0 * g1 * g2 + 2.0 * g1 ^ 3.0) / (g2 - g1 ^ 2.0) ^ (3.0 / 2.0)
+    else
+        return Inf
     end
 end
 
 function kurtosis(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     if abs(ξ) < eps() # ξ == 0.0
         return 12.0 / 5.0
     elseif ξ < 1.0 / 4.0
@@ -97,14 +131,14 @@ function kurtosis(d::GeneralizedExtremeValue)
     end
 end
 
-function entropy(d::GeneralizedExtremeValue) 
+function entropy(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
     return log(σ) + γ * ξ + (1.0 + γ)
 end
 
 function quantile(d::GeneralizedExtremeValue, p::Float64)
     (μ, σ, ξ) = params(d)
-	
+
     if abs(ξ) < eps() # ξ == 0.0
         return μ + σ * (- log(- log(p)))
     else
@@ -113,7 +147,7 @@ function quantile(d::GeneralizedExtremeValue, p::Float64)
 end
 
 
-#### Support 
+#### Support
 
 insupport(d::GeneralizedExtremeValue, x::Real) = minimum(d) <= x <= maximum(d)
 
@@ -125,20 +159,20 @@ function logpdf(d::GeneralizedExtremeValue, x::Float64)
       return -Inf
     else
         (μ, σ, ξ) = params(d)
-    
-        z = (x - μ) / σ # Normalise x. 
+
+        z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0.0
             t = z
             return - log(σ) - t - exp(- t)
         else
-            if z * ξ == -1.0 # Otherwise, would compute zero to the power something. 
-                return -Inf 
+            if z * ξ == -1.0 # Otherwise, would compute zero to the power something.
+                return -Inf
             else
                 t = (1.0 + z * ξ) ^ (- 1.0 / ξ)
                 return - log(σ) + (ξ + 1.0) * log(t) - t
             end
-        end 
-    end 
+        end
+    end
 end
 
 function pdf(d::GeneralizedExtremeValue, x::Float64)
@@ -146,27 +180,27 @@ function pdf(d::GeneralizedExtremeValue, x::Float64)
         return 0.0
     else
         (μ, σ, ξ) = params(d)
-    
-        z = (x - μ) / σ # Normalise x. 
+
+        z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0.0
             t = exp(- z)
             return (t * exp(- t)) / σ
         else
-            if z * ξ == -1.0 # In this case: zero to the power something. 
+            if z * ξ == -1.0 # In this case: zero to the power something.
                 return 0.0
             else
                 t = (1.0 + z * ξ) ^ (- 1.0 / ξ)
                 return (t ^ (ξ + 1.0) * exp(- t)) / σ
             end
-        end 
-    end 
+        end
+    end
 end
 
 function logcdf(d::GeneralizedExtremeValue, x::Float64)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
-    
-        z = (x - μ) / σ # Normalise x. 
+
+        z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0.0
             return - exp(- z)
         else
@@ -182,8 +216,8 @@ end
 function cdf(d::GeneralizedExtremeValue, x::Float64)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
-    
-        z = (x - μ) / σ # Normalise x. 
+
+        z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0.0
             t = exp(- z)
         else
@@ -205,7 +239,7 @@ ccdf(d::GeneralizedExtremeValue, x::Float64) = - expm1(logcdf(d, x))
 
 function rand(d::GeneralizedExtremeValue)
     (μ, σ, ξ) = params(d)
-    
+
     # Generate a Float64 random number uniformly in (0,1].
     u = 1.0 - rand()
 

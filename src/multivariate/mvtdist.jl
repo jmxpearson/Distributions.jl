@@ -4,45 +4,43 @@
 
 abstract AbstractMvTDist <: ContinuousMultivariateDistribution
 
-immutable GenericMvTDist{Cov<:AbstractPDMat} <: AbstractMvTDist
-    df::Float64 # non-integer degrees of freedom allowed
+immutable GenericMvTDist{Cov<:AbstractPDMat, T<:Real} <: AbstractMvTDist
+    df::T # non-integer degrees of freedom allowed
     dim::Int
     zeromean::Bool
-    μ::Vector{Float64}
+    μ::Vector{T}
     Σ::Cov
 
-    function GenericMvTDist{Cov}(df::Float64, dim::Int, zmean::Bool, μ::Vector{Float64}, Σ::Cov)
+    function GenericMvTDist{Cov, T}(df::T, dim::Int, zmean::Bool, μ::Vector{T}, Σ::Cov)
       df > zero(df) || error("df must be positive")
-      @compat new(Float64(df), dim, zmean, μ, Σ)
+      new(df, dim, zmean, μ, Σ)
     end
 end
 
-function GenericMvTDist{Cov<:AbstractPDMat}(df::Float64, μ::Vector{Float64}, Σ::Cov, zmean::Bool)
-    d = length(μ)
-    dim(Σ) == d || throw(ArgumentError("The dimensions of μ and Σ are inconsistent."))
-    GenericMvTDist{Cov}(df, d, zmean, μ, Σ)
+function GenericMvTDist{Cov<:AbstractPDMat, T<:Real, S<:Real}(df::T, μ::Vector{S}, Σ::Cov, zmean::Bool)
+    R = promote_type(T, S)
+    GenericMvTDist(R(df), convert(Vector{R}, μ), Σ, zmean)
 end
 
-function GenericMvTDist{Cov<:AbstractPDMat}(df::Float64, μ::Vector{Float64}, Σ::Cov)
+function GenericMvTDist{Cov<:AbstractPDMat, T<:Real}(df::T, μ::Vector{T}, Σ::Cov, zmean::Bool)
     d = length(μ)
     dim(Σ) == d || throw(ArgumentError("The dimensions of μ and Σ are inconsistent."))
-    GenericMvTDist{Cov}(df, d, allzeros(μ), μ, Σ)
+    GenericMvTDist{Cov, T}(df, d, zmean, μ, Σ)
 end
 
-function GenericMvTDist{Cov<:AbstractPDMat}(df::Float64, Σ::Cov)
-    d = dim(Σ)
-    GenericMvTDist{Cov}(df, d, true, zeros(d), Σ)    
-end
+GenericMvTDist{Cov<:AbstractPDMat, T<:Real, S<:Real}(df::T, μ::Vector{S}, Σ::Cov) = GenericMvTDist(df, μ, Σ, allzeros(μ))
+
+GenericMvTDist{Cov<:AbstractPDMat, T<:Real}(df::T, Σ::Cov) = GenericMvTDist(df, zeros(d), Σ, true)
 
 ## Construction of multivariate normal with specific covariance type
 
-typealias IsoTDist  GenericMvTDist{ScalMat}
-typealias DiagTDist GenericMvTDist{PDiagMat}
-typealias MvTDist GenericMvTDist{PDMat}
+typealias IsoTDist  GenericMvTDist{ScalMat{Float64}, Float64}
+typealias DiagTDist GenericMvTDist{PDiagMat{Float64,Vector{Float64}}, Float64}
+typealias MvTDist GenericMvTDist{PDMat{Float64,Matrix{Float64}}, Float64}
 
-MvTDist(df::Float64, μ::Vector{Float64}, C::PDMat) = GenericMvTDist(df, μ, C)
-MvTDist(df::Float64, C::PDMat) = GenericMvTDist(df, C)
-MvTDist(df::Float64, μ::Vector{Float64}, Σ::Matrix{Float64}) = GenericMvTDist(df, μ, PDMat(Σ))
+MvTDist(df::Real, μ::Vector{Float64}, C::PDMat) = GenericMvTDist(df, μ, C)
+MvTDist(df::Real, C::PDMat) = GenericMvTDist(df, C)
+MvTDist(df::Real, μ::Vector{Float64}, Σ::Matrix{Float64}) = GenericMvTDist(df, μ, PDMat(Σ))
 MvTDist(df::Float64, Σ::Matrix{Float64}) = GenericMvTDist(df, PDMat(Σ))
 
 DiagTDist(df::Float64, μ::Vector{Float64}, C::PDiagMat) = GenericMvTDist(df, μ, C)
@@ -51,15 +49,21 @@ DiagTDist(df::Float64, μ::Vector{Float64}, σ::Vector{Float64}) = GenericMvTDis
 
 IsoTDist(df::Float64, μ::Vector{Float64}, C::ScalMat) = GenericMvTDist(df, μ, C)
 IsoTDist(df::Float64, C::ScalMat) = GenericMvTDist(df, C)
-@compat IsoTDist(df::Float64, μ::Vector{Float64}, σ::Real) = GenericMvTDist(df, μ, ScalMat(length(μ), abs2(Float64(σ))))
-@compat IsoTDist(df::Float64, d::Int, σ::Real) = GenericMvTDist(df, ScalMat(d, abs2(Float64(σ))))
+IsoTDist(df::Float64, μ::Vector{Float64}, σ::Real) = GenericMvTDist(df, μ, ScalMat(length(μ), abs2(Float64(σ))))
+IsoTDist(df::Float64, d::Int, σ::Real) = GenericMvTDist(df, ScalMat(d, abs2(Float64(σ))))
 
 ## convenient function to construct distributions of proper type based on arguments
 
-mvtdist(df::Float64, μ::Vector{Float64}, C::AbstractPDMat) = GenericMvTDist(df, μ, C)
-mvtdist(df::Float64, C::AbstractPDMat) = GenericMvTDist(df, C)
+mvtdist(df::Real, μ::Vector, C::AbstractPDMat) = GenericMvTDist(df, μ, C)
+mvtdist(df::Real, C::AbstractPDMat) = GenericMvTDist(df, C)
 
-@compat mvtdist(df::Float64, μ::Vector{Float64}, σ::Real) = IsoTDist(df, μ, Float64(σ))
+mvtdist(df::Real, μ::Vector, σ::Real) = GenericMvTDist(df, μ, ScalMat(length(μ), abs2(σ)))
+mvtdist(df::Real, d::Int, σ::Real) = GenericMvTDist(df, μ, ScalMat(d, abs2(σ)))
+mvtdist(df::Real, μ::Vector, σ::Vector) = GenericMvTDist(df, μ, PDiagMat(abs2(σ)))
+mvtdist(df::Real, μ::Vector, Σ::Matrix) = GenericMvTDist(df, μ, PDMat(Σ))
+mvtdist(df::Real, Σ::Matrix) = GenericMvTDist(df, PDMat(Σ))
+
+mvtdist(df::Float64, μ::Vector{Float64}, σ::Real) = IsoTDist(df, μ, Float64(σ))
 mvtdist(df::Float64, d::Int, σ::Float64) = IsoTDist(d, σ)
 mvtdist(df::Float64, μ::Vector{Float64}, σ::Vector{Float64}) = DiagTDist(df, μ, σ)
 mvtdist(df::Float64, μ::Vector{Float64}, Σ::Matrix{Float64}) = MvTDist(df, μ, Σ)
@@ -80,6 +84,8 @@ invscale(d::GenericMvTDist) = full(inv(d.Σ))
 invcov(d::GenericMvTDist) = d.df>2 ? ((d.df-2)/d.df)*full(inv(d.Σ)) : NaN*ones(d.dim, d.dim)
 logdet_cov(d::GenericMvTDist) = d.df>2 ? logdet((d.df/(d.df-2))*d.Σ) : NaN
 
+params(d::GenericMvTDist) = (d.df, d.μ, d.Σ)
+
 # For entropy calculations see "Multivariate t Distributions and their Applications", S. Kotz & S. Nadarajah
 function entropy(d::GenericMvTDist)
     hdf, hdim = 0.5*d.df, 0.5*d.dim
@@ -89,20 +95,20 @@ end
 
 # evaluation (for GenericMvTDist)
 
-insupport{T<:Real}(d::AbstractMvTDist, x::AbstractVector{T}) = 
+insupport{T<:Real}(d::AbstractMvTDist, x::AbstractVector{T}) =
   length(d) == length(x) && allfinite(x)
 
-function sqmahal{T<:Real}(d::GenericMvTDist, x::DenseVector{T}) 
-    z::Vector{Float64} = d.zeromean ? x : x - d.μ
-    invquad(d.Σ, z) 
+function sqmahal{T<:Real}(d::GenericMvTDist, x::AbstractVector{T})
+    z = d.zeromean ? x : x - d.μ
+    invquad(d.Σ, z)
 end
 
-function sqmahal!{T<:Real}(r::DenseArray, d::GenericMvTDist, x::DenseMatrix{T})
-    z::Matrix{Float64} = d.zeromean ? x : x .- d.μ
+function sqmahal!{T<:Real}(r::AbstractArray, d::GenericMvTDist, x::AbstractMatrix{T})
+    z = d.zeromean ? x : x .- d.μ
     invquad!(r, d.Σ, z)
 end
 
-sqmahal{T<:Real}(d::AbstractMvTDist, x::DenseMatrix{T}) = sqmahal!(Array(Float64, size(x, 2)), d, x)
+sqmahal{T<:Real}(d::AbstractMvTDist, x::AbstractMatrix{T}) = sqmahal!(Array(T, size(x, 2)), d, x)
 
 
 function mvtdist_consts(d::AbstractMvTDist)
@@ -113,12 +119,12 @@ function mvtdist_consts(d::AbstractMvTDist)
     return (shdfhdim, v)
 end
 
-function _logpdf{T<:Real}(d::AbstractMvTDist, x::DenseVector{T})
+function _logpdf{T<:Real}(d::AbstractMvTDist, x::AbstractVector{T})
     shdfhdim, v = mvtdist_consts(d)
     v - shdfhdim * log1p(sqmahal(d, x) / d.df)
 end
 
-function _logpdf!{T<:Real}(r::DenseArray, d::AbstractMvTDist, x::DenseMatrix{T})
+function _logpdf!{T<:Real}(r::AbstractArray, d::AbstractMvTDist, x::AbstractMatrix{T})
     sqmahal!(r, d, x)
     shdfhdim, v = mvtdist_consts(d)
     for i = 1:size(x, 2)
@@ -127,17 +133,17 @@ function _logpdf!{T<:Real}(r::DenseArray, d::AbstractMvTDist, x::DenseMatrix{T})
     return r
 end
 
-_pdf!{T<:Real}(r::DenseArray, d::AbstractMvNormal, x::DenseMatrix{T}) = exp!(_logpdf!(r, d, x))
+_pdf!{T<:Real}(r::AbstractArray, d::AbstractMvNormal, x::AbstractMatrix{T}) = exp!(_logpdf!(r, d, x))
 
-function gradlogpdf{T<:Real}(d::GenericMvTDist, x::DenseVector{T})
-    z::Vector{Float64} = d.zeromean ? x : x - d.μ
+function gradlogpdf{T<:Real}(d::GenericMvTDist, x::AbstractVector{T})
+    z::Vector{T} = d.zeromean ? x : x - d.μ
     prz = invscale(d)*z
     -((d.df + d.dim) / (d.df + dot(z, prz))) * prz
 end
 
 # Sampling (for GenericMvTDist)
 
-function _rand!{T<:Real}(d::GenericMvTDist, x::DenseVector{T})
+function _rand!{T<:Real}(d::GenericMvTDist, x::AbstractVector{T})
     chisqd = Chisq(d.df)
     y = sqrt(rand(chisqd)/(d.df))
     unwhiten!(d.Σ, randn!(x))
@@ -148,10 +154,10 @@ function _rand!{T<:Real}(d::GenericMvTDist, x::DenseVector{T})
     x
 end
 
-function _rand!{T<:Real}(d::GenericMvTDist, x::DenseMatrix{T})
+function _rand!{T<:Real}(d::GenericMvTDist, x::AbstractMatrix{T})
     cols = size(x,2)
     chisqd = Chisq(d.df)
-    y = Array(Float64, 1, cols)
+    y = Array(T, 1, cols)
     unwhiten!(d.Σ, randn!(x))
     rand!(chisqd, y)
     y = sqrt(y/(d.df))
