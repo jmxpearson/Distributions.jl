@@ -2,4 +2,7 @@ julia 0.4
 PDMats 0.4.1 0.5
 StatsFuns 0.1.1
 StatsBase 0.7.0
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
 Compat 0.2.17
+=======
+>>>>>>> Resolved merge conflicts

@@ -2,12 +2,21 @@
   [
     "Bernoulli()",
     {
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       "dtype": "Bernoulli",
       "entropy": 0.69314718055994529,
       "maximum": 1,
       "mean": 0.5,
       "median": 0,
       "minimum": 0,
+=======
+      "dtype": "Bernoulli", 
+      "entropy": 0.69314718055994529, 
+      "maximum": 1, 
+      "mean": 0.5, 
+      "median": 0, 
+      "minimum": 0, 
+>>>>>>> Resolved merge conflicts
       "params": {
         "failprob": 0.5,
         "succprob": 0.5
@@ -23,24 +32,42 @@
           "logpdf": -0.69314718055994529,
           "x": 1
         }
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       ],
       "q10": 0,
       "q25": 0,
       "q50": 0,
       "q75": 1,
       "q90": 1,
+=======
+      ], 
+      "q10": 0, 
+      "q25": 0, 
+      "q50": 0, 
+      "q75": 1, 
+      "q90": 1, 
+>>>>>>> Resolved merge conflicts
       "var": 0.25
     }
   ],
   [
     "Bernoulli(0.25)",
     {
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       "dtype": "Bernoulli",
       "entropy": 0.56233514461880829,
       "maximum": 1,
       "mean": 0.25,
       "median": 0,
       "minimum": 0,
+=======
+      "dtype": "Bernoulli", 
+      "entropy": 0.56233514461880829, 
+      "maximum": 1, 
+      "mean": 0.25, 
+      "median": 0, 
+      "minimum": 0, 
+>>>>>>> Resolved merge conflicts
       "params": {
         "failprob": 0.75,
         "succprob": 0.25
@@ -56,24 +83,42 @@
           "logpdf": -1.3862943611198906,
           "x": 1
         }
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       ],
       "q10": 0,
       "q25": 0,
       "q50": 0,
       "q75": 0,
       "q90": 1,
+=======
+      ], 
+      "q10": 0, 
+      "q25": 0, 
+      "q50": 0, 
+      "q75": 0, 
+      "q90": 1, 
+>>>>>>> Resolved merge conflicts
       "var": 0.1875
     }
   ],
   [
     "Bernoulli(0.75)",
     {
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       "dtype": "Bernoulli",
       "entropy": 0.56233514461880829,
       "maximum": 1,
       "mean": 0.75,
       "median": 1,
       "minimum": 0,
+=======
+      "dtype": "Bernoulli", 
+      "entropy": 0.56233514461880829, 
+      "maximum": 1, 
+      "mean": 0.75, 
+      "median": 1, 
+      "minimum": 0, 
+>>>>>>> Resolved merge conflicts
       "params": {
         "failprob": 0.25,
         "succprob": 0.75
@@ -89,12 +134,21 @@
           "logpdf": -0.2876820724517809,
           "x": 1
         }
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
       ],
       "q10": 0,
       "q25": 0,
       "q50": 1,
       "q75": 1,
       "q90": 1,
+=======
+      ], 
+      "q10": 0, 
+      "q25": 0, 
+      "q50": 1, 
+      "q75": 1, 
+      "q90": 1, 
+>>>>>>> Resolved merge conflicts
       "var": 0.1875
     }
   ],
@@ -1034,7 +1088,61 @@
     }
   ],
   [
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
     "Hypergeometric(3, 2, 5)",
+=======
+    "Hypergeometric(3, 2, 0)",
+    {
+      "dtype": "Hypergeometric",
+      "entropy": 0.0,
+      "minimum": 0,
+      "maximum": 0,
+      "mean": 0,
+      "median": 0.0,
+      "params": {},
+      "points": [
+        {
+          "cdf": 1.0,
+          "logpdf": 0.0,
+          "x": 0
+        }
+      ],
+      "q10": 0.0,
+      "q25": 0.0,
+      "q50": 0.0,
+      "q75": 0.0,
+      "q90": 0.0,
+      "var": 0.0
+    }
+  ],
+  [
+    "Hypergeometric(3, 2, 5)",
+    {
+      "dtype": "Hypergeometric",
+      "entropy": 0.0,
+      "minimum": 3,
+      "maximum": 3,
+      "mean": 3.0,
+      "median": 3.0,
+      "params": {},
+      "points": [
+        {
+          "cdf": 1.0,
+          "logpdf": 0.0,
+          "x": 3
+        }
+      ],
+      "q10": 3.0,
+      "q25": 3.0,
+      "q50": 3.0,
+      "q75": 3.0,
+      "q90": 3.0,
+      "var": 0.0
+    }
+  ],
+  [
+    "Hypergeometric(4, 5, 6)", 
+>>>>>>> Resolved merge conflicts
     {
       "dtype": "Hypergeometric",
       "entropy": 0.0,

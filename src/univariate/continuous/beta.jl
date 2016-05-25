@@ -24,6 +24,7 @@ External links
 * [Beta distribution on Wikipedia](http://en.wikipedia.org/wiki/Beta_distribution)
 
 """
+
 immutable Beta{T <: Real} <: ContinuousUnivariateDistribution
     α::T
     β::T

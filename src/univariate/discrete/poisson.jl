@@ -30,7 +30,11 @@ Poisson() = Poisson(1.0)
 @distr_support Poisson 0 (d.λ == zero(typeof(d.λ)) ? 0 : Inf)
 
 # #### Conversions
+<<<<<<< e3918f2e35de39e286484769df0a5ab7053873e1
 convert{T <: Real}(::Type{Poisson{T}}, λ::Real) = Poisson(T(λ))
+=======
+convert{T <: Real, S <: Real}(::Type{Poisson{T}}, λ::S) = Poisson(T(λ))
+>>>>>>> Resolved merge conflicts
 convert{T <: Real, S <: Real}(::Type{Poisson{T}}, d::Poisson{S}) = Poisson(T(d.λ))
 
 ### Parameters

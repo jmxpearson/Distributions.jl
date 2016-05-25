@@ -24,6 +24,7 @@ External links
 * [Beta prime distribution on Wikipedia](http://en.wikipedia.org/wiki/Beta_prime_distribution)
 
     """
+
 immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
     α::T
     β::T
@@ -32,6 +33,7 @@ immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(BetaPrime, α > zero(α) && β > zero(β))
         new(α, β)
     end
+
 end
 
 BetaPrime{T <: Real}(α::T, β::T) = BetaPrime{T}(α, β)
