@@ -8,7 +8,7 @@ $f(x; \nu_1, \nu_2) = \frac{1}{x B(\nu_1/2, \nu_2/2)}
 \quad x>0$
 
 It is related to the [`Chisq`](:func:`Chisq`) distribution via the property that if $X_1
-\sim \operatorname{Chisq}(\nu_1)$ and $X_2 \sim \operatorname{Chisq}(\nu_2)$, then 
+\sim \operatorname{Chisq}(\nu_1)$ and $X_2 \sim \operatorname{Chisq}(\nu_2)$, then
 $(X_1/\nu_1) / (X_2 / \nu_2) \sim FDist(\nu_1, \nu_2)`.
 
 
@@ -22,18 +22,28 @@ External links
 
 * [F distribution on Wikipedia](http://en.wikipedia.org/wiki/F-distribution)
     """
-immutable FDist <: ContinuousUnivariateDistribution
-    ν1::Float64
-    ν2::Float64
+immutable FDist{T <: Real} <: ContinuousUnivariateDistribution
+    ν1::T
+    ν2::T
 
-    function FDist(ν1::Real, ν2::Real)
+    function FDist(ν1::T, ν2::T)
         @check_args(FDist, ν1 > zero(ν1) && ν2 > zero(ν2))
         new(ν1, ν2)
     end
 end
 
+FDist{T <: Real}(ν1::T, ν2::T) = FDist{T}(ν1, ν2)
+FDist(ν1::Real, ν2::Real) = FDist(promote(ν1, ν2)...)
+
 @distr_support FDist 0.0 Inf
 
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{FDist{T}}, ν1::S, ν2::S)
+    FDist(T(ν1), T(ν2))
+end
+function convert{T <: Real, S <: Real}(::Type{FDist{T}}, d::FDist{S})
+    FDist(T(d.ν1), T(d.ν2))
+end
 
 #### Parameters
 
