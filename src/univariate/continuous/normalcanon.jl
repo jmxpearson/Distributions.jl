@@ -1,5 +1,4 @@
 ## Canonical Form of Normal distribution
-
 immutable NormalCanon{T<:Real} <: ContinuousUnivariateDistribution
     η::T       # σ^(-2) * μ
     λ::T       # σ^(-2)
