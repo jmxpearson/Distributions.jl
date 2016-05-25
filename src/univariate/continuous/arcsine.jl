@@ -68,15 +68,15 @@ entropy(d::Arcsine) = -0.24156447527049044469 + log(scale(d))
 
 ### Evaluation
 
-pdf(d::Arcsine, x::Float64) = insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
+pdf(d::Arcsine, x::Real) = insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
 
-logpdf(d::Arcsine, x::Float64) = insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -Inf
+logpdf(d::Arcsine, x::Real) = insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -Inf
 
-cdf(d::Arcsine, x::Float64) = x < d.a ? 0.0 :
+cdf(d::Arcsine, x::Real) = x < d.a ? 0.0 :
                               x > d.b ? 1.0 :
                               0.636619772367581343 * asin(sqrt((x - d.a) / (d.b - d.a)))
 
-quantile(d::Arcsine, p::Float64) = location(d) + abs2(sin(halfπ * p)) * scale(d)
+quantile(d::Arcsine, p::Real) = location(d) + abs2(sin(halfπ * p)) * scale(d)
 
 
 ### Sampling

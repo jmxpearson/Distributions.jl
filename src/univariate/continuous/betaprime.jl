@@ -33,11 +33,14 @@ immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(BetaPrime, α > zero(α) && β > zero(β))
         new(α, β)
     end
-    
+
 end
 
 BetaPrime{T <: Real}(α::T, β::T) = BetaPrime{T}(α, β)
 BetaPrime(α::Real, β::Real) = BetaPrime(promote(α, β)...)
+BetaPrime(α::Integer, β::Integer) = BetaPrime(Float64(α), Float64(β))
+BetaPrime(α::Integer, β::Real) = BetaPrime(Float64(α), β)
+BetaPrime(α::Real, β::Integer) = BetaPrime(α, Float64(β))
 BetaPrime(α::Real) = BetaPrime(α, α)
 BetaPrime() = BetaPrime(1.0, 1.0)
 
@@ -53,14 +56,14 @@ end
 
 #### Parameters
 
-params(d::BetaPrime) = (d.α, d.β)
+params(d::BetaPrime) = promote(d.α, d.β)
 
 
 #### Statistics
 
 mean(d::BetaPrime) = ((α, β) = params(d); β > 1.0 ? α / (β - 1.0) : NaN)
 
-mode(d::BetaPrime) = ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : 0.0)
+mode(d::BetaPrime) = ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : zero(α))
 
 function var(d::BetaPrime)
     (α, β) = params(d)
@@ -80,22 +83,22 @@ end
 
 #### Evaluation
 
-function logpdf(d::BetaPrime, x::Float64)
+function logpdf(d::BetaPrime, x::Real)
     (α, β) = params(d)
     (α - 1.0) * log(x) - (α + β) * log1p(x) - lbeta(α, β)
 end
 
-pdf(d::BetaPrime, x::Float64) = exp(logpdf(d, x))
+pdf(d::BetaPrime, x::Real) = exp(logpdf(d, x))
 
-cdf(d::BetaPrime, x::Float64) = betacdf(d.α, d.β, x / (1.0 + x))
-ccdf(d::BetaPrime, x::Float64) = betaccdf(d.α, d.β, x / (1.0 + x))
-logcdf(d::BetaPrime, x::Float64) = betalogcdf(d.α, d.β, x / (1.0 + x))
-logccdf(d::BetaPrime, x::Float64) = betalogccdf(d.α, d.β, x / (1.0 + x))
+cdf(d::BetaPrime, x::Real) = betacdf(d.α, d.β, x / (1.0 + x))
+ccdf(d::BetaPrime, x::Real) = betaccdf(d.α, d.β, x / (1.0 + x))
+logcdf(d::BetaPrime, x::Real) = betalogcdf(d.α, d.β, x / (1.0 + x))
+logccdf(d::BetaPrime, x::Real) = betalogccdf(d.α, d.β, x / (1.0 + x))
 
-quantile(d::BetaPrime, p::Float64) = (x = betainvcdf(d.α, d.β, p); x / (1.0 - x))
-cquantile(d::BetaPrime, p::Float64) = (x = betainvccdf(d.α, d.β, p); x / (1.0 - x))
-invlogcdf(d::BetaPrime, p::Float64) = (x = betainvlogcdf(d.α, d.β, p); x / (1.0 - x))
-invlogccdf(d::BetaPrime, p::Float64) = (x = betainvlogccdf(d.α, d.β, p); x / (1.0 - x))
+quantile(d::BetaPrime, p::Real) = (x = betainvcdf(d.α, d.β, p); x / (1.0 - x))
+cquantile(d::BetaPrime, p::Real) = (x = betainvccdf(d.α, d.β, p); x / (1.0 - x))
+invlogcdf(d::BetaPrime, p::Real) = (x = betainvlogcdf(d.α, d.β, p); x / (1.0 - x))
+invlogccdf(d::BetaPrime, p::Real) = (x = betainvlogccdf(d.α, d.β, p); x / (1.0 - x))
 
 
 #### Sampling
