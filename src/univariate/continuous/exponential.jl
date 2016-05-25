@@ -19,14 +19,21 @@ External links
 * [Exponential distribution on Wikipedia](http://en.wikipedia.org/wiki/Exponential_distribution)
 
 """
-immutable Exponential <: ContinuousUnivariateDistribution
-    θ::Float64 		# note: scale not rate
+immutable Exponential{T <: Real} <: ContinuousUnivariateDistribution
+    θ::T		# note: scale not rate
 
     Exponential(θ::Real) = (@check_args(Exponential, θ > zero(θ)); new(θ))
-    Exponential() = new(1.0)
 end
 
+Exponential{T <: Real}(Θ::T) = Exponential{T}(Θ)
+Exponential(Θ::Int) = Exponential(Float64(Θ))
+Exponential() = Exponential(1.0)
+
 @distr_support Exponential 0.0 Inf
+
+### Conversions
+convert{T <: Real, S <: Real}(::Type{Exponential{T}}, Θ::S) = Exponential(T(Θ))
+convert{T <: Real, S <: Real}(::Type{Exponential{T}}, d::Exponential{S}) = Exponential(T(d.Θ))
 
 
 #### Parameters
@@ -55,7 +62,7 @@ entropy(d::Exponential) = 1.0 + log(d.θ)
 zval(d::Exponential, x::Float64) = x / d.θ
 xval(d::Exponential, z::Float64) = z * d.θ
 
-pdf(d::Exponential, x::Float64) = (λ = rate(d); x < 0.0 ? 0.0 : λ * exp(-λ * x))
+pdf(d::Exponential, x::Float64) = (λ = rate(d); x < 0.0 ? zero(λ) : λ * exp(-λ * x))
 logpdf(d::Exponential, x::Float64) =  (λ = rate(d); x < 0.0 ? -Inf : log(λ) - λ * x)
 
 cdf(d::Exponential, x::Float64) = x > 0.0 ? -expm1(-zval(d, x)) : 0.0

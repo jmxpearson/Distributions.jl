@@ -1,7 +1,7 @@
 # Various algorithms for computing quantile
 
-function quantile_bisect(d::ContinuousUnivariateDistribution, p::Float64,
-                         lx::Float64, rx::Float64, tol::Float64)
+function quantile_bisect(d::ContinuousUnivariateDistribution, p::Real,
+                         lx::Real, rx::Real, tol::Real)
 
     # find quantile using bisect algorithm
     cl = cdf(d, lx)
@@ -21,7 +21,7 @@ function quantile_bisect(d::ContinuousUnivariateDistribution, p::Float64,
     return 0.5 * (lx + rx)
 end
 
-quantile_bisect(d::ContinuousUnivariateDistribution, p::Float64) =
+quantile_bisect(d::ContinuousUnivariateDistribution, p::Real) =
     quantile_bisect(d, p, minimum(d), maximum(d), 1.0e-12)
 
 # if starting at mode, Newton is convergent for any unimodal continuous distribution, see:
@@ -30,7 +30,7 @@ quantile_bisect(d::ContinuousUnivariateDistribution, p::Float64) =
 #   Distribution, with Application to the Inverse Gaussian Distribution
 #   http://www.statsci.org/smyth/pubs/qinvgaussPreprint.pdf
 
-function quantile_newton(d::ContinuousUnivariateDistribution, p::Float64, xs::Float64=mode(d), tol::Float64=1e-12)
+function quantile_newton(d::ContinuousUnivariateDistribution, p::Real, xs::Real=mode(d), tol::Real=1e-12)
     if 0.0 < p < 1.0
         while true
             x = xs + (p - cdf(d, xs)) / pdf(d, xs)
@@ -46,7 +46,7 @@ function quantile_newton(d::ContinuousUnivariateDistribution, p::Float64, xs::Fl
     end
 end
 
-function cquantile_newton(d::ContinuousUnivariateDistribution, p::Float64, xs::Float64=mode(d), tol::Float64=1e-12)
+function cquantile_newton(d::ContinuousUnivariateDistribution, p::Real, xs::Real=mode(d), tol::Real=1e-12)
     if 0.0 < p < 1.0
         while true
             x = xs + (ccdf(d, xs)-p) / pdf(d, xs)
@@ -62,7 +62,7 @@ function cquantile_newton(d::ContinuousUnivariateDistribution, p::Float64, xs::F
     end
 end
 
-function invlogcdf_newton(d::ContinuousUnivariateDistribution, lp::Float64, xs::Float64=mode(d), tol::Float64=1e-12)
+function invlogcdf_newton(d::ContinuousUnivariateDistribution, lp::Real, xs::Real=mode(d), tol::Real=1e-12)
     if -Inf < lp < 0.0
         if lp < logcdf(d,xs)
             while true
@@ -86,7 +86,7 @@ function invlogcdf_newton(d::ContinuousUnivariateDistribution, lp::Float64, xs::
     end
 end
 
-function invlogccdf_newton(d::ContinuousUnivariateDistribution, lp::Float64, xs::Float64=mode(d), tol::Float64=1e-12)
+function invlogccdf_newton(d::ContinuousUnivariateDistribution, lp::Real, xs::Real=mode(d), tol::Real=1e-12)
     if -Inf < lp < 0.0
         if lp < logccdf(d,xs)
             while true
@@ -114,9 +114,9 @@ end
 # is computed using the newton method
 macro quantile_newton(D)
     esc(quote
-        quantile(d::$D, p::Float64) = quantile_newton(d,p)
-        cquantile(d::$D, p::Float64) = cquantile_newton(d,p)
-        invlogcdf(d::$D, lp::Float64) = invlogcdf_newton(d,lp)
-        invlogccdf(d::$D, lp::Float64) = invlogccdf_newton(d,lp)
+        quantile(d::$D, p::Real) = quantile_newton(d,p)
+        cquantile(d::$D, p::Real) = cquantile_newton(d,p)
+        invlogcdf(d::$D, lp::Real) = invlogcdf_newton(d,lp)
+        invlogccdf(d::$D, lp::Real) = invlogccdf_newton(d,lp)
     end)
 end
