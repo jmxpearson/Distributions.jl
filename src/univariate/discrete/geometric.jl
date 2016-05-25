@@ -101,13 +101,13 @@ logcdf(d::Geometric, x::Int) = x < 0 ? -Inf : log1mexp(log1p(-d.p) * (x + 1))
 
 logccdf(d::Geometric, x::Int) =  x < 0 ? zero(d.p) : log1p(-d.p) * (x + 1)
 
-quantile(d::Geometric, p::Float64) = invlogccdf(d, log1p(-p))
+quantile(d::Geometric, p::Real) = invlogccdf(d, log1p(-p))
 
-cquantile(d::Geometric, p::Float64) = invlogccdf(d, log(p))
+cquantile(d::Geometric, p::Real) = invlogccdf(d, log(p))
 
-invlogcdf(d::Geometric, lp::Float64) = invlogccdf(d, log1mexp(lp))
+invlogcdf(d::Geometric, lp::Real) = invlogccdf(d, log1mexp(lp))
 
-function invlogccdf(d::Geometric, lp::Float64)
+function invlogccdf(d::Geometric, lp::Real)
     if (lp > zero(d.p)) || isnan(lp)
         return NaN
     elseif isinf(lp)

@@ -18,11 +18,15 @@ External links
 
 * [Chi-squared distribution on Wikipedia](http://en.wikipedia.org/wiki/Chi-squared_distribution)
 """
-immutable Chisq <: ContinuousUnivariateDistribution
-    ν::Float64
 
-    Chisq(ν::Real) = (@check_args(Chisq, ν > zero(ν)); new(ν))
+immutable Chisq{T <: Real} <: ContinuousUnivariateDistribution
+    ν::T
+
+    Chisq(ν::T) = (@check_args(Chisq, ν > zero(ν)); new(ν))
 end
+
+Chisq{T <: Real}(ν::T) = Chisq{T}(ν)
+Chisq(ν::Int) = Chisq(Float64(ν))
 
 @distr_support Chisq 0.0 Inf
 
@@ -30,6 +34,10 @@ end
 
 dof(d::Chisq) = d.ν
 params(d::Chisq) = (d.ν,)
+
+### Conversions
+convert{T <: Real, S <: Real}(::Type{Chisq{T}}, ν::S) = Chisq(T(ν))
+convert{T <: Real, S <: Real}(::Type{Chisq{T}}, d::Chisq{S}) = Chisq(T(d.ν))
 
 
 #### Statistics

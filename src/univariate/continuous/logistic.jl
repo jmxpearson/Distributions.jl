@@ -29,7 +29,7 @@ immutable Logistic{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 Logistic{T <: Real}(μ::T, Θ::T) = Logistic{T}(μ, Θ)
-Logistic(μ::Real, Θ::Real) = Logistic(promote(μ, ϴ)...)
+Logistic(μ::Real, Θ::Real) = Logistic(promote(μ, Θ)...)
 Logistic(μ::Real) = Logistic(μ, 1.0)
 Logistic() = Logistic(0.0, 1.0)
 
@@ -67,23 +67,23 @@ entropy(d::Logistic) = log(d.θ) + 2.0
 
 #### Evaluation
 
-zval(d::Logistic, x::Float64) = (x - d.μ) / d.θ
-xval(d::Logistic, z::Float64) = d.μ + z * d.θ
+zval(d::Logistic, x::Real) = (x - d.μ) / d.θ
+xval(d::Logistic, z::Real) = d.μ + z * d.θ
 
-pdf(d::Logistic, x::Float64) = (e = exp(-zval(d, x)); e / (d.θ * (1.0 + e)^2))
-logpdf(d::Logistic, x::Float64) = (u = -abs(zval(d, x)); u - 2.0 * log1pexp(u) - log(d.θ))
+pdf(d::Logistic, x::Real) = (e = exp(-zval(d, x)); e / (d.θ * (1.0 + e)^2))
+logpdf(d::Logistic, x::Real) = (u = -abs(zval(d, x)); u - 2.0 * log1pexp(u) - log(d.θ))
 
-cdf(d::Logistic, x::Float64) = logistic(zval(d, x))
-ccdf(d::Logistic, x::Float64) = logistic(-zval(d, x))
-logcdf(d::Logistic, x::Float64) = -log1pexp(-zval(d, x))
-logccdf(d::Logistic, x::Float64) = -log1pexp(zval(d, x))
+cdf(d::Logistic, x::Real) = logistic(zval(d, x))
+ccdf(d::Logistic, x::Real) = logistic(-zval(d, x))
+logcdf(d::Logistic, x::Real) = -log1pexp(-zval(d, x))
+logccdf(d::Logistic, x::Real) = -log1pexp(zval(d, x))
 
-quantile(d::Logistic, p::Float64) = xval(d, logit(p))
-cquantile(d::Logistic, p::Float64) = xval(d, -logit(p))
-invlogcdf(d::Logistic, lp::Float64) = xval(d, -logexpm1(-lp))
-invlogccdf(d::Logistic, lp::Float64) = xval(d, logexpm1(-lp))
+quantile(d::Logistic, p::Real) = xval(d, logit(p))
+cquantile(d::Logistic, p::Real) = xval(d, -logit(p))
+invlogcdf(d::Logistic, lp::Real) = xval(d, -logexpm1(-lp))
+invlogccdf(d::Logistic, lp::Real) = xval(d, logexpm1(-lp))
 
-function gradlogpdf(d::Logistic, x::Float64)
+function gradlogpdf(d::Logistic, x::Real)
     e = exp(-zval(d, x))
     ((2.0 * e) / (1.0 + e) - 1.0) / d.θ
 end

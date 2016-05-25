@@ -32,6 +32,9 @@ end
 
 Cauchy{T <: Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
 Cauchy(μ::Real, σ::Real) = Cauchy(promote(μ, σ)...)
+Cauchy(n::Int, μ::Integer, σ::Integer) = Cauchy(n, Float64(μ), Float64(σ))
+Cauchy(n::Int, μ::Integer, σ::Real) = Cauchy(n, Float64(μ), σ)
+Cauchy(n::Int, μ::Real, σ::Integer) = Cauchy(n, μ, Float64(σ))
 Cauchy(μ::Real) = Cauchy(μ, 1.0)
 Cauchy() = Cauchy(0.0, 1.0)
 
@@ -68,28 +71,28 @@ entropy(d::Cauchy) = log4π + log(d.σ)
 
 #### Functions
 
-zval(d::Cauchy, x::Float64) = (x - d.μ) / d.σ
-xval(d::Cauchy, z::Float64) = d.μ + z * d.σ
+zval(d::Cauchy, x::Real) = (x - d.μ) / d.σ
+xval(d::Cauchy, z::Real) = d.μ + z * d.σ
 
-pdf(d::Cauchy, x::Float64) = 1.0 / (π * scale(d) * (1.0 + zval(d, x)^2))
-logpdf(d::Cauchy, x::Float64) = - (log1psq(zval(d, x)) + logπ + log(d.σ))
+pdf(d::Cauchy, x::Real) = 1.0 / (π * scale(d) * (1.0 + zval(d, x)^2))
+logpdf(d::Cauchy, x::Real) = - (log1psq(zval(d, x)) + logπ + log(d.σ))
 
-function cdf(d::Cauchy, x::Float64)
+function cdf(d::Cauchy, x::Real)
     μ, σ = params(d)
     invπ * atan2(x - μ, σ) + 0.5
 end
 
-function ccdf(d::Cauchy, x::Float64)
+function ccdf(d::Cauchy, x::Real)
     μ, σ = params(d)
     invπ * atan2(μ - x, σ) + 0.5
 end
 
-function quantile(d::Cauchy, p::Float64)
+function quantile(d::Cauchy, p::Real)
     μ, σ = params(d)
     μ + σ * tan(π * (p - 0.5))
 end
 
-function cquantile(d::Cauchy, p::Float64)
+function cquantile(d::Cauchy, p::Real)
     μ, σ = params(d)
     μ + σ * tan(π * (0.5 - p))
 end

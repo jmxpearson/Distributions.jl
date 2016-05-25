@@ -50,7 +50,7 @@ kurtosis(d::Cosine) = -0.59376287559828102362
 
 #### Evaluation
 
-function pdf(d::Cosine, x::Float64)
+function pdf(d::Cosine, x::Real)
     if insupport(d, x)
         z = (x - d.μ) / d.σ
         return (1.0 + cospi(z)) / (2 * d.σ)
@@ -59,16 +59,16 @@ function pdf(d::Cosine, x::Float64)
     end
 end
 
-logpdf(d::Cosine, x::Float64) = insupport(d, x) ? log(pdf(d, x)) : -Inf
+logpdf(d::Cosine, x::Real) = insupport(d, x) ? log(pdf(d, x)) : -Inf
 
-function cdf(d::Cosine, x::Float64)
+function cdf(d::Cosine, x::Real)
     z = (x - d.μ) / d.σ
     0.5 * (1.0 + z + sinpi(z) * invπ)
 end
 
-function ccdf(d::Cosine, x::Float64)
+function ccdf(d::Cosine, x::Real)
     nz = (d.μ - x) / d.σ
     0.5 * (1.0 + nz + sinpi(nz) * invπ)
 end
 
-quantile(d::Cosine, p::Float64) = quantile_bisect(d, p)
+quantile(d::Cosine, p::Real) = quantile_bisect(d, p)
