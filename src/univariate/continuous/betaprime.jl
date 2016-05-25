@@ -56,7 +56,7 @@ end
 
 #### Parameters
 
-params(d::BetaPrime) = promote(d.α, d.β)
+params(d::BetaPrime) = (d.α, d.β)
 
 
 #### Statistics
