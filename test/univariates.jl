@@ -23,7 +23,7 @@ function verify_and_test_drive(jsonfile, selected, n_tsamples::Int)
         dtype = eval(dsym)
         d = eval(parse(ex))
         if dtype == TruncatedNormal
-            @test isa(d, Truncated{Normal{Float64}})
+            @test isa(d, Truncated) && isa(d.untruncated, Normal)
         else
             @assert isa(dtype, Type) && dtype <: UnivariateDistribution
             @test isa(d, dtype)

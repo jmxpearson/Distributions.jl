@@ -1,10 +1,13 @@
 # Truncated normal distribution
 
-TruncatedNormal(mu::Float64, sigma::Float64, a::Float64, b::Float64) =
+TruncatedNormal(mu::Real, sigma::Real, a::Real, b::Real) =
     Truncated(Normal(mu, sigma), a, b)
 
-TruncatedNormal(mu::Real, sigma::Real, a::Real, b::Real) =
-    TruncatedNormal(Float64(mu), Float64(sigma), Float64(a), Float64(b))
+# convert{T<:Real, S<:Real}(Truncated{Normal{T},Continuous,T}, a::S, b::S)
+# convert{T<:Real, S<:Real}(Truncated{Normal{T},Continuous,T}, a::S, b::S)
+
+# TruncatedNormal(mu::Real, sigma::Real, a::Real, b::Real) =
+#     TruncatedNormal(Float64(mu), Float64(sigma), Float64(a), Float64(b))
 
 ### statistics
 
