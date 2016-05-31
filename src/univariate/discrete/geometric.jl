@@ -42,7 +42,6 @@ convert{T <: Real, S <: Real}(::Type{Geometric{T}}, d::Geometric{S}) = Geometric
 
 succprob(d::Geometric) = d.p
 failprob(d::Geometric) = one(d.p) - d.p
-failprob(d::Geometric) = one(d.p) - d.p
 params(d::Geometric) = (d.p,)
 
 
