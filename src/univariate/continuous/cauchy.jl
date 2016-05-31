@@ -33,9 +33,9 @@ end
 
 Cauchy{T <: Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
 Cauchy(μ::Real, σ::Real) = Cauchy(promote(μ, σ)...)
-Cauchy(n::Int, μ::Integer, σ::Integer) = Cauchy(n, Float64(μ), Float64(σ))
-Cauchy(n::Int, μ::Integer, σ::Real) = Cauchy(n, Float64(μ), σ)
-Cauchy(n::Int, μ::Real, σ::Integer) = Cauchy(n, μ, Float64(σ))
+Cauchy(μ::Integer, σ::Integer) = Cauchy(Float64(μ), Float64(σ))
+Cauchy(μ::Integer, σ::Real) = Cauchy(Float64(μ), σ)
+Cauchy(μ::Real, σ::Integer) = Cauchy(μ, Float64(σ))
 Cauchy(μ::Real) = Cauchy(μ, 1.0)
 Cauchy() = Cauchy(0.0, 1.0)
 
