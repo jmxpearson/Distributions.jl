@@ -3,9 +3,9 @@ doc"""
 
 The *Fréchet distribution* with shape `α` and scale `θ` has probability density function
 
-$f(x; \alpha, \theta) = \frac{\alpha}{\theta} \left( \frac{x}{\theta} \right)^{-\alpha-1} 
+$f(x; \alpha, \theta) = \frac{\alpha}{\theta} \left( \frac{x}{\theta} \right)^{-\alpha-1}
 e^{-(x/\theta)^{-\alpha}}, \quad x > 0$
-    
+
 ```julia
 Frechet()        # Fréchet distribution with unit shape and unit scale, i.e. Frechet(1.0, 1.0)
 Frechet(a)       # Fréchet distribution with shape a and unit scale, i.e. Frechet(a, 1.0)
@@ -21,20 +21,31 @@ External links
 * [Fréchet_distribution on Wikipedia](http://en.wikipedia.org/wiki/Fréchet_distribution)
 
 """
-immutable Frechet <: ContinuousUnivariateDistribution
-    α::Float64
-    θ::Float64
+immutable Frechet{T <: Real} <: ContinuousUnivariateDistribution
+    α::T
+    θ::T
 
-    function Frechet(α::Real, θ::Real)
+    function Frechet(α::T, θ::T)
     	@check_args(Frechet, α > zero(α) && θ > zero(θ))
     	new(α, θ)
     end
-    Frechet(α::Real) = Frechet(α, 1.0)
-    Frechet() = new(1.0, 1.0)
+
 end
+
+Frechet{T <: Real}(α::T, θ::T) = Frechet{T}(α, θ)
+Frechet(α::Real, θ::Real) = Frechet(promote(α, θ)...)
+Frechet(α::Real) = Frechet(α, 1.0)
+Frechet() = Frechet(1.0, 1.0)
 
 @distr_support Frechet 0.0 Inf
 
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{Frechet{T}}, α::S, θ::S)
+    Frechet(T(α), T(θ))
+end
+function convert{T <: Real, S <: Real}(::Type{Frechet{T}}, d::Frechet{S})
+    Frechet(T(d.α), T(d.θ))
+end
 
 #### Parameters
 
