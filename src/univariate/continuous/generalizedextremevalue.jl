@@ -31,15 +31,26 @@ External links
 
 """
 
-immutable GeneralizedExtremeValue <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
-    ξ::Float64
+immutable GeneralizedExtremeValue{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
+    ξ::T
 
-    function GeneralizedExtremeValue(μ::Real, σ::Real, ξ::Real)
+    function GeneralizedExtremeValue(μ::T, σ::T, ξ::T)
         σ > zero(σ) || error("Scale must be positive")
         new(μ, σ, ξ)
     end
+end
+
+GeneralizedExtremeValue{T <: Real}(μ::T, σ::T, ξ::T) = GeneralizedExtremeValue{T}(μ, σ, ξ)
+GeneralizedExtremeValue(μ::Real, σ::Real, ξ::Real) = GeneralizedExtremeValue(promote(μ, σ, ξ)...)
+
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, μ::S, σ::S, ξ::S)
+    GeneralizedExtremeValue(T(μ), T(σ), T(ξ))
+end
+function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, d::GeneralizedExtremeValue{S})
+    GeneralizedExtremeValue(T(d.μ), T(d.σ), T(d.ξ))
 end
 
 minimum(d::GeneralizedExtremeValue) = d.ξ > 0.0 ? d.μ - d.σ / d.ξ : -Inf
