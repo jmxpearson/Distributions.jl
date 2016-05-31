@@ -24,22 +24,37 @@ External links:
 * [Negative binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Negative_binomial_distribution)
 
 """
-immutable NegativeBinomial <: DiscreteUnivariateDistribution
-    r::Float64
-    p::Float64
 
-    function NegativeBinomial(r::Real, p::Real)
+immutable NegativeBinomial{T <: Real} <: DiscreteUnivariateDistribution
+    r::T
+    p::T
+
+    function NegativeBinomial(r::T, p::T)
         @check_args(NegativeBinomial, r > zero(r))
         @check_args(NegativeBinomial, zero(p) < p <= one(p))
         new(r, p)
     end
-    NegativeBinomial(r::Real) = NegativeBinomial(r, 0.5)
-    NegativeBinomial() = new(1, 0.5)
+
+    NegativeBinomial() = new(1.0, 0.5)
 end
+
+NegativeBinomial{T <: Real}(r::T, p::T) = NegativeBinomial{T}(r, p)
+NegativeBinomial(r::Real, p::Real) = NegativeBinomial(promote(r, p)...)
+NegativeBinomial(r::Real) = NegativeBinomial(r, 0.5)
+
 
 @distr_support NegativeBinomial 0 Inf
 
-### Parameters
+#### Conversions
+
+function NegativeBinomial{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, r::S, p::S)
+    NegativeBinomial(T(r), T(p))
+end
+function NegativeBinomial{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, d::NegativeBinomial{S})
+    NegativeBinomial(T(d.r), T(d.s))
+end
+
+#### Parameters
 
 params(d::NegativeBinomial) = (d.r, d.p)
 
@@ -47,7 +62,7 @@ succprob(d::NegativeBinomial) = d.p
 failprob(d::NegativeBinomial) = 1.0 - d.p
 
 
-### Statistics
+#### Statistics
 
 mean(d::NegativeBinomial) = (p = succprob(d); (1.0 - p) * d.r / p)
 
@@ -62,7 +77,7 @@ kurtosis(d::NegativeBinomial) = (p = succprob(d); 6.0 / d.r + (p * p) / ((1.0 - 
 mode(d::NegativeBinomial) = (p = succprob(d); floor(Int,(1.0 - p) * (d.r - 1.) / p))
 
 
-### Evaluation & Sampling
+#### Evaluation & Sampling
 
 @_delegate_statsfuns NegativeBinomial nbinom r p
 

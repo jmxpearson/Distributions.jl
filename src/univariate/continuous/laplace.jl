@@ -26,12 +26,13 @@ immutable Laplace{T <: Real} <: ContinuousUnivariateDistribution
     θ::T
 
     Laplace(μ::T, θ::T) = (@check_args(Laplace, θ > zero(θ)); new(μ, θ))
+
+    Laplace() = new(0.0, 1.0)
 end
 
 Laplace{T <: Real}(μ::T, Θ::T) = Laplace{T}(μ, Θ)
 Laplace(μ::Real, Θ::Real) = Laplace(promote(μ, Θ)...)
 Laplace(μ::Real) = Laplace(μ, 1.0)
-Laplace() = Laplace(0.0, 1.0)
 
 typealias Biexponential Laplace
 

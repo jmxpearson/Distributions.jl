@@ -33,6 +33,8 @@ immutable Beta{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(Beta, α > zero(α) && β > zero(β))
         new(α, β)
     end
+
+    Beta() = new(1.0, 1.0)
 end
 
 Beta{T <: Real}(α::T, β::T) = Beta{T}(α, β)
@@ -41,7 +43,6 @@ Beta(α::Integer, β::Integer) = Beta(Float64(α), Float64(β))
 Beta(α::Integer, β::Real) = Beta(Float64(α), β)
 Beta(α::Real, β::Integer) = Beta(α, Float64(β))
 Beta(α::Real) = Beta(α, α)
-Beta() = Beta(1.0, 1.0)
 
 @distr_support Beta 0.0 1.0
 

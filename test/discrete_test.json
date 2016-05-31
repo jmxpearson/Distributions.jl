@@ -12,6 +12,16 @@
         "failprob": 0.5,
         "succprob": 0.5
       },
+      "conversions": [
+        {
+          "from": [1],
+          "to": "Bernoulli{Float64}"
+        }, 
+        {
+          "from": "Bernoulli(1)"
+          "to": "Bernoulli{Float64}"
+        }
+      ]
       "points": [
         {
           "cdf": 0.5,
@@ -149,6 +159,16 @@
         "ntrials": 1,
         "succprob": 0.5
       },
+      "conversions": [
+        {
+          "from": [2, 1],
+          "to": "Binomial{Float64}"
+        }, 
+        {
+          "from": "Bernoulli(2, 1)"
+          "to": "Binomial{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.5,
@@ -651,6 +671,16 @@
         "failprob": 0.5,
         "succprob": 0.5
       },
+      "conversions": [
+        {
+          "from": [1],
+          "to": "Geometric{Float64}"
+        }, 
+        {
+          "from": "Bernoulli(1)",
+          "to": "Geometric{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.5,

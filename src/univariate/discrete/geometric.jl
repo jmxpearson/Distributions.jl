@@ -27,10 +27,11 @@ immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
         @check_args(Geometric, zero(p) < p < one(p))
     	new(p)
     end
+
+    Geometric() = new(0.5)
 end
 
 Geometric{T <: Real}(p::T) = Geometric{T}(p)
-Geometric() = Geometric(0.5)
 
 @distr_support Geometric 0 Inf
 

@@ -30,11 +30,12 @@ immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
         @check_args(Bernoulli, zero(p) <= p <= one(p))
         new(p)
     end
+
+    Bernoulli() = new(0.5)
 end
 
 Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
 Bernoulli{T <: Int}(p::T) = Bernoulli(Float64(p))
-Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1
 

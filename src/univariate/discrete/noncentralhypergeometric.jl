@@ -36,18 +36,32 @@ params(d::NoncentralHypergeometric) = (d.ns, d.nf, d.n, d.ω)
 
 ## Fisher's noncentral hypergeometric distribution
 
-immutable FisherNoncentralHypergeometric <: NoncentralHypergeometric
+immutable FisherNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size
-    ω::Float64 # odds ratio
+    ω::T # odds ratio
 
-    function FisherNoncentralHypergeometric(ns::Real, nf::Real, n::Real, ω::Float64)
+    function FisherNoncentralHypergeometric(ns::Real, nf::Real, n::Real, ω::T)
         @check_args(FisherNoncentralHypergeometric, ns >= zero(ns) && nf >= zero(nf))
         @check_args(FisherNoncentralHypergeometric, zero(n) < n < ns + nf)
         @check_args(FisherNoncentralHypergeometric, ω > zero(ω))
         new(ns, nf, n, ω)
     end
+end
+
+function FisherNoncentralHypergeometric{T <: Real}(ns::Real, nf::Real, n::Real, ω::T)
+    FisherNoncentralHypergeometric{T}(ns, nf, n, ω)
+end
+
+# Conversions
+function FisherNoncentralHypergeometric{T <: Real, S <: Real}(
+        ::Type{FisherNoncentralHypergeometric{T}}, ns::Real, nf::Real, n::Real, ω::S)
+    FisherNoncentralHypergeometric(ns, nf, n, T(ω))
+end
+function FisherNoncentralHypergeometric{T <: Real, S <: Real}(
+        ::Type{FisherNoncentralHypergeometric{T}}, d::FisherNoncentralHypergeometric{S})
+    FisherNoncentralHypergeometric(d.ns, d.nf, d.n, T(d.ω))
 end
 
 # Properties
@@ -80,17 +94,34 @@ pdf(d::FisherNoncentralHypergeometric, k::Int) = exp(logpdf(d, k))
 
 ## Wallenius' noncentral hypergeometric distribution
 
-immutable WalleniusNoncentralHypergeometric <: NoncentralHypergeometric
+immutable WalleniusNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size
-    ω::Float64 # odds ratio
-    function WalleniusNoncentralHypergeometric(ns::Real, nf::Real, n::Real, ω::Float64)
+    ω::T # odds ratio
+
+    function WalleniusNoncentralHypergeometric(ns::Real, nf::Real, n::Real, ω::T)
         @check_args(WalleniusNoncentralHypergeometric, ns >= zero(ns) && nf >= zero(nf))
         @check_args(WalleniusNoncentralHypergeometric, zero(n) < n < ns + nf)
         @check_args(WalleniusNoncentralHypergeometric, ω > zero(ω))
         new(ns, nf, n, ω)
     end
+end
+
+function WalleniusNoncentralHypergeometric{T <: Real}(ns::Real, nf::Real, n::Real, ω::T)
+    WalleniusNoncentralHypergeometric{T}(ns, nf, n, ω)
+end
+
+# Conversions
+function WalleniusNoncentralHypergeometric{T <: Real, S <: Real}(
+        ::Type{WalleniusNoncentralHypergeometric{S}},
+        ns::Real, nf::Real, n::Real, ω::T)
+    WalleniusNoncentralHypergeometric(ns, nf, n, T(ω))
+end
+function WalleniusNoncentralHypergeometric{T <: Real, S <: Real}(
+        ::Type{WalleniusNoncentralHypergeometric{T}},
+        d::WalleniusNoncentralHypergeometric{S})
+    WalleniusNoncentralHypergeometric(d.ns, d.nf, d.n, T(d.ω))
 end
 
 # Properties

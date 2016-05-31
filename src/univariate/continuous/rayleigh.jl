@@ -26,15 +26,16 @@ immutable Rayleigh{T <: Real} <: ContinuousUnivariateDistribution
 
     Rayleigh(σ::T) = (@check_args(Rayleigh, σ > zero(σ)); new(σ))
 
+    Rayleigh() = new(1.0)
 end
 
 Rayleigh{T <: Real}(σ::T) = Rayleigh{T}(σ)
 Rayleigh{T <: Integer}(σ::T) = Rayleigh(Float64(σ))
-Rayleigh() = Rayleigh(1.0)
 
 @distr_support Rayleigh 0.0 Inf
 
 #### Conversions
+
 Rayleigh{T <: Real, S <: Real}(::Type{Rayleigh{T}}, σ::S) = Rayleigh(T(σ))
 Rayleigh{T <: Real, S <: Real}(::Type{Rayleigh{T}}, d::Rayleigh{S}) = Rayleigh(T(d.σ))
 

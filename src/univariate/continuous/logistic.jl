@@ -27,12 +27,13 @@ immutable Logistic{T <: Real} <: ContinuousUnivariateDistribution
     θ::T
 
     Logistic(μ::T, θ::T) = (@check_args(Logistic, θ > zero(θ)); new(μ, θ))
+
+    Logistic() = new(0.0, 1.0)
 end
 
 Logistic{T <: Real}(μ::T, Θ::T) = Logistic{T}(μ, Θ)
 Logistic(μ::Real, Θ::Real) = Logistic(promote(μ, Θ)...)
 Logistic(μ::Real) = Logistic(μ, 1.0)
-Logistic() = Logistic(0.0, 1.0)
 
 @distr_support Logistic -Inf Inf
 

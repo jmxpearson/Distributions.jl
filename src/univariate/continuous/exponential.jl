@@ -23,11 +23,12 @@ immutable Exponential{T <: Real} <: ContinuousUnivariateDistribution
     θ::T		# note: scale not rate
 
     Exponential(θ::Real) = (@check_args(Exponential, θ > zero(θ)); new(θ))
+
+    Exponential() = new(1.0)
 end
 
 Exponential{T <: Real}(Θ::T) = Exponential{T}(Θ)
 Exponential(Θ::Int) = Exponential(Float64(Θ))
-Exponential() = Exponential(1.0)
 
 @distr_support Exponential 0.0 Inf
 
