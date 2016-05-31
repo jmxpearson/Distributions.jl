@@ -30,22 +30,33 @@ External links
 
 """
 
-immutable GeneralizedPareto <: ContinuousUnivariateDistribution
-    ξ::Float64
-    σ::Float64
-    μ::Float64
+immutable GeneralizedPareto{T <: Real} <: ContinuousUnivariateDistribution
+    ξ::T
+    σ::T
+    μ::T
 
-    function GeneralizedPareto(ξ::Real, σ::Real, μ::Real)
+    function GeneralizedPareto(ξ::T, σ::T, μ::T)
         @check_args(GeneralizedPareto, σ > zero(σ))
         new(ξ, σ, μ)
     end
-    GeneralizedPareto(ξ::Real, σ::Real) = GeneralizedPareto(ξ::Real, σ::Real, 0.0)
-    GeneralizedPareto() = new(1.0, 1.0, 0.0)
+
 end
+
+GeneralizedPareto{T <: Real}(ξ::T, σ::T, μ::T) = GeneralizedPareto{T}(ξ, σ, μ)
+GeneralizedPareto(ξ::Real, σ::Real, μ::Real) = GeneralizedPareto(promote(ξ, σ, μ)...)
+GeneralizedPareto(ξ::Real, σ::Real) = GeneralizedPareto(ξ, σ, 0.0)
+GeneralizedPareto() = GeneralizedPareto(1.0, 1.0, 0.0)
 
 minimum(d::GeneralizedPareto) = d.μ
 maximum(d::GeneralizedPareto) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
 
+#### Conversions
+function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, ξ::S, σ::S, μ::S)
+    GeneralizedPareto(T(ξ), T(σ), T(μ))
+end
+function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, d::GeneralizedPareto{S})
+    GeneralizedPareto(T(d.ξ), T(d.σ), T(d.μs))
+end
 
 #### Parameters
 
