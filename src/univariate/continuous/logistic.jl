@@ -21,6 +21,7 @@ External links
 * [Logistic distribution on Wikipedia](http://en.wikipedia.org/wiki/Logistic_distribution)
 
 """
+
 immutable Logistic{T <: Real} <: ContinuousUnivariateDistribution
     μ::T
     θ::T

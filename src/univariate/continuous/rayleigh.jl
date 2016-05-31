@@ -20,6 +20,7 @@ External links
 * [Rayleigh distribution on Wikipedia](http://en.wikipedia.org/wiki/Rayleigh_distribution)
 
 """
+
 immutable Rayleigh{T <: Real} <: ContinuousUnivariateDistribution
     σ::T
 

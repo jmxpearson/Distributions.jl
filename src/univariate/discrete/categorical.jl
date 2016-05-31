@@ -17,6 +17,7 @@ Here, `p` must be a real vector, of which all components are nonnegative and sum
 External links:
 * [Categorical distribution on Wikipedia](http://en.wikipedia.org/wiki/Categorical_distribution)
 """
+
 immutable Categorical <: DiscreteUnivariateDistribution
     K::Int
     p::Vector{Float64}

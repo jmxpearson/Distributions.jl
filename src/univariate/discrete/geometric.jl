@@ -19,6 +19,7 @@ External links
 *  [Geometric distribution on Wikipedia](http://en.wikipedia.org/wiki/Geometric_distribution)
 
 """
+
 immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
     p::T
 

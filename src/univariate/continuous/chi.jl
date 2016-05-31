@@ -19,6 +19,7 @@ External links
 * [Chi distribution on Wikipedia](http://en.wikipedia.org/wiki/Chi_distribution)
 
 """
+
 immutable Chi{T <: Real} <: ContinuousUnivariateDistribution
     ν::T
 

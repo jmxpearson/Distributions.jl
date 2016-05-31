@@ -20,6 +20,7 @@ External links
 * [Cauchy distribution on Wikipedia](http://en.wikipedia.org/wiki/Cauchy_distribution)
 
 """
+
 immutable Cauchy{T <: Real} <: ContinuousUnivariateDistribution
     μ::T
     σ::T

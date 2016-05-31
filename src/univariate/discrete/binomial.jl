@@ -20,6 +20,7 @@ External links:
 
 * [Binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Binomial_distribution)
 """
+
 immutable Binomial{T <: Real} <: DiscreteUnivariateDistribution
     n::Int
     p::T

@@ -14,6 +14,7 @@ External links
 * [Erlang distribution on Wikipedia](http://en.wikipedia.org/wiki/Erlang_distribution)
 
 """
+
 immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
     α::Int
     θ::T

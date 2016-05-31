@@ -16,6 +16,7 @@ External links:
 
 * [Beta-binomial distribution on Wikipedia](https://en.wikipedia.org/wiki/Beta-binomial_distribution)
 """
+
 immutable BetaBinomial{T <: Real} <: DiscreteUnivariateDistribution
     n::Int
     α::T

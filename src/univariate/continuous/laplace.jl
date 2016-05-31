@@ -20,6 +20,7 @@ External links
 * [Laplace distribution on Wikipedia](http://en.wikipedia.org/wiki/Laplace_distribution)
 
 """
+
 immutable Laplace{T <: Real} <: ContinuousUnivariateDistribution
     μ::T
     θ::T
