@@ -35,23 +35,23 @@ immutable NegativeBinomial{T <: Real} <: DiscreteUnivariateDistribution
         new(r, p)
     end
 
-    NegativeBinomial() = new(1.0, 0.5)
 end
 
 NegativeBinomial{T <: Real}(r::T, p::T) = NegativeBinomial{T}(r, p)
 NegativeBinomial(r::Real, p::Real) = NegativeBinomial(promote(r, p)...)
 NegativeBinomial(r::Real) = NegativeBinomial(r, 0.5)
+NegativeBinomial() = NegativeBinomial(1.0, 0.5)
 
 
 @distr_support NegativeBinomial 0 Inf
 
 #### Conversions
 
-function NegativeBinomial{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, r::S, p::S)
+function convert{T <: Real}(::Type{NegativeBinomial{T}}, r::Real, p::Real)
     NegativeBinomial(T(r), T(p))
 end
-function NegativeBinomial{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, d::NegativeBinomial{S})
-    NegativeBinomial(T(d.r), T(d.s))
+function convert{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, d::NegativeBinomial{S})
+    NegativeBinomial(T(d.r), T(d.p))
 end
 
 #### Parameters

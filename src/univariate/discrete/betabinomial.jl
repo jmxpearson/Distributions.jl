@@ -42,7 +42,7 @@ function convert{T <: Real, S <: Real}(::Type{BetaBinomial{T}}, n::Int, α::S, �
     BetaBinomial(n, T(α), T(β))
 end
 function convert{T <: Real, S <: Real}(::Type{BetaBinomial{T}}, d::BetaBinomial{S})
-    BetaBinomial(n, T(d.α), T(d.β))
+    BetaBinomial(d.n, T(d.α), T(d.β))
 end
 
 #### Parameters

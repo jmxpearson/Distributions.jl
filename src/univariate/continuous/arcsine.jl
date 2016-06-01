@@ -28,8 +28,6 @@ immutable Arcsine{T <: Real} <: ContinuousUnivariateDistribution
     b::T
 
     Arcsine(a::T, b::T) = (@check_args(Arcsine, a < b); new(a, b))
-
-    Arcsine() = Arcsine(0.0, 1.0)
 end
 
 Arcsine{T <: Real}(a::T, b::T) = Arcsine{T}(a, b)
@@ -37,7 +35,8 @@ Arcsine(a::Real, b::Real) = Arcsine(promote(a, b)...)
 Arcsine(a::Integer, b::Integer) = Arcsine(Float64(a), Float64(b))
 Arcsine(a::Integer, b::Real) = Arcsine(Float64(a), b)
 Arcsine(a::Real, b::Integer) = Arcsine(a, Float64(b))
-Arcsine(b::Real) = (@check_args(Arcsine, b > zero(b)); Arcsine(0.0, b))
+Arcsine(b::Real) = Arcsine(0.0, b)
+Arcsine() = Arcsine(0.0, 1.0)
 
 @distr_support Arcsine d.a d.b
 

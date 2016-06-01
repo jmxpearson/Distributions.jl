@@ -21,10 +21,10 @@ External links:
 * [Poisson-binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Poisson_binomial_distribution)
 
 """
-immutable PoissonBinomial <: DiscreteUnivariateDistribution
+immutable PoissonBinomial{T <: Real} <: DiscreteUnivariateDistribution
 
-    p::Vector{Float64}
-    pmf::Vector{Float64}
+    p::Vector{T}
+    pmf::Vector{T}
     function PoissonBinomial(p::AbstractArray)
         for i=1:length(p)
             if !(0.0 <= p[i] <= 1.0)
@@ -38,9 +38,20 @@ immutable PoissonBinomial <: DiscreteUnivariateDistribution
 
 end
 
+PoissonBinomial{T <: Real}(p::AbsractArray) = PoissonBinomial{T}(p)
+
 @distr_support PoissonBinomial 0 length(d.p)
 
-##### Parameters
+#### Conversions
+
+function PoissonBinomial{T <: Real, S <: Real}(::Type{PoissonBinomial{T}}, p::Vector{S})
+    PoissonBinomial(Vector{T}(p))
+end
+function PoissonBinomial{T <: Real, S <: Real}(::Type{PoissonBinomial{T}}, d::PoissonBinomial{S})
+    PoissonBinomial(Vector{T}(d.p))
+end
+
+#### Parameters
 
 ntrials(d::PoissonBinomial) = length(d.p)
 succprob(d::PoissonBinomial) = d.p

@@ -3,14 +3,14 @@
 using Distributions
 using Base.Test
 
-import Distributions: 
-    CategoricalDirectSampler, 
+import Distributions:
+    CategoricalDirectSampler,
     AliasTable,
-    BinomialGeomSampler, 
-    BinomialTPESampler, 
-    BinomialPolySampler, 
-    BinomialAliasSampler, 
-    PoissonADSampler, 
+    BinomialGeomSampler,
+    BinomialTPESampler,
+    BinomialPolySampler,
+    BinomialAliasSampler,
+    PoissonADSampler,
     PoissonCountSampler,
     ExponentialSampler,
     GammaGDSampler,
@@ -36,12 +36,12 @@ end
 
 ## Binomial samplers
 
-binomparams = [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0), 
-               (1, 0.2), (1, 0.8), (3, 0.4), (4, 0.6), 
+binomparams = [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0),
+               (1, 0.2), (1, 0.8), (3, 0.4), (4, 0.6),
                (40, 0.5), (100, 0.4), (300, 0.6)]
 
 for (S, paramlst) in [
-    (BinomialGeomSampler, [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0), (1, 0.2), (1, 0.8), (3, 0.4), (4, 0.6)]), 
+    (BinomialGeomSampler, [(0, 0.4), (0, 0.6), (5, 0.0), (5, 1.0), (1, 0.2), (1, 0.8), (3, 0.4), (4, 0.6)]),
     (BinomialTPESampler, [(40, 0.5), (100, 0.4), (300, 0.6)]),
     (BinomialPolySampler, binomparams),
     (BinomialAliasSampler, binomparams) ]
@@ -57,7 +57,7 @@ end
 ## Poisson samplers
 
 for (S, paramlst) in [
-    (PoissonCountSampler, [0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 30.0]), 
+    (PoissonCountSampler, [0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 15.0, 20.0, 30.0]),
     (PoissonADSampler, [5.0, 10.0, 15.0, 20.0, 30.0])]
 
     println("    testing $S")
@@ -66,7 +66,7 @@ for (S, paramlst) in [
     end
 end
 
-## Poisson Binomial sampler
+# Poisson Binomial sampler
 S = PoissBinAliasSampler
 paramlst = (fill(0.2, 30), linspace(0.1, .99, 30), [fill(0.1, 10); fill(0.9, 10)])
 println("    testing $S")

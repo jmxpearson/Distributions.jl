@@ -1,7 +1,7 @@
 using Distributions
 using Base.Test
 
-# Test the special base where PoissonBinomial distribution reduces 
+# Test the special base where PoissonBinomial distribution reduces
 # to Binomial distribution
 for (p, n) in [(0.8, 6), (0.5, 10), (0.04, 20)]
 
@@ -19,7 +19,7 @@ for (p, n) in [(0.8, 6), (0.5, 10), (0.04, 20)]
     @test_approx_eq var(d) var(dref)
     @test_approx_eq kurtosis(d) kurtosis(dref)
     @test_approx_eq skewness(d) skewness(dref)
-    
+
     for t=0:5
         @test_approx_eq mgf(d, t) mgf(dref, t)
         @test_approx_eq cf(d, t) cf(dref, t)
@@ -35,7 +35,7 @@ for (p, n) in [(0.8, 6), (0.5, 10), (0.04, 20)]
 end
 
 # Test against a sum of three Binomial distributions
-for (n₁, n₂, n₃, p₁, p₂, p₃) in [(10, 10, 10, 0.1, 0.5, 0.9), 
+for (n₁, n₂, n₃, p₁, p₂, p₃) in [(10, 10, 10, 0.1, 0.5, 0.9),
                                  (1, 10, 100, 0.99, 0.1, 0.05),
                                  (5, 1, 3, 0.01, 0.99, 0.999),
                                  (10, 7, 10, 0., 0.9, 0.5)]

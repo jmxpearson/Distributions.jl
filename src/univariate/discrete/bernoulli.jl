@@ -31,16 +31,16 @@ immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
         new(p)
     end
 
-    Bernoulli() = new(0.5)
 end
 
 Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
 Bernoulli{T <: Int}(p::T) = Bernoulli(Float64(p))
+Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1
 
 #### Conversions
-convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, p::S) = Bernoulli(T(p))
+convert{T <: Real}(::Type{Bernoulli{T}}, p::Real) = Bernoulli(T(p))
 convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, d::Bernoulli{S}) = Bernoulli(T(d.p))
 
 #### Parameters

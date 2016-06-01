@@ -28,15 +28,15 @@ immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
     	new(p)
     end
 
-    Geometric() = new(0.5)
 end
 
 Geometric{T <: Real}(p::T) = Geometric{T}(p)
+Geometric() = Geometric(0.5)
 
 @distr_support Geometric 0 Inf
 
 ### Conversions
-convert{T <: Real, S <: Real}(::Type{Geometric{T}}, p::S) = Geometric(T(p))
+convert{T <: Real}(::Type{Geometric{T}}, p::Real) = Geometric(T(p))
 convert{T <: Real, S <: Real}(::Type{Geometric{T}}, d::Geometric{S}) = Geometric(T(d.p))
 
 ### Parameters

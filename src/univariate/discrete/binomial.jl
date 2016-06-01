@@ -31,18 +31,18 @@ immutable Binomial{T <: Real} <: DiscreteUnivariateDistribution
         new(n, p)
     end
 
-    Binomial() = new(1.0, 0.5)
 end
 
 Binomial{T <: Real}(n::Int, p::T) = Binomial{T}(n, p)
 Binomial{T <: Int}(n::Int, p::T) = Binomial(n, Float64(p))
 Binomial(n::Int) = Binomial(n, 0.5)
+Binomial() = Binomial(1, 0.5)
 
 @distr_support Binomial 0 d.n
 
 #### Conversions
 
-function convert{T <: Real, S <: Real}(::Type{Binomial{T}}, n::Int, p::S)
+function convert{T <: Real}(::Type{Binomial{T}}, n::Int, p::Real)
     Binomial(n, T(p))
 end
 function convert{T <: Real, S <: Real}(::Type{Binomial{T}}, d::Binomial{S})

@@ -29,8 +29,6 @@ immutable Cauchy{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(Cauchy, σ > zero(σ))
         new(μ, σ)
     end
-
-    Cauchy() = new(0.0, 1.0)
 end
 
 Cauchy{T <: Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
@@ -39,6 +37,7 @@ Cauchy(μ::Integer, σ::Integer) = Cauchy(Float64(μ), Float64(σ))
 Cauchy(μ::Integer, σ::Real) = Cauchy(Float64(μ), σ)
 Cauchy(μ::Real, σ::Integer) = Cauchy(μ, Float64(σ))
 Cauchy(μ::Real) = Cauchy(μ, 1.0)
+Cauchy() = Cauchy(0.0, 1.0)
 
 @distr_support Cauchy -Inf Inf
 

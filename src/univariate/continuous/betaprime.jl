@@ -33,8 +33,6 @@ immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(BetaPrime, α > zero(α) && β > zero(β))
         new(α, β)
     end
-
-    BetaPrime() = new(1.0, 1.0)
 end
 
 BetaPrime{T <: Real}(α::T, β::T) = BetaPrime{T}(α, β)
@@ -43,6 +41,7 @@ BetaPrime(α::Integer, β::Integer) = BetaPrime(Float64(α), Float64(β))
 BetaPrime(α::Integer, β::Real) = BetaPrime(Float64(α), β)
 BetaPrime(α::Real, β::Integer) = BetaPrime(α, Float64(β))
 BetaPrime(α::Real) = BetaPrime(α, α)
+BetaPrime() = BetaPrime(1.0, 1.0)
 
 @distr_support BetaPrime 0.0 Inf
 

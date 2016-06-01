@@ -23,12 +23,11 @@ immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
         @check_args(Erlang, isinteger(α) && α >= zero(α))
         new(α, θ)
     end
-
-    Erlang() = new(1, 1.0)
 end
 
 Erlang{T <: Real}(α::Int, Θ::T) = Erlang{T}(α, Θ)
 Erlang(α::Real) = Erlang(α, 1.0)
+Erlang() = Erlang(1, 1.0)
 
 @distr_support Erlang 0.0 Inf
 

@@ -22,23 +22,15 @@ tests = [
     "conversion",
     "mixture",
     "gradlogpdf",
-    "truncate"]
+    "truncate",
+	"generalizedextremevalue"]
 
 print_with_color(:blue, "Running tests:\n")
 
-if nworkers() > 1
-    rmprocs(workers())
-end
+srand(345678)
 
-if Base.JLOptions().code_coverage == 1
-    addprocs(CPU_CORES, exeflags = ["--code-coverage=user", "--inline=no", "--check-bounds=yes"])
-else
-    addprocs(CPU_CORES, exeflags = "--check-bounds=yes")
-end
-
-using Distributions
-@everywhere srand(345679)
-pmap(tests) do t
-    include(t*".jl")
-    nothing
+for t in tests
+    test_fn = "$t.jl"
+    print_with_color(:green, "* $test_fn\n")
+    include(test_fn)
 end

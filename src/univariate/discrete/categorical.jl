@@ -16,11 +16,11 @@ External links:
 
 immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
     K::Int
-    p::Vector{Float64}
+    p::Vector{T}
 
-    Categorical(p::Vector{Float64}, ::NoArgCheck) = new(length(p), p)
+    Categorical(p::Vector{T}, ::NoArgCheck) = new(length(p), p)
 
-    function Categorical(p::Vector{Float64})
+    function Categorical(p::Vector{T})
         @check_args(Categorical, isprobvec(p))
         new(length(p), p)
     end
@@ -31,8 +31,20 @@ immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
     end
 end
 
+Categorical{T <: Real}(p::Vector{T}, ::NoArgCheck) = Categorical{T}(p, NoArgCheck())
+Categorical{T <: Real}(p::Vector{T}) = Categorical{T}(p)
+Categorical(k::Integer) = Categorical{Float64}(k)
+
 @distr_support Categorical 1 d.K
 
+### Conversions
+
+function Categorical{T <: Real, S <: Real}(::Type{Categorical{T}}, p::Vector{S})
+    Categorical(Vector{T}(p))
+end
+function Categorical{T <: Real, S <: Real}(::Type{Categorical{T}}, d::Categorical{S})
+    Categorical(Vector{T}(d.p))
+end
 
 ### Parameters
 

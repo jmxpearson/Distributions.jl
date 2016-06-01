@@ -14,14 +14,14 @@
       },
       "conversions": [
         {
-          "from": [1],
+          "from": "[1.0f0]",
           "to": "Bernoulli{Float64}"
         }, 
         {
-          "from": "Bernoulli(1)"
+          "from": "[Bernoulli(1.0f0)]",
           "to": "Bernoulli{Float64}"
         }
-      ]
+      ],
       "points": [
         {
           "cdf": 0.5,
@@ -120,6 +120,16 @@
       "params": {
         "ntrials": 2
       },
+      "conversions": [
+        {
+            "from": [2, 3, 4],
+            "to": "BetaBinomial{Float64}"
+        },
+        {
+            "from": "[BetaBinomial(2, 3, 4)]",
+            "to": "BetaBinomial{Float64}"
+        }
+      ],
       "points": [
          {
           "cdf": 0.47892720306513414385,
@@ -161,11 +171,11 @@
       },
       "conversions": [
         {
-          "from": [2, 1],
+          "from": "[2, 1]",
           "to": "Binomial{Float64}"
         }, 
         {
-          "from": "Bernoulli(2, 1)"
+          "from": "[Binomial(2, 1.0f0)]",
           "to": "Binomial{Float64}"
         }
       ],
@@ -673,11 +683,11 @@
       },
       "conversions": [
         {
-          "from": [1],
+          "from": "[0.4f0]",
           "to": "Geometric{Float64}"
         }, 
         {
-          "from": "Bernoulli(1)",
+          "from": "[Geometric(0.4f0)]",
           "to": "Geometric{Float64}"
         }
       ],
@@ -978,6 +988,16 @@
       "median": 1.0,
       "minimum": 0,
       "params": {},
+      "conversions": [
+        {
+            "from": [2],
+            "to": "Poisson{Float64}"
+        },
+        {
+            "from": "[Poisson(2)]",
+            "to": "Poisson{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.16666666666666669,
@@ -1064,207 +1084,7 @@
     }
   ],
   [
-    "Hypergeometric(3, 2, 0)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 0,
-      "maximum": 0,
-      "mean": 0,
-      "median": 0.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 0
-        }
-      ],
-      "q10": 0.0,
-      "q25": 0.0,
-      "q50": 0.0,
-      "q75": 0.0,
-      "q90": 0.0,
-      "var": 0.0
-    }
-  ],
-  [
     "Hypergeometric(3, 2, 5)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 0,
-      "maximum": 0,
-      "mean": 0,
-      "median": 0.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 0
-        }
-      ],
-      "q10": 0.0,
-      "q25": 0.0,
-      "q50": 0.0,
-      "q75": 0.0,
-      "q90": 0.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(3, 2, 5)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 3,
-      "maximum": 3,
-      "mean": 3.0,
-      "median": 3.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 3
-        }
-      ],
-      "q10": 3.0,
-      "q25": 3.0,
-      "q50": 3.0,
-      "q75": 3.0,
-      "q90": 3.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(4, 5, 6)", 
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 0,
-      "maximum": 0,
-      "mean": 0,
-      "median": 0.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 0
-        }
-      ],
-      "q10": 0.0,
-      "q25": 0.0,
-      "q50": 0.0,
-      "q75": 0.0,
-      "q90": 0.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(3, 2, 5)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 3,
-      "maximum": 3,
-      "mean": 3.0,
-      "median": 3.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 3
-        }
-      ],
-      "q10": 3.0,
-      "q25": 3.0,
-      "q50": 3.0,
-      "q75": 3.0,
-      "q90": 3.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(4, 5, 6)", 
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 3,
-      "maximum": 3,
-      "mean": 3.0,
-      "median": 3.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 3
-        }
-      ],
-      "q10": 3.0,
-      "q25": 3.0,
-      "q50": 3.0,
-      "q75": 3.0,
-      "q90": 3.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(3, 2, 0)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 0,
-      "maximum": 0,
-      "mean": 0,
-      "median": 0.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 0
-        }
-      ],
-      "q10": 0.0,
-      "q25": 0.0,
-      "q50": 0.0,
-      "q75": 0.0,
-      "q90": 0.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(3, 2, 5)",
-    {
-      "dtype": "Hypergeometric",
-      "entropy": 0.0,
-      "minimum": 3,
-      "maximum": 3,
-      "mean": 3.0,
-      "median": 3.0,
-      "params": {},
-      "points": [
-        {
-          "cdf": 1.0,
-          "logpdf": 0.0,
-          "x": 3
-        }
-      ],
-      "q10": 3.0,
-      "q25": 3.0,
-      "q50": 3.0,
-      "q75": 3.0,
-      "q90": 3.0,
-      "var": 0.0
-    }
-  ],
-  [
-    "Hypergeometric(4, 5, 6)", 
     {
       "dtype": "Hypergeometric",
       "entropy": 0.0,
@@ -1406,6 +1226,16 @@
         "failprob": 0.5,
         "succprob": 0.5
       },
+      "conversions": [
+        {
+            "from": [4, 1],
+            "to": "NegativeBinomial{Float64}"
+        },
+        {
+            "from": "[NegativeBinomial(4, 1)]",
+            "to": "NegativeBinomial{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.5,
@@ -1710,6 +1540,16 @@
       "params": {
         "rate": 1.0
       },
+      "conversions": [
+        {
+            "from": [2],
+            "to": "Poisson{Float64}"
+        },
+        {
+            "from": "[Poisson(2)]",
+            "to": "Poisson{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.36787944117144233,

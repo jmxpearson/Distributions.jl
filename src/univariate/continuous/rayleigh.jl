@@ -25,12 +25,11 @@ immutable Rayleigh{T <: Real} <: ContinuousUnivariateDistribution
     σ::T
 
     Rayleigh(σ::T) = (@check_args(Rayleigh, σ > zero(σ)); new(σ))
-
-    Rayleigh() = new(1.0)
 end
 
 Rayleigh{T <: Real}(σ::T) = Rayleigh{T}(σ)
 Rayleigh{T <: Integer}(σ::T) = Rayleigh(Float64(σ))
+Rayleigh() = Rayleigh(1.0)
 
 @distr_support Rayleigh 0.0 Inf
 

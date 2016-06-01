@@ -27,12 +27,12 @@ immutable Skellam{T <: Real} <: DiscreteUnivariateDistribution
         new(μ1, μ2)
     end
 
-    Skellam() = new(1.0, 1.0)
 end
 
 Skellam{T <: Real}(μ1::T, μ2::T) = Skellam{T}(μ1, μ2)
 Skellam(μ1::Real, μ2::Real) = Skellam(promote(μ1, μ2)...)
 Skellam(μ::Real) = Skellam(μ, μ)
+Skellam() = Skellam(1.0, 1.0)
 
 @distr_support Skellam -Inf Inf
 
