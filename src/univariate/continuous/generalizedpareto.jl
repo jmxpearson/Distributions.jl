@@ -55,7 +55,7 @@ function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, ξ::S, σ::
     GeneralizedPareto(T(ξ), T(σ), T(μ))
 end
 function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, d::GeneralizedPareto{S})
-    GeneralizedPareto(T(d.ξ), T(d.σ), T(d.μs))
+    GeneralizedPareto(T(d.ξ), T(d.σ), T(d.μ))
 end
 
 #### Parameters

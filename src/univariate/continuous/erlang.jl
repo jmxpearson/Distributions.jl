@@ -25,18 +25,18 @@ immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-Erlang{T <: Real}(α::Int, Θ::T) = Erlang{T}(α, Θ)
+Erlang{T <: Real}(α::Int, θ::T) = Erlang{T}(α, θ)
 Erlang(α::Real) = Erlang(α, 1.0)
 Erlang() = Erlang(1, 1.0)
 
 @distr_support Erlang 0.0 Inf
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, α::Int, Θ::S)
-    Erlang(α, T(Θ))
+function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, α::Int, θ::S)
+    Erlang(α, T(θ))
 end
 function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, d::Erlang{S})
-    Erlang(d.α, T(d.Θ))
+    Erlang(d.α, T(d.θ))
 end
 
 #### Parameters

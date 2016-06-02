@@ -25,15 +25,15 @@ immutable Exponential{T <: Real} <: ContinuousUnivariateDistribution
     Exponential(θ::Real) = (@check_args(Exponential, θ > zero(θ)); new(θ))
 end
 
-Exponential{T <: Real}(Θ::T) = Exponential{T}(Θ)
-Exponential(Θ::Int) = Exponential(Float64(Θ))
+Exponential{T <: Real}(θ::T) = Exponential{T}(θ)
+Exponential(θ::Int) = Exponential(Float64(θ))
 Exponential() = Exponential(1.0)
 
 @distr_support Exponential 0.0 Inf
 
 ### Conversions
-convert{T <: Real, S <: Real}(::Type{Exponential{T}}, Θ::S) = Exponential(T(Θ))
-convert{T <: Real, S <: Real}(::Type{Exponential{T}}, d::Exponential{S}) = Exponential(T(d.Θ))
+convert{T <: Real, S <: Real}(::Type{Exponential{T}}, θ::S) = Exponential(T(θ))
+convert{T <: Real, S <: Real}(::Type{Exponential{T}}, d::Exponential{S}) = Exponential(T(d.θ))
 
 
 #### Parameters

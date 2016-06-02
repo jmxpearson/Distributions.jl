@@ -28,8 +28,8 @@ immutable Laplace{T <: Real} <: ContinuousUnivariateDistribution
     Laplace(μ::T, θ::T) = (@check_args(Laplace, θ > zero(θ)); new(μ, θ))
 end
 
-Laplace{T <: Real}(μ::T, Θ::T) = Laplace{T}(μ, Θ)
-Laplace(μ::Real, Θ::Real) = Laplace(promote(μ, Θ)...)
+Laplace{T <: Real}(μ::T, θ::T) = Laplace{T}(μ, θ)
+Laplace(μ::Real, θ::Real) = Laplace(promote(μ, θ)...)
 Laplace(μ::Real) = Laplace(μ, 1.0)
 Laplace() = Laplace(0.0, 1.0)
 
@@ -38,11 +38,11 @@ typealias Biexponential Laplace
 @distr_support Laplace -Inf Inf
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Laplace{T}}, μ::S, Θ::S)
-    Laplace(T(μ), T(Θ))
+function convert{T <: Real, S <: Real}(::Type{Laplace{T}}, μ::S, θ::S)
+    Laplace(T(μ), T(θ))
 end
 function convert{T <: Real, S <: Real}(::Type{Laplace{T}}, d::Laplace{S})
-    Laplace(T(d.μ), T(d.Θ))
+    Laplace(T(d.μ), T(d.θ))
 end
 
 

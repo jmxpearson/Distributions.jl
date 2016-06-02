@@ -38,7 +38,7 @@ immutable PoissonBinomial{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-PoissonBinomial{T <: Real}(p::AbsractArray) = PoissonBinomial{T}(p)
+PoissonBinomial{T <: Real}(p::AbstractArray{T}) = PoissonBinomial{T}(p)
 
 @distr_support PoissonBinomial 0 length(d.p)
 
