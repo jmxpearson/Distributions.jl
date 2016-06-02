@@ -55,9 +55,9 @@ params(d::Categorical) = (d.p,)
 
 ### Statistics
 
-function categorical_mean(p::AbstractArray{Float64})
+function categorical_mean{T <: Real}(p::AbstractArray{T})
     k = length(p)
-    s = 0.
+    s = zero(T)
     for i = 1:k
         @inbounds s += p[i] * i
     end
