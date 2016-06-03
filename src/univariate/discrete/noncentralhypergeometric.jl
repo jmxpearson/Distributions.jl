@@ -84,6 +84,8 @@ mean(d::FisherNoncentralHypergeometric) = exp(_P(d,1) - _P(d,0))
 var(d::FisherNoncentralHypergeometric) = exp(_P(d,2) - _P(d,0)) - exp(2*(_P(d,1) - _P(d,0)))
 mode(d::FisherNoncentralHypergeometric) = floor(Int, _mode(d))
 
+testfd(d::FisherNoncentralHypergeometric) = d.ω^3
+
 logpdf(d::FisherNoncentralHypergeometric, k::Int) =
     -log(d.ns + 1) - lbeta(d.ns - k + 1, k + 1) -
     log(d.nf + 1) - lbeta(d.nf - d.n + k + 1, d.n - k + 1) +
@@ -128,6 +130,10 @@ end
 mean(d::WalleniusNoncentralHypergeometric) = sum(support(d) .* pdf(d, support(d)))
 var(d::WalleniusNoncentralHypergeometric)  = sum((support(d) - mean(d)).^2 .* pdf(d, support(d)))
 mode(d::WalleniusNoncentralHypergeometric) = support(d)[indmax(pdf(d, support(d)))]
+
+entropy(d::WalleniusNoncentralHypergeometric) = 1.0
+
+testfd(d::WalleniusNoncentralHypergeometric) = d.ω^3
 
 function logpdf(d::WalleniusNoncentralHypergeometric, k::Int)
     D = d.ω * (d.ns - k) + (d.nf - d.n + k)

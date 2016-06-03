@@ -32,7 +32,9 @@ immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
 end
 
 Categorical{T <: Real}(p::Vector{T}, ::NoArgCheck) = Categorical{T}(p, NoArgCheck())
+Categorical{T <: Integer}(p::Vector{T}, ::NoArgCheck) = Categorical(Vector{Float64}(p), NoArgCheck())
 Categorical{T <: Real}(p::Vector{T}) = Categorical{T}(p)
+Categorical{T <: Integer}(p::Vector{T}) = Categorical(Vector{Float64}(p))
 Categorical(k::Integer) = Categorical{Float64}(k)
 
 @distr_support Categorical 1 d.K
@@ -78,11 +80,11 @@ function median(d::Categorical)
     i
 end
 
-function var(d::Categorical)
+function var{T <: Real}(d::Categorical{T})
     k = ncategories(d)
     p = probs(d)
     m = categorical_mean(p)
-    s = 0.0
+    s = zero(T)
     for i = 1 : k
         @inbounds s += abs2(i - m) * p[i]
     end
@@ -114,10 +116,10 @@ end
 
 entropy(d::Categorical) = entropy(d.p)
 
-function mgf(d::Categorical, t::Real)
+function mgf{T <: Real}(d::Categorical{T}, t::Real)
     k = ncategories(d)
     p = probs(d)
-    s = 0.0
+    s = zero(T)
     for i = 1 : k
         @inbounds s += p[i] * exp(t)
     end
@@ -127,7 +129,7 @@ end
 function cf(d::Categorical, t::Real)
     k = ncategories(d)
     p = probs(d)
-    s = 0.0 + 0.0im
+    s = zero(T) + zero(T)*im
     for i = 1:k
         @inbounds s += p[i] * cis(t)
     end
@@ -164,7 +166,7 @@ function cdf(d::Categorical, x::Int)
     return c
 end
 
-pdf(d::Categorical, x::Int) = insupport(d, x) ? d.p[x] : 0.0
+pdf{T <: Real}(d::Categorical{T}, x::Int) = insupport(d, x) ? d.p[x] : zero(T)
 
 logpdf(d::Categorical, x::Int) = insupport(d, x) ? log(d.p[x]) : -Inf
 
