@@ -114,7 +114,7 @@ end
 
 #### Evaluation
 
-function logpdf(d::GeneralizedPareto, x::Float64)
+function logpdf(d::GeneralizedPareto, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logpdf is log(0) outside the support range.
@@ -132,9 +132,9 @@ function logpdf(d::GeneralizedPareto, x::Float64)
     return p
 end
 
-pdf(d::GeneralizedPareto, x::Float64) = exp(logpdf(d, x))
+pdf(d::GeneralizedPareto, x::Real) = exp(logpdf(d, x))
 
-function logccdf(d::GeneralizedPareto, x::Float64)
+function logccdf(d::GeneralizedPareto, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logccdf is log(0) outside the support range.
@@ -152,10 +152,10 @@ function logccdf(d::GeneralizedPareto, x::Float64)
     return p
 end
 
-ccdf(d::GeneralizedPareto, x::Float64) = exp(logccdf(d, x))
-cdf(d::GeneralizedPareto, x::Float64) = -expm1(logccdf(d, x))
+ccdf(d::GeneralizedPareto, x::Real) = exp(logccdf(d, x))
+cdf(d::GeneralizedPareto, x::Real) = -expm1(logccdf(d, x))
 
-function quantile(d::GeneralizedPareto, p::Float64)
+function quantile(d::GeneralizedPareto, p::Real)
     (μ, σ, ξ) = params(d)
 
     if p == 0.0

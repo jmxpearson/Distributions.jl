@@ -20,19 +20,26 @@ External links
 
 * [Gumbel distribution on Wikipedia](http://en.wikipedia.org/wiki/Gumbel_distribution)
 """
-immutable Gumbel <: ContinuousUnivariateDistribution
-    μ::Float64  # location
-    θ::Float64  # scale
+immutable Gumbel{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T  # location
+    θ::T  # scale
 
-    Gumbel(μ::Real, θ::Real) = (@check_args(Gumbel, θ > zero(θ)); new(μ, θ))
-    Gumbel(μ::Real) = new(μ, 1.0)
-    Gumbel() = new(0.0, 1.0)
+    Gumbel(μ::T, θ::T) = (@check_args(Gumbel, θ > zero(θ)); new(μ, θ))
 end
+
+Gumbel{T <: Real}(μ::T, θ::T) = Gumbel{T}(μ, θ)
+Gumbel(μ::Real, θ::Real) = Gumbel(promote(μ, θ))
+Gumbel(μ::Real) = Gumbel(μ, 1.0)
+Gumbel() = Gumbel(0.0, 1.0)
 
 @distr_support Gumbel -Inf Inf
 
 const DoubleExponential = Gumbel
 
+#### Conversions
+
+Gumbel{T <: Real, S <: Real}(::Type{Gumbel{T}}, μ::S, θ::S) = Gumbel(T(μ), T(θ))
+Gumbel{T <: Real, S <: Real}(::Type{Gumbel{T}}, d::Gumbel{S}) = Gumbel(T(d.μ), T(d.θ))
 
 #### Parameters
 
