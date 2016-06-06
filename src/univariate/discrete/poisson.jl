@@ -24,7 +24,8 @@ immutable Poisson{T<:Real} <: DiscreteUnivariateDistribution
     Poisson(λ::Real) = (@check_args(Poisson, λ >= zero(λ)); new(λ))
 end
 
-Poisson{T<:Real}(λ::T) = Poisson{T}(λ)
+Poisson{T <: Real}(λ::T) = Poisson{T}(λ)
+Poisson(λ::Integer) = Poisson(Float64(λ))
 Poisson() = Poisson(1.0)
 
 @distr_support Poisson 0 (d.λ == zero(typeof(d.λ)) ? 0 : Inf)
@@ -57,13 +58,13 @@ skewness(d::Poisson) = one(typeof(d.λ)) / sqrt(d.λ)
 
 kurtosis(d::Poisson) = one(typeof(d.λ)) / d.λ
 
-function entropy(d::Poisson)
+function entropy{T <: Real}(d::Poisson{T})
     λ = rate(d)
-    if λ == zero(typeof(λ))
-        return 0.0
+    if λ == zero(T)
+        return zero(T)
     elseif λ < 50.0
-        s = 0.0
-        λk = 1.0
+        s = zero(T)
+        λk = one(T)
         for k = 1:100
             λk *= λ
             s += λk * lgamma(k + 1.0) / gamma(k + 1.0)

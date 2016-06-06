@@ -33,8 +33,6 @@ end
 Arcsine{T <: Real}(a::T, b::T) = Arcsine{T}(a, b)
 Arcsine(a::Real, b::Real) = Arcsine(promote(a, b)...)
 Arcsine(a::Integer, b::Integer) = Arcsine(Float64(a), Float64(b))
-Arcsine(a::Integer, b::Real) = Arcsine(Float64(a), b)
-Arcsine(a::Real, b::Integer) = Arcsine(a, Float64(b))
 Arcsine(b::Real) = Arcsine(0.0, b)
 Arcsine() = Arcsine(0.0, 1.0)
 

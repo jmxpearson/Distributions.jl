@@ -9,6 +9,16 @@
       "median": 0.49999999999999989,
       "minimum": 0.0,
       "params": {},
+      "conversions": [
+        {
+          "from": "[1.0f0, 2.0f0]",
+          "to": "Arcsine{Float64}"
+        }, 
+        {
+          "from": "[Arcsine(1.0f0, 2.0f0)]",
+          "to": "Arcsine{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.10000000000000001,
@@ -204,6 +214,16 @@
       "median": 0.5,
       "minimum": 0.0,
       "params": {},
+      "conversions": [
+        {
+          "from": "[1.0f0, 2.0f0]",
+          "to": "Beta{Float64}"
+        }, 
+        {
+          "from": "[Beta(1.0f0, 2.0f0)]",
+          "to": "Beta{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.10000000000000002,
@@ -399,6 +419,16 @@
       "median": 1.0,
       "minimum": 0.0,
       "params": {},
+      "conversions": [
+        {
+          "from": "[1.0f0, 2.0f0]",
+          "to": "BetaPrime{Float64}"
+        }, 
+        {
+          "from": "[BetaPrime(1.0f0, 2.0f0)]",
+          "to": "BetaPrime{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.09999999999999977,
@@ -597,6 +627,16 @@
         "location": 0.0,
         "scale": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1.0f0, 2.0f0]",
+          "to": "Cauchy{Float64}"
+        }, 
+        {
+          "from": "[Cauchy(1.0f0, 2.0f0)]",
+          "to": "Cauchy{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999978,
@@ -936,6 +976,16 @@
       "params": {
         "dof": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1.0f0]",
+          "to": "Chi{Float64}"
+        }, 
+        {
+          "from": "[Chi(1.0f0)]",
+          "to": "Chi{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.10000000000000002,
@@ -1204,6 +1254,16 @@
       "params": {
         "dof": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1.0f0]",
+          "to": "Chisq{Float64}"
+        }, 
+        {
+          "from": "[Chisq(1.0f0)]",
+          "to": "Chisq{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.09999999999999995,
@@ -1406,6 +1466,16 @@
         "location": 0.0,
         "scale": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2]",
+          "to": "Cosine{Float64}"
+        }, 
+        {
+          "from": "[Cosine(1, 2)]",
+          "to": "Cosine{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999714,
@@ -1610,6 +1680,16 @@
         "scale": 1.0,
         "shape": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2]",
+          "to": "Erlang{Float64}"
+        }, 
+        {
+          "from": "[Erlang(1, 2)]",
+          "to": "Erlang{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999992,
@@ -1811,6 +1891,16 @@
       "median": 0.69314718055994529,
       "minimum": 0,
       "params": {},
+      "conversions": [
+        {
+          "from": "[1.0f0]",
+          "to": "Exponential{Float64}"
+        }, 
+        {
+          "from": "[Exponential(1.0f0)]",
+          "to": "Exponential{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.10000000000000001,
@@ -2140,6 +2230,16 @@
         "scale": 1.0,
         "shape": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2]",
+          "to": "Gamma{Float64}"
+        }, 
+        {
+          "from": "[Gamma(1, 2)]",
+          "to": "Gamma{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999992,
@@ -2495,6 +2595,16 @@
         "scale": 1.0,
         "shape": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2, 3]",
+          "to": "GeneralizedPareto{Float64}"
+        }, 
+        {
+          "from": "[GeneralizedPareto(1, 2, 3)]",
+          "to": "GeneralizedPareto{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999992,
@@ -2689,7 +2799,7 @@
     }
   ],
   [
-    "GeneralizedPareto(0.1, 2.0, 0.0)",
+    "GeneralizedPareto(0.0, 2.0, 0.1)",
     {
       "dtype": "GeneralizedPareto",
       "entropy": 1.7931471805599455,
@@ -2758,7 +2868,7 @@
     }
   ],
   [
-    "GeneralizedPareto(-1.5, 0.5, 2.0)",
+    "GeneralizedPareto(2.0, 0.5, -1.5)",
     {
       "dtype": "GeneralizedPareto",
       "entropy": -1.1931471805599454,
@@ -3736,6 +3846,16 @@
         "location": 0.0,
         "scale": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2]",
+          "to": "Laplace{Float64}"
+        }, 
+        {
+          "from": "[Laplace(1, 2)]",
+          "to": "Laplace{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.10000000000000001,
@@ -4076,6 +4196,16 @@
         "location": 0.0,
         "scale": 1.0
       },
+      "conversions": [
+        {
+          "from": "[1, 2]",
+          "to": "Logistic{Float64}"
+        }, 
+        {
+          "from": "[Logistic(1, 2)]",
+          "to": "Logistic{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999978,
@@ -5307,6 +5437,16 @@
       "median": 1.1774100225154747,
       "minimum": 0,
       "params": {},
+      "conversions": [
+        {
+          "from": "[1.0f0]",
+          "to": "Rayleigh{Float64}"
+        }, 
+        {
+          "from": "[Rayleigh(1.0f0)]",
+          "to": "Rayleigh{Float64}"
+        }
+      ],
       "points": [
         {
           "cdf": 0.099999999999999978,

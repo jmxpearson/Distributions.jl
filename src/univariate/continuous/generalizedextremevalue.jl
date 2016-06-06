@@ -44,6 +44,9 @@ end
 
 GeneralizedExtremeValue{T <: Real}(μ::T, σ::T, ξ::T) = GeneralizedExtremeValue{T}(μ, σ, ξ)
 GeneralizedExtremeValue(μ::Real, σ::Real, ξ::Real) = GeneralizedExtremeValue(promote(μ, σ, ξ)...)
+function GeneralizedExtremeValue(μ::Integer, σ::Integer, ξ::Integer)
+    GeneralizedExtremeValue(Float64(μ), Float64(σ), Float64(ξ))
+end
 
 #### Conversions
 function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, μ::S, σ::S, ξ::S)
@@ -66,6 +69,8 @@ params(d::GeneralizedExtremeValue) = (d.μ, d.σ, d.ξ)
 
 
 #### Statistics
+
+testfd(d::GeneralizedExtremeValue) = d.ξ^3
 g(d::GeneralizedExtremeValue, k::Real) = gamma(1 - k * d.ξ) # This should not be exported.
 
 function median(d::GeneralizedExtremeValue)
@@ -187,9 +192,9 @@ function logpdf(d::GeneralizedExtremeValue, x::Float64)
     end
 end
 
-function pdf(d::GeneralizedExtremeValue, x::Float64)
+function pdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     if x == -Inf || x == Inf || ! insupport(d, x)
-        return 0.0
+        return zero(T)
     else
         (μ, σ, ξ) = params(d)
 
@@ -199,7 +204,7 @@ function pdf(d::GeneralizedExtremeValue, x::Float64)
             return (t * exp(- t)) / σ
         else
             if z * ξ == -1.0 # In this case: zero to the power something.
-                return 0.0
+                return zero(T)
             else
                 t = (1.0 + z * ξ) ^ (- 1.0 / ξ)
                 return (t ^ (ξ + 1.0) * exp(- t)) / σ
@@ -208,7 +213,7 @@ function pdf(d::GeneralizedExtremeValue, x::Float64)
     end
 end
 
-function logcdf(d::GeneralizedExtremeValue, x::Float64)
+function logcdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
 
@@ -221,11 +226,11 @@ function logcdf(d::GeneralizedExtremeValue, x::Float64)
     elseif x <= minimum(d)
         return - Inf
     else
-        return 0.0
+        return zero(T)
     end
 end
 
-function cdf(d::GeneralizedExtremeValue, x::Float64)
+function cdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
 
@@ -237,9 +242,9 @@ function cdf(d::GeneralizedExtremeValue, x::Float64)
         end
         return exp(- t)
     elseif x <= minimum(d)
-        return 0.0
+        return zero(T)
     else
-        return 1.0
+        return one(T)
     end
 end
 

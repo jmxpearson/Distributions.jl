@@ -34,6 +34,7 @@ end
 
 FDist{T <: Real}(ν1::T, ν2::T) = FDist{T}(ν1, ν2)
 FDist(ν1::Real, ν2::Real) = FDist(promote(ν1, ν2)...)
+FDist(ν1::Integer, ν2::Integer) = FDist(Float64(ν1), Float64(ν2))
 
 @distr_support FDist 0.0 Inf
 
@@ -54,7 +55,10 @@ params(d::FDist) = (d.ν1, d.ν2)
 
 mean(d::FDist) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : NaN)
 
-mode(d::FDist) = ((ν1, ν2) = params(d); ν1 > 2.0 ? ((ν1 - 2.0)/ν1) * (ν2 / (ν2 + 2.0)) : 0.0)
+function mode{T <: Real}(d::FDist{T})
+    (ν1, ν2) = params(d)
+    ν1 > 2.0 ? ((ν1 - 2.0)/ν1) * (ν2 / (ν2 + 2.0)) : zero(T)
+end
 
 function var(d::FDist)
     (ν1, ν2) = params(d)

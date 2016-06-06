@@ -7,6 +7,7 @@ end
 
 Epanechnikov{T <: Real}(μ::T, σ::T) = Epanechnikov{T}(μ, σ)
 Epanechnikov(μ::Real, σ::Real) = Epanechnikov(promote(μ, σ)...)
+Epanechnikov(μ::Integer, σ::Integer) = Epanechnikov(Float64(μ), Float64(σ))
 Epanechnikov(μ::Real) = Epanechnikov(μ, 1.0)
 Epanechnikov() = Epanechnikov(0.0, 1.0)
 
@@ -37,35 +38,35 @@ skewness(d::Epanechnikov) = 0.0
 kurtosis(d::Epanechnikov) = -2.914285714285714  # 3/35-3
 
 ## Functions
-function pdf(d::Epanechnikov, x::Real)
+function pdf{T <: Real}(d::Epanechnikov{T}, x::Real)
     u = abs(x - d.μ) / d.σ
-    u >= 1 ? 0.0 : 0.75 * (1 - u^2) / d.σ
+    u >= 1 ? zero(T) : 0.75 * (1 - u^2) / d.σ
 end
 
-function cdf(d::Epanechnikov, x::Real)
+function cdf{T <: Real}(d::Epanechnikov{T}, x::Real)
     u = (x - d.μ) / d.σ
-    u <= -1 ? 0.0 :
-    u >= 1 ? 1.0 :
+    u <= -1 ? one(T) :
+    u >= 1 ? zero(T) :
     0.5 + u * (0.75 - 0.25 * u^2)
 end
 
-function ccdf(d::Epanechnikov, x::Real)
+function ccdf{T <: Real}(d::Epanechnikov{T}, x::Real)
     u = (d.μ - x) / d.σ
-    u <= -1 ? 1.0 :
-    u >= 1 ? 0.0 :
+    u <= -1 ? one(T) :
+    u >= 1 ? zero(T) :
     0.5 + u * (0.75 - 0.25 * u^2)
 end
 
 @quantile_newton Epanechnikov
 
-function mgf(d::Epanechnikov, t::Real)
+function mgf{T <: Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
-    a == 0 ? 1.0 :
+    a == 0 ? one(T) :
     3.0 * exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
 end
 
-function cf(d::Epanechnikov, t::Real)
+function cf{T <: Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
-    a == 0 ? 1.0+0.0im :
+    a == 0 ? one(T)+zero(T)*im :
     -3.0 * exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
 end
