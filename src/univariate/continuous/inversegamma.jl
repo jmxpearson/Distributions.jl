@@ -83,22 +83,22 @@ end
 
 #### Evaluation
 
-pdf(d::InverseGamma, x::Float64) = exp(logpdf(d, x))
+pdf(d::InverseGamma, x::Real) = exp(logpdf(d, x))
 
-function logpdf(d::InverseGamma, x::Float64)
+function logpdf(d::InverseGamma, x::Real)
     (α, θ) = params(d)
     α * log(θ) - lgamma(α) - (α + 1.0) * log(x) - θ / x
 end
 
-cdf(d::InverseGamma, x::Float64) = ccdf(d.invd, 1.0 / x)
-ccdf(d::InverseGamma, x::Float64) = cdf(d.invd, 1.0 / x)
-logcdf(d::InverseGamma, x::Float64) = logccdf(d.invd, 1.0 / x)
-logccdf(d::InverseGamma, x::Float64) = logcdf(d.invd, 1.0 / x)
+cdf(d::InverseGamma, x::Real) = ccdf(d.invd, 1.0 / x)
+ccdf(d::InverseGamma, x::Real) = cdf(d.invd, 1.0 / x)
+logcdf(d::InverseGamma, x::Real) = logccdf(d.invd, 1.0 / x)
+logccdf(d::InverseGamma, x::Real) = logcdf(d.invd, 1.0 / x)
 
-quantile(d::InverseGamma, p::Float64) = 1.0 / cquantile(d.invd, p)
-cquantile(d::InverseGamma, p::Float64) = 1.0 / quantile(d.invd, p)
-invlogcdf(d::InverseGamma, p::Float64) = 1.0 / invlogccdf(d.invd, p)
-invlogccdf(d::InverseGamma, p::Float64) = 1.0 / invlogcdf(d.invd, p)
+quantile(d::InverseGamma, p::Real) = 1.0 / cquantile(d.invd, p)
+cquantile(d::InverseGamma, p::Real) = 1.0 / quantile(d.invd, p)
+invlogcdf(d::InverseGamma, p::Real) = 1.0 / invlogccdf(d.invd, p)
+invlogccdf(d::InverseGamma, p::Real) = 1.0 / invlogcdf(d.invd, p)
 
 function mgf(d::InverseGamma, t::Real)
     (a, b) = params(d)

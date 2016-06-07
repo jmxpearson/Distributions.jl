@@ -21,20 +21,32 @@ External links
 * [Inverse Gaussian distribution on Wikipedia](http://en.wikipedia.org/wiki/Inverse_Gaussian_distribution)
 
 """
-immutable InverseGaussian <: ContinuousUnivariateDistribution
-    μ::Float64
-    λ::Float64
+immutable InverseGaussian{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    λ::T
 
-    function InverseGaussian(μ::Real, λ::Real)
+    function InverseGaussian(μ::T, λ::T)
         @check_args(InverseGaussian, μ > zero(μ) && λ > zero(λ))
         new(μ, λ)
     end
-    InverseGaussian(μ::Real) = InverseGaussian(μ, 1.0)
-    InverseGaussian() = new(1.0, 1.0)
 end
+
+InverseGaussian{T <: Real}(μ::T, λ::T) = InverseGaussian{T}(μ, λ)
+InverseGaussian(μ::Real, λ::Real) = InverseGaussian(promote(μ, λ)...)
+InverseGaussian(μ::Integer, λ::Integer) = InverseGaussian(Float64(μ), Float64(λ))
+InverseGaussian(μ::Real) = InverseGaussian(μ, 1.0)
+InverseGaussian() = InverseGaussian(1.0, 1.0)
 
 @distr_support InverseGaussian 0.0 Inf
 
+#### Conversions
+
+function convert{T <: Real, S <: Real}(::Type{InverseGaussian{T}}, μ::S, λ::S)
+    InverseGaussian(T(μ), T(λ))
+end
+function convert{T <: Real, S <: Real}(::Type{InverseGaussian{T}}, d::InverseGaussian{S})
+    InverseGaussian(T(d.μ), T(d.λ))
+end
 
 #### Parameters
 
@@ -61,16 +73,16 @@ end
 
 #### Evaluation
 
-function pdf(d::InverseGaussian, x::Float64)
+function pdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         return sqrt(λ / (twoπ * x^3)) * exp(-λ * (x - μ)^2 / (2.0 * μ^2 * x))
     else
-        return 0.0
+        return zero(T)
     end
 end
 
-function logpdf(d::InverseGaussian, x::Float64)
+function logpdf(d::InverseGaussian, x::Real)
     if x > 0.0
         μ, λ = params(d)
         return 0.5 * (log(λ) - (log2π + 3.0 * log(x)) - λ * (x - μ)^2 / (μ^2 * x))
@@ -79,29 +91,29 @@ function logpdf(d::InverseGaussian, x::Float64)
     end
 end
 
-function cdf(d::InverseGaussian, x::Float64)
+function cdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
         v = x / μ
         return normcdf(u * (v - 1.0)) + exp(2.0 * λ / μ) * normcdf(-u * (v + 1.0))
     else
-        return 0.0
+        return zero(T)
     end
 end
 
-function ccdf(d::InverseGaussian, x::Float64)
+function ccdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
         v = x / μ
         normccdf(u * (v - 1.0)) - exp(2.0 * λ / μ) * normcdf(-u * (v + 1.0))
     else
-        return 1.0
+        return one(T)
     end
 end
 
-function logcdf(d::InverseGaussian, x::Float64)
+function logcdf(d::InverseGaussian, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
@@ -114,7 +126,7 @@ function logcdf(d::InverseGaussian, x::Float64)
     end
 end
 
-function logccdf(d::InverseGaussian, x::Float64)
+function logccdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
@@ -123,7 +135,7 @@ function logccdf(d::InverseGaussian, x::Float64)
         b = 2.0 * λ / μ + normlogcdf(-u * (v + 1.0))
         a + log1mexp(b - a)
     else
-        return 0.0
+        return zero(T)
     end
 end
 

@@ -28,7 +28,7 @@ immutable Gumbel{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 Gumbel{T <: Real}(μ::T, θ::T) = Gumbel{T}(μ, θ)
-Gumbel(μ::Real, θ::Real) = Gumbel(promote(μ, θ))
+Gumbel(μ::Real, θ::Real) = Gumbel(promote(μ, θ)...)
 Gumbel(μ::Real) = Gumbel(μ, 1.0)
 Gumbel() = Gumbel(0.0, 1.0)
 
@@ -38,8 +38,8 @@ const DoubleExponential = Gumbel
 
 #### Conversions
 
-Gumbel{T <: Real, S <: Real}(::Type{Gumbel{T}}, μ::S, θ::S) = Gumbel(T(μ), T(θ))
-Gumbel{T <: Real, S <: Real}(::Type{Gumbel{T}}, d::Gumbel{S}) = Gumbel(T(d.μ), T(d.θ))
+convert{T <: Real, S <: Real}(::Type{Gumbel{T}}, μ::S, θ::S) = Gumbel(T(μ), T(θ))
+convert{T <: Real, S <: Real}(::Type{Gumbel{T}}, d::Gumbel{S}) = Gumbel(T(d.μ), T(d.θ))
 
 #### Parameters
 
@@ -67,25 +67,25 @@ entropy(d::Gumbel) = 1.57721566490153286 + log(d.θ)
 
 #### Evaluation
 
-zval(d::Gumbel, x::Float64) = (x - d.μ) / d.θ
-xval(d::Gumbel, z::Float64) = x * d.θ + d.μ
+zval(d::Gumbel, x::Real) = (x - d.μ) / d.θ
+xval(d::Gumbel, z::Real) = x * d.θ + d.μ
 
-function pdf(d::Gumbel, x::Float64)
+function pdf(d::Gumbel, x::Real)
     z = zval(d, x)
     exp(-z - exp(-z)) / d.θ
 end
 
-function logpdf(d::Gumbel, x::Float64)
+function logpdf(d::Gumbel, x::Real)
     z = zval(d, x)
     - (z + exp(-z) + log(d.θ))
 end
 
-cdf(d::Gumbel, x::Float64) = exp(-exp(-zval(d, x)))
-logcdf(d::Gumbel, x::Float64) = -exp(-zval(d, x))
+cdf(d::Gumbel, x::Real) = exp(-exp(-zval(d, x)))
+logcdf(d::Gumbel, x::Real) = -exp(-zval(d, x))
 
-quantile(d::Gumbel, p::Float64) = d.μ - d.θ * log(-log(p))
+quantile(d::Gumbel, p::Real) = d.μ - d.θ * log(-log(p))
 
-gradlogpdf(d::Gumbel, x::Float64) = - (1.0 + exp((d.μ - x) / d.θ)) / d.θ
+gradlogpdf(d::Gumbel, x::Real) = - (1.0 + exp((d.μ - x) / d.θ)) / d.θ
 
 
 #### Sampling

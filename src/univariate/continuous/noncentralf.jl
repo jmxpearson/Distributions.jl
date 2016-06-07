@@ -1,17 +1,28 @@
-immutable NoncentralF <: ContinuousUnivariateDistribution
-    ν1::Float64
-    ν2::Float64
-    λ::Float64
+immutable NoncentralF{T <: Real} <: ContinuousUnivariateDistribution
+    ν1::T
+    ν2::T
+    λ::T
 
-    function NoncentralF(ν1::Real, ν2::Real, λ::Real)
-        @check_args(NoncentralF, ν1 > zero(ν1) && ν2 > zero(ν2))
-        @check_args(NoncentralF, λ >= zero(λ))
+    function NoncentralF(ν1::T, ν2::T, λ::T)
+        @check_args(NoncentralF, ν1 > zero(T) && ν2 > zero(T))
+        @check_args(NoncentralF, λ >= zero(T))
 	    new(ν1, ν2, λ)
     end
 end
 
+NoncentralF{T <: Real}(ν1::T, ν2::T, λ::T) = NoncentralF{T}(ν1, ν2, λ)
+NoncentralF(ν1::Real, ν2::Real, λ::Real) = NoncentralF(promote(ν1, ν2, λ)...)
+
 @distr_support NoncentralF 0.0 Inf
 
+#### Conversions
+
+function convert{T <: Real, S <: Real}(::Type{NoncentralF{T}}, ν1::S, ν2::S, λ::S)
+    NoncentralF(T(ν1), T(ν2), T(λ))
+end
+function convert{T <: Real, S <: Real}(::Type{NoncentralF{T}}, d::NoncentralF{S})
+    NoncentralF(T(d.ν1), T(d.ν2), T(d.λ))
+end
 
 ### Parameters
 

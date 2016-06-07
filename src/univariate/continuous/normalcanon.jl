@@ -48,21 +48,21 @@ entropy(d::NormalCanon) = 0.5 * (log2π + 1.0 - log(d.λ))
 
 #### Evaluation
 
-pdf(d::NormalCanon, x::Float64) = (sqrt(d.λ) / sqrt2π) * exp(-0.5 * d.λ * abs2(x - d.μ))
-logpdf(d::NormalCanon, x::Float64) = 0.5 * (log(d.λ) - log2π - d.λ * abs2(x - d.μ))
+pdf(d::NormalCanon, x::Real) = (sqrt(d.λ) / sqrt2π) * exp(-0.5 * d.λ * abs2(x - d.μ))
+logpdf(d::NormalCanon, x::Real) = 0.5 * (log(d.λ) - log2π - d.λ * abs2(x - d.μ))
 
-zval(d::NormalCanon, x::Float64) = (x - d.μ) * sqrt(d.λ)
-xval(d::NormalCanon, z::Float64) = d.μ + z / sqrt(d.λ)
+zval(d::NormalCanon, x::Real) = (x - d.μ) * sqrt(d.λ)
+xval(d::NormalCanon, z::Real) = d.μ + z / sqrt(d.λ)
 
-cdf(d::NormalCanon, x::Float64) = normcdf(zval(d,x))
-ccdf(d::NormalCanon, x::Float64) = normccdf(zval(d,x))
-logcdf(d::NormalCanon, x::Float64) = normlogcdf(zval(d,x))
-logccdf(d::NormalCanon, x::Float64) = normlogccdf(zval(d,x))
+cdf(d::NormalCanon, x::Real) = normcdf(zval(d,x))
+ccdf(d::NormalCanon, x::Real) = normccdf(zval(d,x))
+logcdf(d::NormalCanon, x::Real) = normlogcdf(zval(d,x))
+logccdf(d::NormalCanon, x::Real) = normlogccdf(zval(d,x))
 
-quantile(d::NormalCanon, p::Float64) = xval(d, norminvcdf(p))
-cquantile(d::NormalCanon, p::Float64) = xval(d, norminvccdf(p))
-invlogcdf(d::NormalCanon, lp::Float64) = xval(d, norminvlogcdf(lp))
-invlogccdf(d::NormalCanon, lp::Float64) = xval(d, norminvlogccdf(lp))
+quantile(d::NormalCanon, p::Real) = xval(d, norminvcdf(p))
+cquantile(d::NormalCanon, p::Real) = xval(d, norminvccdf(p))
+invlogcdf(d::NormalCanon, lp::Real) = xval(d, norminvlogcdf(lp))
+invlogccdf(d::NormalCanon, lp::Real) = xval(d, norminvlogccdf(lp))
 
 
 #### Sampling

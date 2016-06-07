@@ -1,14 +1,17 @@
-immutable NoncentralBeta <: ContinuousUnivariateDistribution
-    α::Float64
-    β::Float64
-    λ::Float64
-    
-    function NoncentralBeta(α::Real, β::Real, λ::Real)
+immutable NoncentralBeta{T <: Real} <: ContinuousUnivariateDistribution
+    α::T
+    β::T
+    λ::T
+
+    function NoncentralBeta(α::T, β::T, λ::T)
     	@check_args(NoncentralBeta, α > zero(α) && β > zero(β))
         @check_args(NoncentralBeta, λ >= zero(λ))
     	new(α, β, λ)
     end
 end
+
+NoncentralBeta{T <: Real}(α::T, β::T, λ::T) = NoncentralBeta{T}(α, β, λ)
+NoncentralBeta(α::Real, β::Real, λ::Real) = NoncentralBeta(promote(α, β, λ)...)
 
 @distr_support NoncentralBeta 0.0 1.0
 
