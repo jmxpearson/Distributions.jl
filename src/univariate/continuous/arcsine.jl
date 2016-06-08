@@ -39,7 +39,7 @@ Arcsine() = Arcsine(0.0, 1.0)
 @distr_support Arcsine d.a d.b
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Arcsine{T}}, a::S, b::S)
+function convert{T <: Real}(::Type{Arcsine{T}}, a::Real, b::Real)
     Arcsine(T(a), T(b))
 end
 function convert{T <: Real, S <: Real}(::Type{Arcsine{T}}, d::Arcsine{S})

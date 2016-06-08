@@ -18,14 +18,20 @@ External links
 [Student's T distribution on Wikipedia](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
 
 """
-immutable TDist <: ContinuousUnivariateDistribution
-    ν::Float64
+immutable TDist{T <: Real} <: ContinuousUnivariateDistribution
+    ν::T
 
-    TDist(ν::Real) = (@check_args(TDist, ν > zero(ν)); new(ν))
+    TDist(ν::T) = (@check_args(TDist, ν > zero(ν)); new(ν))
 end
+
+TDist{T <: Real}(ν::T) = TDist{T}(ν)
+TDist(ν::Integer) = TDist(Float64(ν))
 
 @distr_support TDist -Inf Inf
 
+#### Conversions
+convert{T <: Real}(::Type{TDist{T}}, ν::Real) = TDist(T(ν))
+convert{T <: Real, S <: Real}(::Type{TDist{T}}, d::TDist{S}) = TDist(T(d.ν))
 
 #### Parameters
 
@@ -35,9 +41,9 @@ params(d::TDist) = (d.ν,)
 
 #### Statistics
 
-mean(d::TDist) = d.ν > 1.0 ? 0.0 : NaN
-median(d::TDist) = 0.0
-mode(d::TDist) = 0.0
+mean{T <: Real}(d::TDist{T}) = d.ν > 1.0 ? zero(T) : NaN
+median{T <: Real}(d::TDist{T}) = zero(T)
+mode{T <: Real}(d::TDist{T}) = zero(T)
 
 function var(d::TDist)
     ν = d.ν
@@ -45,7 +51,7 @@ function var(d::TDist)
     ν > 1.0 ? Inf : NaN
 end
 
-skewness(d::TDist) = d.ν > 3.0 ? 0.0 : NaN
+skewness{T <: Real}(d::TDist{T}) = d.ν > 3.0 ? zero(T) : NaN
 
 function kurtosis(d::TDist)
     ν = d.ν
@@ -74,4 +80,4 @@ function cf(d::TDist, t::Real)
     complex(2*(q*t2)^q*besselk(h,sqrt(d.ν)*abs(t))/gamma(h))
 end
 
-gradlogpdf(d::TDist, x::Float64) = -((d.ν + 1.0) * x) / (x^2 + d.ν)
+gradlogpdf(d::TDist, x::Real) = -((d.ν + 1.0) * x) / (x^2 + d.ν)

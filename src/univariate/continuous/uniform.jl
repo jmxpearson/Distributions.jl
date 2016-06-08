@@ -21,16 +21,23 @@ External links
 * [Uniform distribution (continuous) on Wikipedia](http://en.wikipedia.org/wiki/Uniform_distribution_(continuous))
 
 """
-immutable Uniform <: ContinuousUnivariateDistribution
-    a::Float64
-    b::Float64
+immutable Uniform{T <: Real} <: ContinuousUnivariateDistribution
+    a::T
+    b::T
 
-    Uniform(a::Real, b::Real) = (@check_args(Uniform, a < b); new(a, b))
-    Uniform() = new(0.0, 1.0)
+    Uniform(a::T, b::T) = (@check_args(Uniform, a < b); new(a, b))
 end
+
+Uniform{T <: Real}(a::T, b::T) = Uniform{T}(a, b)
+Uniform(a::Real, b::Real) = Uniform(promote(a, b)...)
+Uniform(a::Integer, b::Integer) = Uniform(Float64(a), Float64(b))
+Uniform() = Uniform(0.0, 1.0)
 
 @distr_support Uniform d.a d.b
 
+#### Conversions
+convert{T <: Real}(::Type{Uniform{T}}, a::Real, b::Real) = Uniform(T(a), T(b))
+convert{T <: Real, S <: Real}(::Type{Uniform{T}}, d::Uniform{S}) = Uniform(T(d.a), T(d.b))
 
 #### Parameters
 
@@ -49,31 +56,31 @@ modes(d::Uniform) = Float64[]
 
 var(d::Uniform) = (w = d.b - d.a; w^2 / 12.0)
 
-skewness(d::Uniform) = 0.0
-kurtosis(d::Uniform) = -1.2
+skewness{T <: Real}(d::Uniform{T}) = zero(T)
+kurtosis{T <: Real}(d::Uniform{T}) = -1.2*one(T)
 
 entropy(d::Uniform) = log(d.b - d.a)
 
 
 #### Evaluation
 
-pdf(d::Uniform, x::Float64) = insupport(d, x) ? 1.0 / (d.b - d.a) : 0.0
-logpdf(d::Uniform, x::Float64) = insupport(d, x) ? -log(d.b - d.a) : -Inf
+pdf{T <: Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? 1.0 / (d.b - d.a) : zero(T)
+logpdf(d::Uniform, x::Real) = insupport(d, x) ? -log(d.b - d.a) : -Inf
 
-function cdf(d::Uniform, x::Float64)
+function cdf{T <: Real}(d::Uniform{T}, x::Real)
     (a, b) = params(d)
-    x <= a ? 0.0 :
-    x >= d.b ? 1.0 : (x - a) / (b - a)
+    x <= a ? zero(T) :
+    x >= d.b ? one(T) : (x - a) / (b - a)
 end
 
-function ccdf(d::Uniform, x::Float64)
+function ccdf{T <: Real}(d::Uniform{T}, x::Real)
     (a, b) = params(d)
-    x <= a ? 1.0 :
-    x >= d.b ? 0.0 : (b - x) / (b - a)
+    x <= a ? one(T) :
+    x >= d.b ? zero(T) : (b - x) / (b - a)
 end
 
-quantile(d::Uniform, p::Float64) = d.a + p * (d.b - d.a)
-cquantile(d::Uniform, p::Float64) = d.b + p * (d.a - d.b)
+quantile(d::Uniform, p::Real) = d.a + p * (d.b - d.a)
+cquantile(d::Uniform, p::Real) = d.b + p * (d.a - d.b)
 
 
 function mgf(d::Uniform, t::Real)

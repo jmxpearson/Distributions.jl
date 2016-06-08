@@ -16,18 +16,21 @@ External links
 * [von Mises distribution on Wikipedia](http://en.wikipedia.org/wiki/Von_Mises_distribution)
 
 """
-immutable VonMises <: ContinuousUnivariateDistribution
-    μ::Float64      # mean
-    κ::Float64      # concentration
-    I0κ::Float64    # I0(κ), where I0 is the modified Bessel function of order 0
+immutable VonMises{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T      # mean
+    κ::T      # concentration
+    I0κ::T    # I0(κ), where I0 is the modified Bessel function of order 0
 
-    function VonMises(μ::Real, κ::Real)
+    function VonMises(μ::T, κ::T)
         @check_args(VonMises, κ > zero(κ))
         new(μ, κ, besseli(0, κ))
     end
-    VonMises(κ::Real) = VonMises(0.0, κ)
-    VonMises() = new(0.0, 1.0)
 end
+
+VonMises{T <: Real}(μ::T, κ::T) = VonMises{T}(μ, κ)
+VonMises(μ::Real, κ::Real) = VonMises(promote(μ, κ)...)
+VonMises(κ::Real) = VonMises(0.0, κ)
+VonMises() = VonMises(0.0, 1.0)
 
 show(io::IO, d::VonMises) = show(io, d, (:μ, :κ))
 
@@ -50,14 +53,14 @@ entropy(d::VonMises) = log(twoπ * d.I0κ) - d.κ * (besseli(1, d.κ) / d.I0κ)
 cf(d::VonMises, t::Real) = (besseli(abs(t), d.κ) / d.I0κ) * cis(t * d.μ)
 
 
-#### Evaluation
+#### Evaluations
 
-pdf(d::VonMises, x::Float64) = exp(d.κ * cos(x - d.μ)) / (twoπ * d.I0κ)
-logpdf(d::VonMises, x::Float64) = d.κ * cos(x - d.μ) - log(d.I0κ) - log2π
+pdf(d::VonMises, x::Real) = exp(d.κ * cos(x - d.μ)) / (twoπ * d.I0κ)
+logpdf(d::VonMises, x::Real) = d.κ * cos(x - d.μ) - log(d.I0κ) - log2π
 
-cdf(d::VonMises, x::Float64) = _vmcdf(d.κ, d.I0κ, x - d.μ, 1.0e-15)
+cdf(d::VonMises, x::Real) = _vmcdf(d.κ, d.I0κ, x - d.μ, 1.0e-15)
 
-function _vmcdf(κ::Float64, I0κ::Float64, x::Float64, tol::Float64)
+function _vmcdf(κ::Real, I0κ::Real, x::Real, tol::Real)
     j = 1
     cj = besseli(j, κ) / j
     s = cj * sin(j * x)

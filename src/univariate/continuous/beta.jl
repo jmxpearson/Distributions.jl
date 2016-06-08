@@ -44,7 +44,7 @@ Beta() = Beta(1.0, 1.0)
 @distr_support Beta 0.0 1.0
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Beta{T}}, α::S, β::S)
+function convert{T <: Real}(::Type{Beta{T}}, α::Real, β::Real)
     Beta(T(α), T(β))
 end
 function convert{T <: Real, S <: Real}(::Type{Beta{T}}, d::Beta{S})

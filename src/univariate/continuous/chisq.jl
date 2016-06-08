@@ -36,7 +36,7 @@ dof(d::Chisq) = d.ν
 params(d::Chisq) = (d.ν,)
 
 ### Conversions
-convert{T <: Real, S <: Real}(::Type{Chisq{T}}, ν::S) = Chisq(T(ν))
+convert{T <: Real}(::Type{Chisq{T}}, ν::Real) = Chisq(T(ν))
 convert{T <: Real, S <: Real}(::Type{Chisq{T}}, d::Chisq{S}) = Chisq(T(d.ν))
 
 

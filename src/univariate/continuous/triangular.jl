@@ -25,20 +25,31 @@ External links
 * [Triangular distribution on Wikipedia](http://en.wikipedia.org/wiki/Triangular_distribution)
 
 """
-immutable TriangularDist <: ContinuousUnivariateDistribution
-    a::Float64
-    b::Float64
-    c::Float64
+immutable TriangularDist{T <: Real} <: ContinuousUnivariateDistribution
+    a::T
+    b::T
+    c::T
 
-    function TriangularDist(a::Real, b::Real, c::Real)
+    function TriangularDist(a::T, b::T, c::T)
         @check_args(TriangularDist, a < b)
         @check_args(TriangularDist, a <= c <= b)
         new(a, b, c)
     end
-    function TriangularDist(a::Real, b::Real)
+    function TriangularDist(a::T, b::T)
         @check_args(TriangularDist, a < b)
         new(a, b, middle(a, b))
     end
+end
+
+TriangularDist{T <: Real}(a::T, b::T, c::T) = TriangularDist{T}(a, b, c)
+TriangularDist(a::Real, b::Real, c::Real) = TriangularDist(promote(a, b, c)...)
+function TriangularDist(a::Integer, b::Integer, c::Integer)
+    TriangularDist(Float64(a), Float64(b), Float64(c))
+end
+TriangularDist{T <: Real}(a::T, b::T) = TriangularDist{T}(a, b)
+TriangularDist(a::Real, b::Real) = TriangularDist(promote(a, b)...)
+function TriangularDist(a::Integer, b::Integer)
+    TriangularDist(Float64(a), Float64(b))
 end
 
 @distr_support TriangularDist d.a d.b
@@ -74,30 +85,30 @@ function skewness(d::TriangularDist)
     sqrt2 * (a + b - 2.0c) * (2.0a - b - c) * (a - 2.0b + c) / (5.0 * _pretvar(a, b, c)^1.5)
 end
 
-kurtosis(d::TriangularDist) = -0.6
+kurtosis{T <: Real}(d::TriangularDist{T}) = -0.6*one(T)
 
 entropy(d::TriangularDist) = 0.5 + log((d.b - d.a) / 2.0)
 
 
 #### Evaluation
 
-function pdf(d::TriangularDist, x::Float64)
+function pdf{T <: Real}(d::TriangularDist{T}, x::Real)
     (a, b, c) = params(d)
-    x <= a ? 0.0 :
+    x <= a ? zero(T) :
     x <  c ? 2.0 * (x - a) / ((b - a) * (c - a)) :
     x == c ? 2.0 / (b - a) :
-    x <= b ? 2.0 * (b - x) / ((b - a) * (b - c)) : 0.0
+    x <= b ? 2.0 * (b - x) / ((b - a) * (b - c)) : zero(T)
 end
 
-function cdf(d::TriangularDist, x::Float64)
+function cdf{T <: Real}(d::TriangularDist{T}, x::Real)
     (a, b, c) = params(d)
-    x <= a ? 0.0 :
+    x <= a ? zero(T) :
     x <  c ? (x - a)^2 / ((b - a) * (c - a)) :
     x == c ? (c - a) / (b - a) :
-    x <= b ? 1.0 - (b - x)^2 / ((b - a) * (b - c)) : 1.0
+    x <= b ? 1.0 - (b - x)^2 / ((b - a) * (b - c)) : one(T)
 end
 
-function quantile(d::TriangularDist, p::Float64)
+function quantile(d::TriangularDist, p::Real)
     (a, b, c) = params(d)
     c_m_a = c - a
     b_m_a = b - a
@@ -106,9 +117,9 @@ function quantile(d::TriangularDist, p::Float64)
               b - sqrt(b_m_a * (b - c) * (1.0 - p))
 end
 
-function mgf(d::TriangularDist, t::Real)
+function mgf{T <: Real}(d::TriangularDist{T}, t::Real)
     if t == zero(t)
-        return one(t)
+        return one(T)
     else
         (a, b, c) = params(d)
         u = (b - c) * exp(a * t) - (b - a) * exp(c * t) + (c - a) * exp(b * t)
@@ -117,10 +128,10 @@ function mgf(d::TriangularDist, t::Real)
     end
 end
 
-function cf(d::TriangularDist, t::Real)
+function cf{T <: Real}(d::TriangularDist{T}, t::Real)
     # Is this correct?
     if t == zero(t)
-        return one(t)
+        return one(T)
     else
         (a, b, c) = params(d)
         u = (b - c) * cis(a * t) - (b - a) * cis(c * t) + (c - a) * cis(b * t)

@@ -44,7 +44,7 @@ BetaPrime() = BetaPrime(1.0, 1.0)
 @distr_support BetaPrime 0.0 Inf
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{BetaPrime{T}}, α::S, β::S)
+function convert{T <: Real}(::Type{BetaPrime{T}}, α::Real, β::Real)
     BetaPrime(T(α), T(β))
 end
 function convert{T <: Real, S <: Real}(::Type{BetaPrime{T}}, d::BetaPrime{S})

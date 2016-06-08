@@ -40,7 +40,7 @@ Cauchy() = Cauchy(0.0, 1.0)
 @distr_support Cauchy -Inf Inf
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Cauchy{T}}, μ::S, σ::S)
+function convert{T <: Real}(::Type{Cauchy{T}}, μ::Real, σ::Real)
     Cauchy(T(μ), T(σ))
 end
 function convert{T <: Real, S <: Real}(::Type{Cauchy{T}}, d::Cauchy{S})

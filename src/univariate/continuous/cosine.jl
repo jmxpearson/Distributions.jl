@@ -18,7 +18,7 @@ Cosine() = Cosine(0.0, 1.0)
 @distr_support Cosine d.μ - d.σ d.μ + d.σ
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Cosine{T}}, μ::S, σ::S)
+function convert{T <: Real}(::Type{Cosine{T}}, μ::Real, σ::Real)
     Cosine(T(μ), T(σ))
 end
 function convert{T <: Real, S <: Real}(::Type{Cosine{T}}, d::Cosine{S})

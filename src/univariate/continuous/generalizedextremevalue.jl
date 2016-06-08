@@ -49,7 +49,7 @@ function GeneralizedExtremeValue(μ::Integer, σ::Integer, ξ::Integer)
 end
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, μ::S, σ::S, ξ::S)
+function convert{T <: Real}(::Type{GeneralizedExtremeValue{T}}, μ::Real, σ::Real, ξ::Real)
     GeneralizedExtremeValue(T(μ), T(σ), T(ξ))
 end
 function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, d::GeneralizedExtremeValue{S})

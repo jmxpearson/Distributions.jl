@@ -15,7 +15,7 @@ Epanechnikov() = Epanechnikov(0.0, 1.0)
 @distr_support Epanechnikov d.μ - d.σ d.μ + d.σ
 
 #### Conversions
-function convert{T <: Real, S <: Real}(::Type{Epanechnikov{T}}, μ::S, σ::S)
+function convert{T <: Real}(::Type{Epanechnikov{T}}, μ::Real, σ::Real)
     Epanechnikov(T(μ), T(σ))
 end
 function convert{T <: Real, S <: Real}(::Type{Epanechnikov{T}}, d::Epanechnikov{S})
