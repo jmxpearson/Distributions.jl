@@ -171,7 +171,7 @@ insupport(d::GeneralizedExtremeValue, x::Real) = minimum(d) <= x <= maximum(d)
 
 #### Evaluation
 
-function logpdf(d::GeneralizedExtremeValue, x::Float64)
+function logpdf(d::GeneralizedExtremeValue, x::Real)
     if x == -Inf || x == Inf || ! insupport(d, x)
       return -Inf
     else
@@ -192,7 +192,7 @@ function logpdf(d::GeneralizedExtremeValue, x::Float64)
     end
 end
 
-function pdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
+function pdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Real)
     if x == -Inf || x == Inf || ! insupport(d, x)
         return zero(T)
     else
@@ -213,7 +213,7 @@ function pdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     end
 end
 
-function logcdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
+function logcdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Real)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
 
@@ -230,7 +230,7 @@ function logcdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     end
 end
 
-function cdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
+function cdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Real)
     if insupport(d, x)
         (μ, σ, ξ) = params(d)
 
@@ -248,8 +248,8 @@ function cdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Float64)
     end
 end
 
-logccdf(d::GeneralizedExtremeValue, x::Float64) = log1p(- cdf(d, x))
-ccdf(d::GeneralizedExtremeValue, x::Float64) = - expm1(logcdf(d, x))
+logccdf(d::GeneralizedExtremeValue, x::Real) = log1p(- cdf(d, x))
+ccdf(d::GeneralizedExtremeValue, x::Real) = - expm1(logcdf(d, x))
 
 
 #### Sampling
