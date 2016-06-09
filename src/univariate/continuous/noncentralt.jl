@@ -10,7 +10,7 @@ immutable NoncentralT{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 NoncentralT{T <: Real}(ν::T, λ::T) = NoncentralT{T}(ν, λ)
-NoncentralT(ν::Real, λ::Real) = NoncentralT(promote(ν, λ))
+NoncentralT(ν::Real, λ::Real) = NoncentralT(promote(ν, λ)...)
 
 @distr_support NoncentralT -Inf Inf
 

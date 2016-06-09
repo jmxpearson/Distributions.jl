@@ -78,7 +78,7 @@ ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2.0 * (x - d.μ))))
 quantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfcinv(p)^2)
 cquantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfinv(p)^2)
 
-mgf{T <: Real}(d::Levy, t::Real) = t == zero(t) ? one(T) : NaN
+mgf{T <: Real}(d::Levy{T}, t::Real) = t == zero(t) ? one(T) : NaN
 
 function cf(d::Levy, t::Real)
     μ, σ = params(d)
