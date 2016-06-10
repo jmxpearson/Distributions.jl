@@ -56,8 +56,10 @@ function convert{T <: Real, S <: Real}(::Type{GeneralizedExtremeValue{T}}, d::Ge
     GeneralizedExtremeValue(T(d.μ), T(d.σ), T(d.ξ))
 end
 
-minimum(d::GeneralizedExtremeValue) = d.ξ > 0.0 ? d.μ - d.σ / d.ξ : -Inf
-maximum(d::GeneralizedExtremeValue) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
+minimum{T <: Real}(d::GeneralizedExtremeValue{T}) =
+        d.ξ > 0.0 ? d.μ - d.σ / d.ξ : -convert(T, Inf)
+maximum{T <: Real}(d::GeneralizedExtremeValue{T}) =
+        d.ξ < 0.0 ? d.μ - d.σ / d.ξ : convert(T, Inf)
 
 
 #### Parameters
@@ -83,7 +85,7 @@ function median(d::GeneralizedExtremeValue)
     end
 end
 
-function mean(d::GeneralizedExtremeValue)
+function mean{T <: Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
@@ -91,7 +93,7 @@ function mean(d::GeneralizedExtremeValue)
     elseif ξ < 1.0
         return μ + σ * (gamma(1.0 - ξ) - 1.0) / ξ
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
@@ -105,7 +107,7 @@ function mode(d::GeneralizedExtremeValue)
     end
 end
 
-function var(d::GeneralizedExtremeValue)
+function var{T <: Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
@@ -113,11 +115,11 @@ function var(d::GeneralizedExtremeValue)
     elseif ξ < 0.5
         return σ ^ 2.0 * (g(d, 2.0) - g(d, 1.0) ^ 2.0) / ξ ^ 2.0
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
-function skewness(d::GeneralizedExtremeValue)
+function skewness{T <: Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
@@ -128,15 +130,15 @@ function skewness(d::GeneralizedExtremeValue)
         g3 = g(d, 3)
         return sign(ξ) * (g3 - 3.0 * g1 * g2 + 2.0 * g1 ^ 3.0) / (g2 - g1 ^ 2.0) ^ (3.0 / 2.0)
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
-function kurtosis(d::GeneralizedExtremeValue)
+function kurtosis{T <: Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
-        return 12.0 / 5.0
+        return 12.0 / 5.0 * one(T)
     elseif ξ < 1.0 / 4.0
         g1 = g(d, 1)
         g2 = g(d, 2)
@@ -144,7 +146,7 @@ function kurtosis(d::GeneralizedExtremeValue)
         g4 = g(d, 4)
         return (g4 - 4.0 * g1 * g3 + 6.0 * g2 * g1 ^ 2.0 - 3.0 * g1 ^ 4.0) / (g2 - g1 ^ 2.0) ^ 2.0 - 3.0
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
@@ -153,7 +155,7 @@ function entropy(d::GeneralizedExtremeValue)
     return log(σ) + γ * ξ + (1.0 + γ)
 end
 
-function quantile(d::GeneralizedExtremeValue, p::Float64)
+function quantile(d::GeneralizedExtremeValue, p::Real)
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
@@ -171,9 +173,9 @@ insupport(d::GeneralizedExtremeValue, x::Real) = minimum(d) <= x <= maximum(d)
 
 #### Evaluation
 
-function logpdf(d::GeneralizedExtremeValue, x::Real)
+function logpdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Real)
     if x == -Inf || x == Inf || ! insupport(d, x)
-      return -Inf
+      return -convert(T, Inf)
     else
         (μ, σ, ξ) = params(d)
 
@@ -183,7 +185,7 @@ function logpdf(d::GeneralizedExtremeValue, x::Real)
             return - log(σ) - t - exp(- t)
         else
             if z * ξ == -1.0 # Otherwise, would compute zero to the power something.
-                return -Inf
+                return -convert(T, Inf)
             else
                 t = (1.0 + z * ξ) ^ (- 1.0 / ξ)
                 return - log(σ) + (ξ + 1.0) * log(t) - t
@@ -224,7 +226,7 @@ function logcdf{T <: Real}(d::GeneralizedExtremeValue{T}, x::Real)
             return - (1.0 + z * ξ) ^ ( -1.0 / ξ)
         end
     elseif x <= minimum(d)
-        return - Inf
+        return -convert(T, Inf)
     else
         return zero(T)
     end

@@ -33,8 +33,8 @@ immutable FDist{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 FDist{T <: Real}(ν1::T, ν2::T) = FDist{T}(ν1, ν2)
-FDist(ν1::Real, ν2::Real) = FDist(promote(ν1, ν2)...)
 FDist(ν1::Integer, ν2::Integer) = FDist(Float64(ν1), Float64(ν2))
+FDist(ν1::Real, ν2::Real) = FDist(promote(ν1, ν2)...)
 
 @distr_support FDist 0.0 Inf
 
@@ -53,35 +53,35 @@ params(d::FDist) = (d.ν1, d.ν2)
 
 #### Statistics
 
-mean(d::FDist) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : NaN)
+mean{T <: Real}(d::FDist{T}) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : convert(T, NaN))
 
 function mode{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     ν1 > 2.0 ? ((ν1 - 2.0)/ν1) * (ν2 / (ν2 + 2.0)) : zero(T)
 end
 
-function var(d::FDist)
+function var{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
-    ν2 > 4.0 ? 2.0 * ν2^2 * (ν1 + ν2 - 2.0) / (ν1 * (ν2 - 2.0)^2 * (ν2 - 4.0)) : NaN
+    ν2 > 4.0 ? 2.0 * ν2^2 * (ν1 + ν2 - 2.0) / (ν1 * (ν2 - 2.0)^2 * (ν2 - 4.0)) : convert(T, NaN)
 end
 
-function skewness(d::FDist)
+function skewness{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 6.0
         return (2.0 * ν1 + ν2 - 2.0) * sqrt(8.0 * (ν2 - 4.0)) / ((ν2 - 6.0) * sqrt(ν1 * (ν1 + ν2 - 2.0)))
     else
-        return NaN
+        return convert(T, NaN)
     end
 end
 
-function kurtosis(d::FDist)
+function kurtosis{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 8.0
         a = ν1 * (5. * ν2 - 22.) * (ν1 + ν2 - 2.) + (ν2 - 4.) * (ν2 - 2.)^2
         b = ν1 * (ν2 - 6.) * (ν2 - 8.) * (ν2 - 2.)
         return 12. * a / b
     else
-        return NaN
+        return convert(T, NaN)
     end
 end
 

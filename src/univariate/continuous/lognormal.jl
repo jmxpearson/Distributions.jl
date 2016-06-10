@@ -36,7 +36,7 @@ LogNormal(μ::Integer, σ::Integer) = LogNormal(Float64(μ), Float64(σ))
 LogNormal(μ::Real) = LogNormal(μ, 1.0)
 LogNormal() = LogNormal(0.0, 1.0)
 
-@distr_support LogNormal 0.0 Inf
+@distr_support LogNormal 0.0 convert(T, Inf)
 
 #### Conversions
 convert{T <: Real, S <: Real}(::Type{LogNormal{T}}, μ::S, σ::S) = LogNormal(T(μ), T(σ))
@@ -86,9 +86,9 @@ end
 #### Evalution
 
 pdf(d::LogNormal, x::Real) = normpdf(d.μ, d.σ, log(x)) / x
-function logpdf(d::LogNormal, x::Real)
+function logpdf{T <: Real}(d::LogNormal{T}, x::Real)
     if !insupport(d, x)
-        return -Inf
+        return -convert(T, Inf)
     else
         lx = log(x)
         return normlogpdf(d.μ, d.σ, lx) - lx
@@ -97,8 +97,8 @@ end
 
 cdf{T <: Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normcdf(d.μ, d.σ, log(x)) : zero(T)
 ccdf{T <: Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normccdf(d.μ, d.σ, log(x)) : one(T)
-logcdf(d::LogNormal, x::Real) = x > 0.0 ? normlogcdf(d.μ, d.σ, log(x)) : -Inf
-logccdf{T <: Real}(d::LogNormal, x::Real) = x > 0.0 ? normlogccdf(d.μ, d.σ, log(x)) : zero(T)
+logcdf{T <: Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normlogcdf(d.μ, d.σ, log(x)) : -convert(T, Inf)
+logccdf{T <: Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normlogccdf(d.μ, d.σ, log(x)) : zero(T)
 
 quantile(d::LogNormal, q::Real) = exp(norminvcdf(d.μ, d.σ, q))
 cquantile(d::LogNormal, q::Real) = exp(norminvccdf(d.μ, d.σ, q))

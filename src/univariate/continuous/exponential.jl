@@ -26,7 +26,7 @@ immutable Exponential{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 Exponential{T <: Real}(θ::T) = Exponential{T}(θ)
-Exponential(θ::Int) = Exponential(Float64(θ))
+Exponential(θ::Integer) = Exponential(Float64(θ))
 Exponential() = Exponential(1.0)
 
 @distr_support Exponential 0.0 Inf
@@ -48,11 +48,11 @@ params(d::Exponential) = (d.θ,)
 
 mean(d::Exponential) = d.θ
 median(d::Exponential) = logtwo * d.θ
-mode(d::Exponential) = 0.0
+mode{T <: Real}(d::Exponential{T}) = zero(T)
 
 var(d::Exponential) = d.θ^2
-skewness(d::Exponential) = 2.0
-kurtosis(d::Exponential) = 6.0
+skewness{T <: Real}(d::Exponential{T}) = 2.0*one(T)
+kurtosis{T <: Real}(d::Exponential{T}) = 6.0*one(T)
 
 entropy(d::Exponential) = 1.0 + log(d.θ)
 
@@ -63,19 +63,21 @@ zval(d::Exponential, x::Real) = x / d.θ
 xval(d::Exponential, z::Real) = z * d.θ
 
 pdf(d::Exponential, x::Real) = (λ = rate(d); x < 0.0 ? zero(λ) : λ * exp(-λ * x))
-logpdf(d::Exponential, x::Real) =  (λ = rate(d); x < 0.0 ? -Inf : log(λ) - λ * x)
+function logpdf{T <: Real}(d::Exponential{T}, x::Real)
+    (λ = rate(d); x < 0.0 ? -convert(T, Inf) : log(λ) - λ * x)
+end
 
-cdf(d::Exponential, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : 0.0
-ccdf(d::Exponential, x::Real) = x > 0.0 ? exp(-zval(d, x)) : 0.0
-logcdf(d::Exponential, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -Inf
-logccdf(d::Exponential, x::Real) = x > 0.0 ? -zval(d, x) : 0.0
+cdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : zero(T)
+ccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? exp(-zval(d, x)) : zero(T)
+logcdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -convert(T, Inf)
+logccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -zval(d, x) : zero(T)
 
 quantile(d::Exponential, p::Real) = -xval(d, log1p(-p))
 cquantile(d::Exponential, p::Real) = -xval(d, log(p))
 invlogcdf(d::Exponential, lp::Real) = -xval(d, log1mexp(lp))
 invlogccdf(d::Exponential, lp::Real) = -xval(d, lp)
 
-gradlogpdf(d::Exponential, x::Real) = x > 0.0 ? -rate(d) : 0.0
+gradlogpdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -rate(d) : zero(T)
 
 mgf(d::Exponential, t::Real) = 1.0/(1.0 - t * scale(d))
 cf(d::Exponential, t::Real) = 1.0/(1.0 - t * im * scale(d))

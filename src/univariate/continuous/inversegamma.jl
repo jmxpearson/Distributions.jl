@@ -36,10 +36,11 @@ end
 
 InverseGamma{T<:Real}(α::T, θ::T) = InverseGamma{T}(α, θ)
 InverseGamma(α::Real, θ::Real) = InverseGamma(promote(α, θ)...)
+InverseGamma(α::Integer, θ::Integer) = InverseGamma(Float64(α), Float64(θ))
 InverseGamma(α::Real) = InverseGamma(α, 1.0)
 InverseGamma() = InverseGamma(1.0, 1.0)
 
-@distr_support InverseGamma 0.0 Inf
+@distr_support InverseGamma 0.0 convert(T, Inf)
 
 #### Conversions
 convert{T <: Real, S <: Real}(::Type{InverseGamma{T}}, α::S, θ::S) = InverseGamma(T(α), T(θ))
@@ -56,23 +57,23 @@ params(d::InverseGamma) = (shape(d), scale(d))
 
 #### Parameters
 
-mean(d::InverseGamma) = ((α, θ) = params(d); α  > 1.0 ? θ / (α - 1.0) : Inf)
+mean{T<:Real}(d::InverseGamma{T}) = ((α, θ) = params(d); α  > 1.0 ? θ / (α - 1.0) : convert(T, Inf))
 
 mode(d::InverseGamma) = scale(d) / (shape(d) + 1.0)
 
-function var(d::InverseGamma)
+function var{T<:Real}(d::InverseGamma{T})
     (α, θ) = params(d)
-    α > 2.0 ? θ^2 / ((α - 1.0)^2 * (α - 2.0)) : Inf
+    α > 2.0 ? θ^2 / ((α - 1.0)^2 * (α - 2.0)) : convert(T, Inf)
 end
 
-function skewness(d::InverseGamma)
+function skewness{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 3.0 ? 4.0 * sqrt(α - 2.0) / (α - 3.0) : NaN
+    α > 3.0 ? 4.0 * sqrt(α - 2.0) / (α - 3.0) : convert(T, NaN)
 end
 
-function kurtosis(d::InverseGamma)
+function kurtosis{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 4.0 ? (30.0 * α - 66.0) / ((α - 3.0) * (α - 4.0)) : NaN
+    α > 4.0 ? (30.0 * α - 66.0) / ((α - 3.0) * (α - 4.0)) : convert(T, NaN)
 end
 
 function entropy(d::InverseGamma)
@@ -100,14 +101,14 @@ cquantile(d::InverseGamma, p::Real) = 1.0 / quantile(d.invd, p)
 invlogcdf(d::InverseGamma, p::Real) = 1.0 / invlogccdf(d.invd, p)
 invlogccdf(d::InverseGamma, p::Real) = 1.0 / invlogcdf(d.invd, p)
 
-function mgf(d::InverseGamma, t::Real)
+function mgf{T<:Real}(d::InverseGamma{T}, t::Real)
     (a, b) = params(d)
-    t == zero(t) ? 1.0 : 2.0*(-b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4.0*b*t))
+    t == zero(t) ? one(T) : 2.0*(-b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4.0*b*t))
 end
 
-function cf(d::InverseGamma, t::Real)
+function cf{T<:Real}(d::InverseGamma{T}, t::Real)
     (a, b) = params(d)
-    t == zero(t) ? 1.0+0.0im : 2.0*(-im*b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4.0*im*b*t))
+    t == zero(t) ? one(T)+zero(T)*im : 2.0*(-im*b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4.0*im*b*t))
 end
 
 

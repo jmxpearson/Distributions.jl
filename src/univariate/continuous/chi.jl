@@ -27,7 +27,7 @@ immutable Chi{T <: Real} <: ContinuousUnivariateDistribution
 end
 
 Chi{T <: Real}(ν::T) = Chi{T}(ν)
-Chi(ν::Int) = Chi(Float64(ν))
+Chi(ν::Integer) = Chi(Float64(ν))
 
 @distr_support Chi 0.0 Inf
 
@@ -46,7 +46,7 @@ params(d::Chi) = (d.ν,)
 mean(d::Chi) = (h = d.ν * 0.5; sqrt2 * gamma(h + 0.5) / gamma(h))
 
 var(d::Chi) = d.ν - mean(d)^2
-_chi_skewness(μ::Float64, σ::Float64) = (σ2 = σ^2; σ3 = σ2 * σ; (μ / σ3) * (1.0 - 2.0 * σ2))
+_chi_skewness(μ::Real, σ::Real) = (σ2 = σ^2; σ3 = σ2 * σ; (μ / σ3) * (1.0 - 2.0 * σ2))
 
 function skewness(d::Chi)
     μ = mean(d)
@@ -72,23 +72,23 @@ end
 
 #### Evaluation
 
-pdf(d::Chi, x::Float64) = exp(logpdf(d, x))
+pdf(d::Chi, x::Real) = exp(logpdf(d, x))
 
-logpdf(d::Chi, x::Float64) = (ν = d.ν;
+logpdf(d::Chi, x::Real) = (ν = d.ν;
     (1.0 - 0.5 * ν) * logtwo + (ν - 1.0) * log(x) - 0.5 * x^2 - lgamma(0.5 * ν)
 )
 
-gradlogpdf(d::Chi, x::Float64) = x >= 0.0 ? (d.ν - 1.0) / x - x : 0.0
+gradlogpdf{T <: Real}(d::Chi{T}, x::Real) = x >= 0.0 ? (d.ν - 1.0) / x - x : zero(T)
 
-cdf(d::Chi, x::Float64) = chisqcdf(d.ν, x^2)
-ccdf(d::Chi, x::Float64) = chisqccdf(d.ν, x^2)
-logcdf(d::Chi, x::Float64) = chisqlogcdf(d.ν, x^2)
-logccdf(d::Chi, x::Float64) = chisqlogccdf(d.ν, x^2)
+cdf(d::Chi, x::Real) = chisqcdf(d.ν, x^2)
+ccdf(d::Chi, x::Real) = chisqccdf(d.ν, x^2)
+logcdf(d::Chi, x::Real) = chisqlogcdf(d.ν, x^2)
+logccdf(d::Chi, x::Real) = chisqlogccdf(d.ν, x^2)
 
-quantile(d::Chi, p::Float64) = sqrt(chisqinvcdf(d.ν, p))
-cquantile(d::Chi, p::Float64) = sqrt(chisqinvccdf(d.ν, p))
-invlogcdf(d::Chi, p::Float64) = sqrt(chisqinvlogcdf(d.ν, p))
-invlogccdf(d::Chi, p::Float64) = sqrt(chisqinvlogccdf(d.ν, p))
+quantile(d::Chi, p::Real) = sqrt(chisqinvcdf(d.ν, p))
+cquantile(d::Chi, p::Real) = sqrt(chisqinvccdf(d.ν, p))
+invlogcdf(d::Chi, p::Real) = sqrt(chisqinvlogcdf(d.ν, p))
+invlogccdf(d::Chi, p::Real) = sqrt(chisqinvlogccdf(d.ν, p))
 
 
 #### Sampling

@@ -108,8 +108,8 @@ end
 
 @_delegate_statsfuns Beta beta α β
 
-gradlogpdf(d::Beta, x::Float64) =
-    ((α, β) = params(d); 0.0 <= x <= 1.0 ? (α - 1.0) / x - (β - 1.0) / (1 - x) : 0.0)
+gradlogpdf{T <: Real}(d::Beta{T}, x::Real) =
+    ((α, β) = params(d); 0.0 <= x <= 1.0 ? (α - 1.0) / x - (β - 1.0) / (1 - x) : zero(T))
 
 
 #### Sampling

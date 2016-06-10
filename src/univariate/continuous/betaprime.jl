@@ -58,22 +58,26 @@ params(d::BetaPrime) = (d.α, d.β)
 
 #### Statistics
 
-mean(d::BetaPrime) = ((α, β) = params(d); β > 1.0 ? α / (β - 1.0) : NaN)
-
-mode(d::BetaPrime) = ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : zero(α))
-
-function var(d::BetaPrime)
-    (α, β) = params(d)
-    β > 2.0 ? α * (α + β - 1.0) / ((β - 2.0) * (β - 1.0)^2) : NaN
+function mean{T <: Real}(d::BetaPrime{T})
+    ((α, β) = params(d); β > 1.0 ? α / (β - 1.0) : convert(T, NaN))
 end
 
-function skewness(d::BetaPrime)
+function mode{T <: Real}(d::BetaPrime{T})
+    ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : zero(T))
+end
+
+function var{T <: Real}(d::BetaPrime{T})
+    (α, β) = params(d)
+    β > 2.0 ? α * (α + β - 1.0) / ((β - 2.0) * (β - 1.0)^2) : convert(T, NaN)
+end
+
+function skewness{T <: Real}(d::BetaPrime{T})
     (α, β) = params(d)
     if β > 3.0
         s = α + β - 1.0
         2.0 * (α + s) / (β - 3.0) * sqrt((β - 2.0) / (α * s))
     else
-        return NaN
+        return convert(T, NaN)
     end
 end
 

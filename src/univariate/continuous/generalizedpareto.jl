@@ -51,7 +51,7 @@ GeneralizedPareto(ξ::Real, σ::Real) = GeneralizedPareto(0.0, σ, ξ)
 GeneralizedPareto() = GeneralizedPareto(0.0, 1.0, 1.0)
 
 minimum(d::GeneralizedPareto) = d.μ
-maximum(d::GeneralizedPareto) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
+maximum{T <: Real}(d::GeneralizedPareto{T}) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
 
 #### Conversions
 function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, μ::S, σ::S, ξ::S)
@@ -73,33 +73,33 @@ params(d::GeneralizedPareto) = (d.μ, d.σ, d.ξ)
 
 median(d::GeneralizedPareto) = d.μ + d.σ * expm1(d.ξ * log(2.0)) / d.ξ
 
-function mean(d::GeneralizedPareto)
+function mean{T <: Real}(d::GeneralizedPareto{T})
     if d.ξ < 1.0
         return d.μ + d.σ / (1.0 - d.ξ)
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
-function var(d::GeneralizedPareto)
+function var{T <: Real}(d::GeneralizedPareto{T})
     if d.ξ < 0.5
         return d.σ^2 / ((1.0 - d.ξ)^2 * (1.0 - 2.0 * d.ξ))
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
-function skewness(d::GeneralizedPareto)
+function skewness{T <: Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < (1.0 / 3.0)
         return 2.0 * (1.0 + ξ) * sqrt(1.0 - 2.0 * ξ) / (1.0 - 3.0 * ξ)
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
-function kurtosis(d::GeneralizedPareto)
+function kurtosis{T <: Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < 0.25
@@ -107,18 +107,18 @@ function kurtosis(d::GeneralizedPareto)
         k2 = (1.0 - 3.0 * ξ) * (1.0 - 4.0 * ξ)
         return 3.0 * k1 / k2 - 3.0
     else
-        return Inf
+        return convert(T, Inf)
     end
 end
 
 
 #### Evaluation
 
-function logpdf(d::GeneralizedPareto, x::Real)
+function logpdf{T <: Real}(d::GeneralizedPareto{T}, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logpdf is log(0) outside the support range.
-    p = -Inf
+    p = -convert(T, Inf)
 
     if x >= μ
         z = (x - μ) / σ
@@ -134,11 +134,11 @@ end
 
 pdf(d::GeneralizedPareto, x::Real) = exp(logpdf(d, x))
 
-function logccdf(d::GeneralizedPareto, x::Real)
+function logccdf{T <: Real}(d::GeneralizedPareto{T}, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logccdf is log(0) outside the support range.
-    p = -Inf
+    p = -convert(T, Inf)
 
     if x >= μ
         z = (x - μ) / σ
@@ -155,13 +155,13 @@ end
 ccdf(d::GeneralizedPareto, x::Real) = exp(logccdf(d, x))
 cdf(d::GeneralizedPareto, x::Real) = -expm1(logccdf(d, x))
 
-function quantile(d::GeneralizedPareto, p::Real)
+function quantile{T <: Real}(d::GeneralizedPareto{T}, p::Real)
     (μ, σ, ξ) = params(d)
 
     if p == 0.0
-        z = 0.0
+        z = zero(T)
     elseif p == 1.0
-        z = ξ < 0.0 ? -1.0 / ξ : Inf
+        z = ξ < 0.0 ? -1.0 / ξ : convert(T, Inf)
     elseif 0.0 < p < 1.0
         if abs(ξ) < eps()
             z = -log1p(-p)
@@ -169,7 +169,7 @@ function quantile(d::GeneralizedPareto, p::Real)
             z = expm1(-ξ * log1p(-p)) / ξ
         end
     else
-      z = NaN
+      z = convert(T, NaN)
     end
 
     return μ + σ * z

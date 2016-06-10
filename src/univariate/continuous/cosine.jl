@@ -12,6 +12,7 @@ end
 
 Cosine{T <: Real}(μ::T, σ::T) = Cosine{T}(μ, σ)
 Cosine(μ::Real, σ::Real) = Cosine(promote(μ, σ)...)
+Cosine(μ::Integer, σ::Integer) = Cosine(Float64(μ), Float64(σ))
 Cosine(μ::Real) = Cosine(μ, 1.0)
 Cosine() = Cosine(0.0, 1.0)
 
@@ -43,23 +44,25 @@ mode(d::Cosine) = d.μ
 
 var(d::Cosine) = d.σ^2 * 0.13069096604865779  # 0.130... = 1/3 - 2 / π^2
 
-skewness(d::Cosine) = 0.0
+skewness{T <: Real}(d::Cosine{T}) = zero(T)
 
-kurtosis(d::Cosine) = -0.59376287559828102362
+kurtosis{T <: Real}(d::Cosine{T}) = -0.59376287559828102362*one(T)
 
 
 #### Evaluation
 
-function pdf(d::Cosine, x::Real)
+function pdf{T <: Real}(d::Cosine{T}, x::Real)
     if insupport(d, x)
         z = (x - d.μ) / d.σ
         return (1.0 + cospi(z)) / (2 * d.σ)
     else
-        return 0.0
+        return zero(T)
     end
 end
 
-logpdf(d::Cosine, x::Real) = insupport(d, x) ? log(pdf(d, x)) : -Inf
+function logpdf{T <: Real}(d::Cosine{T}, x::Real)
+    insupport(d, x) ? log(pdf(d, x)) : -convert(T, Inf)
+end
 
 function cdf(d::Cosine, x::Real)
     z = (x - d.μ) / d.σ

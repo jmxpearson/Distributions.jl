@@ -34,8 +34,8 @@ median(d::Epanechnikov) = d.μ
 mode(d::Epanechnikov) = d.μ
 
 var(d::Epanechnikov) = d.σ^2 / 5
-skewness(d::Epanechnikov) = 0.0
-kurtosis(d::Epanechnikov) = -2.914285714285714  # 3/35-3
+skewness{T <: Real}(d::Epanechnikov{T}) = zero(T)
+kurtosis{T <: Real}(d::Epanechnikov{T}) = -2.914285714285714*one(T)  # 3/35-3
 
 ## Functions
 function pdf{T <: Real}(d::Epanechnikov{T}, x::Real)

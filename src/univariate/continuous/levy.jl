@@ -31,7 +31,7 @@ Levy(μ::Real, σ::Real) = Levy(promote(μ, σ)...)
 Levy(μ::Real) = Levy(μ, 1.0)
 Levy() = Levy(0.0, 1.0)
 
-@distr_support Levy d.μ Inf
+@distr_support Levy d.μ convert(T, Inf)
 
 #### Conversions
 
@@ -46,10 +46,10 @@ params(d::Levy) = (d.μ, d.σ)
 
 #### Statistics
 
-mean(d::Levy) = Inf
-var(d::Levy) = Inf
-skewness(d::Levy) = NaN
-kurtosis(d::Levy) = NaN
+mean{T <: Real}(d::Levy{T}) = convert(T, Inf)
+var{T <: Real}(d::Levy{T}) = convert(T, Inf)
+skewness{T <: Real}(d::Levy{T}) = convert(T, NaN)
+kurtosis{T <: Real}(d::Levy{T}) = convert(T, NaN)
 
 mode(d::Levy) = d.σ / 3.0 + d.μ
 
@@ -78,7 +78,7 @@ ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2.0 * (x - d.μ))))
 quantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfcinv(p)^2)
 cquantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfinv(p)^2)
 
-mgf{T <: Real}(d::Levy{T}, t::Real) = t == zero(t) ? one(T) : NaN
+mgf{T <: Real}(d::Levy{T}, t::Real) = t == zero(t) ? one(T) : convert(T, NaN)
 
 function cf(d::Levy, t::Real)
     μ, σ = params(d)

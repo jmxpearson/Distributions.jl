@@ -61,20 +61,24 @@ mode(d::Arcsine) = d.a
 modes(d::Arcsine) = [d.a, d.b]
 
 var(d::Arcsine) = 0.125 * abs2(d.b - d.a)
-skewness(d::Arcsine) = 0.0
-kurtosis(d::Arcsine) = -1.5
+skewness{T <: Real}(d::Arcsine{T}) = zero(T)
+kurtosis{T <: Real}(d::Arcsine{T}) = -1.5*one(T)
 
 entropy(d::Arcsine) = -0.24156447527049044469 + log(scale(d))
 
 
 ### Evaluation
 
-pdf(d::Arcsine, x::Real) = insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
+function pdf(d::Arcsine, x::Real)
+    insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
+end
 
-logpdf(d::Arcsine, x::Real) = insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -Inf
+function logpdf{T <: Real}(d::Arcsine{T}, x::Real)
+    insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -convert(T,Inf)
+end
 
-cdf(d::Arcsine, x::Real) = x < d.a ? 0.0 :
-                              x > d.b ? 1.0 :
+cdf{T <: Real}(d::Arcsine{T}, x::Real) = x < d.a ? zero(T) :
+                              x > d.b ? one(T) :
                               0.636619772367581343 * asin(sqrt((x - d.a) / (d.b - d.a)))
 
 quantile(d::Arcsine, p::Real) = location(d) + abs2(sin(halfπ * p)) * scale(d)

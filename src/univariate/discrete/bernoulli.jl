@@ -34,7 +34,6 @@ immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
 end
 
 Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
-Bernoulli{T <: Integer}(p::T) = Bernoulli(Float64(p))
 Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1
@@ -91,8 +90,12 @@ ccdf(d::Bernoulli, x::Bool) = x ? succprob(d) : one(d.p)
 ccdf(d::Bernoulli, x::Int) = x < 0 ? one(d.p) :
                              x < 1 ? succprob(d) : zero(d.p)
 
-quantile(d::Bernoulli, p::Real) = 0.0 <= p <= 1.0 ? (p <= failprob(d) ? 0 : 1) : NaN
-cquantile(d::Bernoulli, p::Real) = 0.0 <= p <= 1.0 ? (p >= succprob(d) ? 0 : 1) : NaN
+function quantile{T <: Real}(d::Bernoulli{T}, p::Real)
+    0.0 <= p <= 1.0 ? (p <= failprob(d) ? 0 : 1) : convert(T, NaN)
+end
+function cquantile{T <: Real}(d::Bernoulli{T}, p::Real)
+    0.0 <= p <= 1.0 ? (p >= succprob(d) ? 0 : 1) : convert(T, NaN)
+end
 
 mgf(d::Bernoulli, t::Real) = failprob(d) + succprob(d) * exp(t)
 cf(d::Bernoulli, t::Real) = failprob(d) + succprob(d) * cis(t)

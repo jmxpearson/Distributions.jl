@@ -28,10 +28,10 @@ median(d::Kolmogorov) = 0.8275735551899077
 #   http://projecteuclid.org/euclid.aoms/1177730256
 # use one series for small x, one for large x
 # 5 terms seems to be sufficient for Float64 accuracy
-# some divergence from Smirnov's table in 6th decimal near 1.0 (e.g. 1.04): occurs in 
+# some divergence from Smirnov's table in 6th decimal near 1.0 (e.g. 1.04): occurs in
 # both series so assume error in table.
 
-function cdf_raw(d::Kolmogorov, x::Float64)
+function cdf_raw(d::Kolmogorov, x::Real)
     a = -(pi*pi)/(x*x)
     f = exp(a)
     f2 = f*f
@@ -39,7 +39,7 @@ function cdf_raw(d::Kolmogorov, x::Float64)
     sqrt2π*exp(a/8)*u/x
 end
 
-function ccdf_raw(d::Kolmogorov, x::Float64)
+function ccdf_raw(d::Kolmogorov, x::Real)
     f = exp(-2*x*x)
     f2 = f*f
     f3 = f2*f
@@ -49,7 +49,7 @@ function ccdf_raw(d::Kolmogorov, x::Float64)
     2f*u
 end
 
-function cdf(d::Kolmogorov,x::Float64)
+function cdf(d::Kolmogorov,x::Real)
     if x <= 0.0
         0.0
     elseif x <= 1.0
@@ -58,7 +58,7 @@ function cdf(d::Kolmogorov,x::Float64)
         1.0-ccdf_raw(d,x)
     end
 end
-function ccdf(d::Kolmogorov,x::Float64)
+function ccdf(d::Kolmogorov,x::Real)
     if x <= 0.0
         1.0
     elseif x <= 1.0
@@ -70,11 +70,11 @@ end
 
 
 # TODO: figure out how best to truncate series
-function pdf(d::Kolmogorov,x::Float64)
+function pdf(d::Kolmogorov,x::Real)
     if x <= 0.0
         return 0.0
     elseif x <= 1.0
-        c = π/(2.0*x)        
+        c = π/(2.0*x)
         s = 0.0
         for i = 1:20
             k = ((2*i-1)*c)^2
@@ -147,7 +147,7 @@ end
 # equivalent to
 # rand(Truncated(Gamma(1.5,1.0),tp,Inf))
 function rand_trunc_gamma()
-    tp = 2.193245422464302 #pi^2/(8*t^2)    
+    tp = 2.193245422464302 #pi^2/(8*t^2)
     while true
         e0 = rand(Exponential(1.2952909208355123))
         e1 = rand(Exponential(2.0))

@@ -81,8 +81,8 @@ cf(d::Gamma, t::Real) = (1.0 - im * t * d.θ)^(-d.α)
 
 @_delegate_statsfuns Gamma gamma α θ
 
-gradlogpdf(d::Gamma, x::Float64) =
-    insupport(Gamma, x) ? (d.α - 1.0) / x - 1.0 / d.θ : 0.0
+gradlogpdf{T <: Real}(d::Gamma{T}, x::Real) =
+    insupport(Gamma, x) ? (d.α - 1.0) / x - 1.0 / d.θ : zero(T)
 
 rand(d::Gamma) = StatsFuns.Rmath.gammarand(d.α, d.θ)
 

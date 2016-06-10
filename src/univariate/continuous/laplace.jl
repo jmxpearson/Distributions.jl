@@ -61,8 +61,8 @@ mode(d::Laplace) = d.μ
 
 var(d::Laplace) = 2.0 * d.θ^2
 std(d::Laplace) = sqrt2 * d.θ
-skewness(d::Laplace) = 0.0
-kurtosis(d::Laplace) = 3.0
+skewness{T <: Real}(d::Laplace{T}) = zero(T)
+kurtosis{T <: Real}(d::Laplace{T}) = 3.0*one(T)
 
 entropy(d::Laplace) = log(2.0 * d.θ) + 1.0
 

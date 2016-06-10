@@ -1,11 +1,14 @@
-immutable Biweight <: ContinuousUnivariateDistribution
-    μ::Float64
-    σ::Float64
+immutable Biweight{T <: Real} <: ContinuousUnivariateDistribution
+    μ::T
+    σ::T
 
-    Biweight(μ::Real, σ::Real) = (@check_args(Biweight, σ > zero(σ)); new(μ, σ))
-    Biweight(μ::Real) = new(μ, 1.0)
-    Biweight() = new(0.0, 1.0)
+    Biweight(μ::T, σ::T) = (@check_args(Biweight, σ > zero(σ)); new(μ, σ))
 end
+
+Biweight{T <: Real}(μ::T, σ::T) = Biweight{T}(μ, σ)
+Biweight(μ::Real, σ::Real) = Biweight(promote(μ, σ)...)
+Biweight(μ::Real) = Biweight(μ, 1.0)
+Biweight() = Biweight(0.0, 1.0)
 
 @distr_support Biweight d.μ - d.σ d.μ + d.σ
 
@@ -18,41 +21,41 @@ median(d::Biweight) = d.μ
 mode(d::Biweight) = d.μ
 
 var(d::Biweight) = d.σ^2 / 7.0
-skewness(d::Biweight) = 0.0
-kurtosis(d::Biweight) = -2.9523809523809526  # = 1/21-3
+skewness{T <: Real}(d::Biweight{T}) = zero(T)
+kurtosis{T <: Real}(d::Biweight{T}) = -2.9523809523809526*one(T)  # = 1/21-3
 
 ## Functions
-function pdf(d::Biweight, x::Float64)
+function pdf{T <: Real}(d::Biweight{T}, x::Real)
     u = abs(x - d.μ) / d.σ
-    u >= 1.0 ? 0.0 : 0.9375 * (1 - u^2)^2 / d.σ
+    u >= 1.0 ? zero(T) : 0.9375 * (1 - u^2)^2 / d.σ
 end
 
-function cdf(d::Biweight, x::Float64)
+function cdf{T <: Real}(d::Biweight{T}, x::Real)
     u = (x - d.μ) / d.σ
-    u <= -1.0 ? 0.0 :
-    u >= 1.0 ? 1.0 :
+    u <= -1.0 ? zero(T) :
+    u >= 1.0 ? one(T) :
     0.0625 * (u + 1.0)^3 * @horner(u,8.0,-9.0,3.0)
 end
 
-function ccdf(d::Biweight, x::Float64)
+function ccdf{T <: Real}(d::Biweight{T}, x::Real)
     u = (d.μ - x) / d.σ
-    u <= -1.0 ? 1.0 :
-    u >= 1.0 ? 0.0 :
+    u <= -1.0 ? one(T) :
+    u >= 1.0 ? zero(T) :
     0.0625 * (u + 1.0)^3 * @horner(u,8.0,-9.0,3.0)
 end
 
 @quantile_newton Biweight
 
-function mgf(d::Biweight, t::Float64)
+function mgf{T <: Real}(d::Biweight{T}, t::Real)
     a = d.σ*t
     a2 = a^2
-    a == 0 ? 1.0 :
+    a == 0 ? one(T) :
     15.0 * exp(d.μ * t) * (-3.0 * cosh(a) + (a + 3.0/a) * sinh(a)) / (a2^2)
 end
 
-function cf(d::Biweight, t::Float64)
+function cf{T <: Real}(d::Biweight{T}, t::Real)
     a = d.σ * t
     a2 = a^2
-    a == 0 ? 1.0+0.0im :
+    a == 0 ? one(T)+zero(T)*im :
     -15.0 * cis(d.μ * t) * (3.0 * cos(a) + (a - 3.0/a) * sin(a)) / (a2^2)
 end
