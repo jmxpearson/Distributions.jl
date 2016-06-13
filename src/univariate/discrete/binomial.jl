@@ -63,7 +63,10 @@ params(d::Binomial) = (d.n, d.p)
 
 mean(d::Binomial) = ntrials(d) * succprob(d)
 var(d::Binomial) = ntrials(d) * succprob(d) * failprob(d)
-mode(d::Binomial) = ((n, p) = params(d); n > 0 ? round(Int,(n + 1) * d.prob) : 0)
+function mode{T <: Real}(d::Binomial{T})
+    (n, p) = params(d)
+    n > 0 ? round(Int,(n + 1) * d.prob) : zero(T)
+end
 modes(d::Binomial) = Int[mode(d)]
 
 median(d::Binomial) = round(Int,mean(d))

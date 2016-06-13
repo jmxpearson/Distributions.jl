@@ -1,7 +1,7 @@
 # Noncentral hypergeometric distribution
 # TODO: this distribution needs clean-up and testing
 
-abstract NoncentralHypergeometric <: DiscreteUnivariateDistribution
+abstract NoncentralHypergeometric{T <: Real} <: DiscreteUnivariateDistribution
 
 ### handling support
 
@@ -13,9 +13,9 @@ end
 
 # Functions
 
-function quantile(d::NoncentralHypergeometric, q::Float64)
+function quantile{T <: Real}(d::NoncentralHypergeometric{T}, q::Real)
     if !(zero(q) <= q <= one(q))
-        NaN
+        convert(T, NaN)
     else
         range = support(d)
         if q > 0.5
@@ -36,7 +36,7 @@ params(d::NoncentralHypergeometric) = (d.ns, d.nf, d.n, d.ω)
 
 ## Fisher's noncentral hypergeometric distribution
 
-immutable FisherNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric
+immutable FisherNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric{T}
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size
@@ -96,7 +96,7 @@ pdf(d::FisherNoncentralHypergeometric, k::Int) = exp(logpdf(d, k))
 
 ## Wallenius' noncentral hypergeometric distribution
 
-immutable WalleniusNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric
+immutable WalleniusNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric{T}
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size

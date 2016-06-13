@@ -97,7 +97,7 @@ end
 
 entropy(d::BetaBinomial) = entropy(Categorical(pdf(d)))
 median(d::BetaBinomial) = median(Categorical(pdf(d))) - 1
-mode(d::BetaBinomial) = indmax(pdf(d)) - one(d.α)
+mode{T <: Real}(d::BetaBinomial{T}) = indmax(pdf(d)) - one(T)
 modes(d::BetaBinomial) = [x - 1 for x in modes(Categorical(pdf(d)))]
 
 quantile(d::BetaBinomial, p::Float64) = quantile(Categorical(pdf(d)), p) - 1

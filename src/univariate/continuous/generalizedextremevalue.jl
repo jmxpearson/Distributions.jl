@@ -123,7 +123,7 @@ function skewness{T <: Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0.0
-        return 12.0 * sqrt(6.0) * zeta(3.0) / pi ^ 3.0
+        return 12.0 * sqrt(6.0) * zeta(3.0) / pi ^ 3.0 * one(T)
     elseif ξ < 1.0 / 3.0
         g1 = g(d, 1)
         g2 = g(d, 2)

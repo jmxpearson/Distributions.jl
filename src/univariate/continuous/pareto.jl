@@ -51,23 +51,26 @@ params(d::Pareto) = (d.α, d.θ)
 
 #### Statistics
 
-mean(d::Pareto) = ((α, θ) = params(d); α > 1.0 ? α * θ / (α - 1.0) : Inf)
+function mean{T <: Real}(d::Pareto{T})
+    (α, θ) = params(d)
+    α > 1.0 ? α * θ / (α - 1.0) : convert(T, Inf)
+end
 median(d::Pareto) = ((α, θ) = params(d); θ * 2.0 ^ (1.0 / α))
 mode(d::Pareto) = d.θ
 
-function var(d::Pareto)
+function var{T <: Real}(d::Pareto{T})
     (α, θ) = params(d)
-    α > 2.0 ? (θ^2 * α) / ((α - 1.0)^2 * (α - 2.0)) : Inf
+    α > 2.0 ? (θ^2 * α) / ((α - 1.0)^2 * (α - 2.0)) : convert(T, Inf)
 end
 
-function skewness(d::Pareto)
+function skewness{T <: Real}(d::Pareto{T})
     α = shape(d)
-    α > 3.0 ? ((2.0 * (1.0 + α)) / (α - 3.0)) * sqrt((α - 2.0) / α) : NaN
+    α > 3.0 ? ((2.0 * (1.0 + α)) / (α - 3.0)) * sqrt((α - 2.0) / α) : convert(T, NaN)
 end
 
-function kurtosis(d::Pareto)
+function kurtosis{T <: Real}(d::Pareto{T})
     α = shape(d)
-    α > 4.0 ? (6.0 * (α^3 + α^2 - 6.0 * α - 2.0)) / (α * (α - 3.0) * (α - 4.0)) : NaN
+    α > 4.0 ? (6.0 * (α^3 + α^2 - 6.0 * α - 2.0)) / (α * (α - 3.0) * (α - 4.0)) : convert(T, NaN)
 end
 
 entropy(d::Pareto) = ((α, θ) = params(d); log(θ / α) + 1.0 / α + 1.0)
@@ -80,9 +83,9 @@ function pdf{T <: Real}(d::Pareto{T}, x::Real)
     x >= θ ? α * (θ / x)^α * (1.0 / x) : zero(T)
 end
 
-function logpdf(d::Pareto, x::Real)
+function logpdf{T <: Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
-    x >= θ ? log(α) + α * log(θ) - (α + 1.0) * log(x) : -Inf
+    x >= θ ? log(α) + α * log(θ) - (α + 1.0) * log(x) : -convert(T, Inf)
 end
 
 function ccdf{T <: Real}(d::Pareto{T}, x::Real)

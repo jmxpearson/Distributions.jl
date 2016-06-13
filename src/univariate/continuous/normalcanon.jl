@@ -16,10 +16,11 @@ NormalCanon() = NormalCanon(0.0, 1.0, 0.0)
 
 @distr_support NormalCanon -Inf Inf
 
-
-## conversion between Normal and NormalCanon
+#### Type Conversions
 convert{T <: Real, S <: Real}(::Type{NormalCanon{T}}, η::S, λ::S) = NormalCanon(T(η), T(λ))
 convert{T <: Real, S <: Real}(::Type{NormalCanon{T}}, d::NormalCanon{S}) = NormalCanon(T(d.η), T(d.λ))
+
+## conversion between Normal and NormalCanon
 
 convert(::Type{Normal}, d::NormalCanon) = Normal(d.μ, 1.0 / sqrt(d.λ))
 convert(::Type{NormalCanon}, d::Normal) = (λ = 1.0 / d.σ^2; NormalCanon(λ * d.μ, λ))
@@ -37,8 +38,8 @@ mean(d::NormalCanon) = d.μ
 median(d::NormalCanon) = mean(d)
 mode(d::NormalCanon) = mean(d)
 
-skewness(d::NormalCanon) = 0.0
-kurtosis(d::NormalCanon) = 0.0
+skewness{T <: Real}(d::NormalCanon{T}) = zero(T)
+kurtosis{T <: Real}(d::NormalCanon{T}) = zero(T)
 
 var(d::NormalCanon) = 1.0 / d.λ
 std(d::NormalCanon) = sqrt(var(d))

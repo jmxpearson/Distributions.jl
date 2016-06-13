@@ -11,6 +11,7 @@ end
 
 NoncentralT{T <: Real}(ν::T, λ::T) = NoncentralT{T}(ν, λ)
 NoncentralT(ν::Real, λ::Real) = NoncentralT(promote(ν, λ)...)
+NoncentralT(ν::Integer, λ::Integer) = NoncentralT(Float64(ν), Float64(λ))
 
 @distr_support NoncentralT -Inf Inf
 
@@ -25,17 +26,18 @@ params(d::NoncentralT) = (d.ν, d.λ)
 
 ### Statistics
 
-function mean(d::NoncentralT)
+function mean{T <: Real}(d::NoncentralT{T})
     if d.ν > 1.0
         isinf(d.ν) ? d.λ :
         sqrt(0.5*d.ν) * d.λ * gamma(0.5*(d.ν-1)) / gamma(0.5*d.ν)
     else
-        NaN
+        convert(T, NaN)
     end
 end
 
-var(d::NoncentralT) = d.ν > 2.0 ? d.ν*(1+d.λ^2)/(d.ν-2.0) - mean(d)^2 : NaN
-
+function var{T <: Real}(d::NoncentralT{T})
+    d.ν > 2.0 ? d.ν*(1+d.λ^2)/(d.ν-2.0) - mean(d)^2 : convert(T, NaN)
+end
 
 ### Evaluation & Sampling
 

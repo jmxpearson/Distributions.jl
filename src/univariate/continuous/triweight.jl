@@ -42,24 +42,24 @@ end
 
 function cdf{T <: Real}(d::Triweight{T}, x::Real)
     u = (x - d.μ)/d.σ
-    u <= -1 ? 0.0 : u >= 1 ? one(T) : 0.03125*(1+u)^4*@horner(u,16.0,-29.0,20.0,-5.0)
+    u <= -1 ? zero(T) : u >= 1 ? one(T) : 0.03125*(1+u)^4*@horner(u,16.0,-29.0,20.0,-5.0)
 end
 
 function ccdf{T <: Real}(d::Triweight{T}, x::Real)
     u = (d.μ - x)/d.σ
-    u <= -1 ? 1.0 : u >= 1 ? zero(T) : 0.03125*(1+u)^4*@horner(u,16.0,-29.0,20.0,-5.0)
+    u <= -1 ? one(T) : u >= 1 ? zero(T) : 0.03125*(1+u)^4*@horner(u,16.0,-29.0,20.0,-5.0)
 end
 
 @quantile_newton Triweight
 
-function mgf(d::Triweight, t::Float64)
+function mgf{T <: Real}(d::Triweight{T}, t::Float64)
     a = d.σ*t
     a2 = a*a
-    a == 0 ? one(a) : 105.0*exp(d.μ*t)*((15.0/a2+1.0)*cosh(a)-(15.0/a2-6.0)/a*sinh(a))/(a2*a2)
+    a == 0 ? one(T) : 105.0*exp(d.μ*t)*((15.0/a2+1.0)*cosh(a)-(15.0/a2-6.0)/a*sinh(a))/(a2*a2)
 end
 
-function cf(d::Triweight, t::Float64)
+function cf{T <: Real}(d::Triweight{T}, t::Float64)
     a = d.σ*t
     a2 = a*a
-    a == 0 ? complex(one(a)) : 105.0*cis(d.μ*t)*((1.0-15.0/a2)*cos(a)+(15.0/a2-6.0)/a*sin(a))/(a2*a2)
+    a == 0 ? complex(one(T)) : 105.0*cis(d.μ*t)*((1.0-15.0/a2)*cos(a)+(15.0/a2-6.0)/a*sin(a))/(a2*a2)
 end
