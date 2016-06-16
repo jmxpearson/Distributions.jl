@@ -29,6 +29,7 @@ end
 
 VonMises{T <: Real}(μ::T, κ::T) = VonMises{T}(μ, κ)
 VonMises(μ::Real, κ::Real) = VonMises(promote(μ, κ)...)
+VonMises(μ::Integer, κ::Integer) = VonMises(Float64(μ), Float64(κ))
 VonMises(κ::Real) = VonMises(0.0, κ)
 VonMises() = VonMises(0.0, 1.0)
 

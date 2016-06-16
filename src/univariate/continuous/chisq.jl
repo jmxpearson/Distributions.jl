@@ -74,7 +74,7 @@ mgf(d::Chisq, t::Real) = (1.0 - 2.0 * t)^(-d.ν * 0.5)
 
 cf(d::Chisq, t::Real) = (1.0 - 2.0 * im * t)^(-d.ν * 0.5)
 
-gradlogpdf{T <: Real}(d::Chisq{T}, x::Float64) =  x > 0.0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
+gradlogpdf{T <: Real}(d::Chisq{T}, x::Real) =  x > 0.0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
 
 
 #### Sampling
