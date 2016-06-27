@@ -34,6 +34,7 @@ immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
 end
 
 Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
+Bernoulli(p::Integer) = Bernoulli(Float64(p))
 Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1

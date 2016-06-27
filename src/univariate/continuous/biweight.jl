@@ -7,6 +7,7 @@ end
 
 Biweight{T <: Real}(μ::T, σ::T) = Biweight{T}(μ, σ)
 Biweight(μ::Real, σ::Real) = Biweight(promote(μ, σ)...)
+Biweight(μ::Integer, σ::Integer) = Biweight(Float64(μ), Float64(σ))
 Biweight(μ::Real) = Biweight(μ, 1.0)
 Biweight() = Biweight(0.0, 1.0)
 

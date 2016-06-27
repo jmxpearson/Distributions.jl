@@ -126,7 +126,7 @@ function mgf{T <: Real}(d::Categorical{T}, t::Real)
     s
 end
 
-function cf(d::Categorical, t::Real)
+function cf{T <: Real}(d::Categorical{T}, t::Real)
     k = ncategories(d)
     p = probs(d)
     s = zero(T) + zero(T)*im
