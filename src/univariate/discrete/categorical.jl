@@ -154,11 +154,11 @@ end
 
 ### Evaluation
 
-function cdf(d::Categorical, x::Int)
+function cdf{T<:Real}(d::Categorical{T}, x::Int)
     k = ncategories(d)
     p = probs(d)
-    x < 1 && return 0.0
-    x >= k && return 1.0
+    x < 1 && return zero(T)
+    x >= k && return one(T)
     c = p[1]
     for i = 2:x
         @inbounds c += p[i]
@@ -172,7 +172,7 @@ logpdf(d::Categorical, x::Int) = insupport(d, x) ? log(d.p[x]) : -Inf
 
 pdf(d::Categorical) = copy(d.p)
 
-function _pdf!(r::AbstractArray, d::Categorical, rgn::UnitRange)
+function _pdf!{T<:Real}(r::AbstractArray, d::Categorical{T}, rgn::UnitRange)
     vfirst = round(Int, first(rgn))
     vlast = round(Int, last(rgn))
     vl = max(vfirst, 1)
@@ -180,7 +180,7 @@ function _pdf!(r::AbstractArray, d::Categorical, rgn::UnitRange)
     p = probs(d)
     if vl > vfirst
         for i = 1:(vl - vfirst)
-            r[i] = 0.0
+            r[i] = zero(T)
         end
     end
     fm1 = vfirst - 1
@@ -189,7 +189,7 @@ function _pdf!(r::AbstractArray, d::Categorical, rgn::UnitRange)
     end
     if vr < vlast
         for i = (vr-vfirst+2):length(rgn)
-            r[i] = 0.0
+            r[i] = zero(T)
         end
     end
     return r

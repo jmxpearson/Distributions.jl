@@ -19,18 +19,23 @@ External links
 
 * [Discrete uniform distribution on Wikipedia](http://en.wikipedia.org/wiki/Uniform_distribution_(discrete))
 """
-immutable DiscreteUniform <: DiscreteUnivariateDistribution
-    a::Int
-    b::Int
-    pv::Float64
+immutable DiscreteUniform{T<:Real} <: DiscreteUnivariateDistribution
+    a::T
+    b::T
+    pv::T
 
-    function DiscreteUniform(a::Real, b::Real)
+    function DiscreteUniform(a::T, b::T)
         @check_args(DiscreteUniform, a <= b)
         new(a, b, 1.0 / (b - a + 1))
     end
-    DiscreteUniform(b::Real) = DiscreteUniform(0, b)
-    DiscreteUniform() = new(0, 1, 0.5)
+
 end
+
+DiscreteUniform{T<:Real}(a::T, b::T) = DiscreteUniform{T}(a, b)
+DiscreteUniform(a::Real, b::Real) = DiscreteUniform(promote(a, b)...)
+DiscreteUniform(a::Integer, b::Integer) = DiscreteUniform(Float64(a), Float64(b))
+DiscreteUniform(b::Real) = DiscreteUniform(0, b)
+DiscreteUniform() = DiscreteUniform(0.0, 1.0)
 
 @distr_support DiscreteUniform d.a d.b
 
@@ -54,7 +59,7 @@ median(d::DiscreteUniform) = middle(d.a, d.b)
 
 var(d::DiscreteUniform) = (span(d)^2 - 1.0) / 12.0
 
-skewness(d::DiscreteUniform) = 0.0
+skewness{T<:Real}(d::DiscreteUniform{T}) = zero(T)
 
 function kurtosis(d::DiscreteUniform)
     n2 = span(d)^2
@@ -69,13 +74,13 @@ modes(d::DiscreteUniform) = [d.a:d.b]
 
 ### Evaluation
 
-cdf(d::DiscreteUniform, x::Int) = (x < d.a ? 0.0 :
-                                   x > d.b ? 1.0 :
+cdf{T<:Real}(d::DiscreteUniform{T}, x::Int) = (x < d.a ? zero(T) :
+                                   x > d.b ? one(T) :
                                    (floor(Int,x) - d.a + 1.0) * d.pv)
 
-pdf(d::DiscreteUniform, x::Int) = insupport(d, x) ? d.pv : 0.0
+pdf{T<:Real}(d::DiscreteUniform{T}, x::Int) = insupport(d, x) ? d.pv : zero(T)
 
-logpdf(d::DiscreteUniform, x::Int) = insupport(d, x) ? log(d.pv) : -Inf
+logpdf{T<:Real}(d::DiscreteUniform{T}, x::Int) = insupport(d, x) ? log(d.pv) : -T(Inf)
 
 pdf(d::DiscreteUniform) = fill(probval(d), span(d))
 
@@ -104,20 +109,20 @@ function _pdf!(r::AbstractArray, d::DiscreteUniform, rgn::UnitRange)
     return r
 end
 
-function _logpdf!(r::AbstractArray, d::DiscreteUniform, x::AbstractArray)
+function _logpdf!{T<:Real}(r::AbstractArray, d::DiscreteUniform{T}, x::AbstractArray)
     lpv = log(probval(d))
     for i = 1:length(x)
-        @inbounds r[i] = insupport(d, x[i]) ? lpv : -Inf
+        @inbounds r[i] = insupport(d, x[i]) ? lpv : -T(Inf)
     end
     return r
 end
 
 quantile(d::DiscreteUniform, p::Float64) = d.a + floor(Int,p * span(d))
 
-function mgf(d::DiscreteUniform, t::Real)
+function mgf{T<:Real}(d::DiscreteUniform{T}, t::Real)
     a, b = d.a, d.b
     u = b - a + 1
-    t == 0 ? 1.0 : (exp(t*a) * expm1(t*u)) / (u*expm1(t))
+    t == 0 ? one(T) : (exp(t*a) * expm1(t*u)) / (u*expm1(t))
 end
 
 function cf(d::DiscreteUniform, t::Real)

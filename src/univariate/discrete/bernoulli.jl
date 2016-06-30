@@ -92,10 +92,10 @@ ccdf(d::Bernoulli, x::Int) = x < 0 ? one(d.p) :
                              x < 1 ? succprob(d) : zero(d.p)
 
 function quantile{T<:Real}(d::Bernoulli{T}, p::Real)
-    0.0 <= p <= 1.0 ? (p <= failprob(d) ? 0 : 1) : T(NaN)
+    0.0 <= p <= 1.0 ? (p <= failprob(d) ? zero(T) : one(T)) : T(NaN)
 end
 function cquantile{T<:Real}(d::Bernoulli{T}, p::Real)
-    0.0 <= p <= 1.0 ? (p >= succprob(d) ? 0 : 1) : T(NaN)
+    0.0 <= p <= 1.0 ? (p >= succprob(d) ? zero(T) : one(T)) : T(NaN)
 end
 
 mgf(d::Bernoulli, t::Real) = failprob(d) + succprob(d) * exp(t)
