@@ -76,7 +76,7 @@ function pdf{T <: Real}(d::Geometric{T}, x::Int)
 end
 
 function logpdf{T <: Real}(d::Geometric{T}, x::Int)
-    x >= 0 ? log(d.p) + log1p(-d.p) * x : -convert(T, Inf)
+    x >= 0 ? log(d.p) + log1p(-d.p) * x : -T(Inf)
 end
 
 immutable RecursiveGeomProbEvaluator <: RecursiveProbabilityEvaluator
@@ -103,7 +103,7 @@ function ccdf{T <: Real}(d::Geometric{T}, x::Int)
 end
 
 function logcdf{T <: Real}(d::Geometric{T}, x::Int)
-    x < 0 ? -convert(T, Inf) : log1mexp(log1p(-d.p) * (x + 1))
+    x < 0 ? -T(Inf) : log1mexp(log1p(-d.p) * (x + 1))
 end
 
 logccdf(d::Geometric, x::Int) =  x < 0 ? zero(d.p) : log1p(-d.p) * (x + 1)
@@ -118,7 +118,7 @@ function invlogccdf{T <: Real}(d::Geometric{T}, lp::Real)
     if (lp > zero(d.p)) || isnan(lp)
         return convert(T, NaN)
     elseif isinf(lp)
-        return convert(T, Inf)
+        return T(Inf)
     elseif lp == zero(d.p)
         return zero(T)
     end

@@ -107,7 +107,7 @@ end
 
 pdf(d::PoissonBinomial, k::Int) = insupport(d, k) ? d.pmf[k+1] : 0.
 function logpdf{T <: Real}(d::PoissonBinomial{T}, k::Int)
-    insupport(d, k) ? log(d.pmf[k+1]) : -convert(T, Inf)
+    insupport(d, k) ? log(d.pmf[k+1]) : -T(Inf)
 end
 pdf(d::PoissonBinomial) = copy(d.pmf)
 
