@@ -19,13 +19,13 @@ External links
 * [Exponential distribution on Wikipedia](http://en.wikipedia.org/wiki/Exponential_distribution)
 
 """
-immutable Exponential{T <: Real} <: ContinuousUnivariateDistribution
+immutable Exponential{T<:Real} <: ContinuousUnivariateDistribution
     θ::T		# note: scale not rate
 
     Exponential(θ::Real) = (@check_args(Exponential, θ > zero(θ)); new(θ))
 end
 
-Exponential{T <: Real}(θ::T) = Exponential{T}(θ)
+Exponential{T<:Real}(θ::T) = Exponential{T}(θ)
 Exponential(θ::Integer) = Exponential(Float64(θ))
 Exponential() = Exponential(1.0)
 
@@ -48,11 +48,11 @@ params(d::Exponential) = (d.θ,)
 
 mean(d::Exponential) = d.θ
 median(d::Exponential) = logtwo * d.θ
-mode{T <: Real}(d::Exponential{T}) = zero(T)
+mode{T<:Real}(d::Exponential{T}) = zero(T)
 
 var(d::Exponential) = d.θ^2
-skewness{T <: Real}(d::Exponential{T}) = 2.0*one(T)
-kurtosis{T <: Real}(d::Exponential{T}) = 6.0*one(T)
+skewness{T<:Real}(d::Exponential{T}) = 2.0*one(T)
+kurtosis{T<:Real}(d::Exponential{T}) = 6.0*one(T)
 
 entropy(d::Exponential) = 1.0 + log(d.θ)
 
@@ -63,21 +63,21 @@ zval(d::Exponential, x::Real) = x / d.θ
 xval(d::Exponential, z::Real) = z * d.θ
 
 pdf(d::Exponential, x::Real) = (λ = rate(d); x < 0.0 ? zero(λ) : λ * exp(-λ * x))
-function logpdf{T <: Real}(d::Exponential{T}, x::Real)
+function logpdf{T<:Real}(d::Exponential{T}, x::Real)
     (λ = rate(d); x < 0.0 ? -T(Inf) : log(λ) - λ * x)
 end
 
-cdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : zero(T)
-ccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? exp(-zval(d, x)) : zero(T)
-logcdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -T(Inf)
-logccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -zval(d, x) : zero(T)
+cdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : zero(T)
+ccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? exp(-zval(d, x)) : zero(T)
+logcdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -T(Inf)
+logccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -zval(d, x) : zero(T)
 
 quantile(d::Exponential, p::Real) = -xval(d, log1p(-p))
 cquantile(d::Exponential, p::Real) = -xval(d, log(p))
 invlogcdf(d::Exponential, lp::Real) = -xval(d, log1mexp(lp))
 invlogccdf(d::Exponential, lp::Real) = -xval(d, lp)
 
-gradlogpdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -rate(d) : zero(T)
+gradlogpdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -rate(d) : zero(T)
 
 mgf(d::Exponential, t::Real) = 1.0/(1.0 - t * scale(d))
 cf(d::Exponential, t::Real) = 1.0/(1.0 - t * im * scale(d))

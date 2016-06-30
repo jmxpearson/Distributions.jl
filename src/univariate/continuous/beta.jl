@@ -25,7 +25,7 @@ External links
 
 """
 
-immutable Beta{T <: Real} <: ContinuousUnivariateDistribution
+immutable Beta{T<:Real} <: ContinuousUnivariateDistribution
     α::T
     β::T
 
@@ -35,7 +35,7 @@ immutable Beta{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-Beta{T <: Real}(α::T, β::T) = Beta{T}(α, β)
+Beta{T<:Real}(α::T, β::T) = Beta{T}(α, β)
 Beta(α::Real, β::Real) = Beta(promote(α, β)...)
 Beta(α::Integer, β::Integer) = Beta(Float64(α), Float64(β))
 Beta(α::Real) = Beta(α, α)
@@ -44,7 +44,7 @@ Beta() = Beta(1.0, 1.0)
 @distr_support Beta 0.0 1.0
 
 #### Conversions
-function convert{T <: Real}(::Type{Beta{T}}, α::Real, β::Real)
+function convert{T<:Real}(::Type{Beta{T}}, α::Real, β::Real)
     Beta(T(α), T(β))
 end
 function convert{T <: Real, S <: Real}(::Type{Beta{T}}, d::Beta{S})
@@ -108,7 +108,7 @@ end
 
 @_delegate_statsfuns Beta beta α β
 
-gradlogpdf{T <: Real}(d::Beta{T}, x::Real) =
+gradlogpdf{T<:Real}(d::Beta{T}, x::Real) =
     ((α, β) = params(d); 0.0 <= x <= 1.0 ? (α - 1.0) / x - (β - 1.0) / (1 - x) : zero(T))
 
 

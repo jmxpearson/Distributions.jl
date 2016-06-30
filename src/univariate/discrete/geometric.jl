@@ -20,7 +20,7 @@ External links
 
 """
 
-immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
+immutable Geometric{T<:Real} <: DiscreteUnivariateDistribution
     p::T
 
     function Geometric(p::T)
@@ -30,14 +30,14 @@ immutable Geometric{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-Geometric{T <: Real}(p::T) = Geometric{T}(p)
+Geometric{T<:Real}(p::T) = Geometric{T}(p)
 Geometric(p::Integer) = Geometric(Float64(p))
 Geometric() = Geometric(0.5)
 
 @distr_support Geometric 0 Inf
 
 ### Conversions
-convert{T <: Real}(::Type{Geometric{T}}, p::Real) = Geometric(T(p))
+convert{T<:Real}(::Type{Geometric{T}}, p::Real) = Geometric(T(p))
 convert{T <: Real, S <: Real}(::Type{Geometric{T}}, d::Geometric{S}) = Geometric(T(d.p))
 
 ### Parameters
@@ -53,7 +53,7 @@ mean(d::Geometric) = failprob(d) / succprob(d)
 
 median(d::Geometric) = -fld(logtwo, log1p(-d.p)) - 1
 
-mode{T <: Real}(d::Geometric{T}) = zero(T)
+mode{T<:Real}(d::Geometric{T}) = zero(T)
 
 var(d::Geometric) = (1 - d.p) / abs2(d.p)
 
@@ -66,7 +66,7 @@ entropy(d::Geometric) = (-xlogx(succprob(d)) - xlogx(failprob(d))) / d.p
 
 ### Evaluations
 
-function pdf{T <: Real}(d::Geometric{T}, x::Int)
+function pdf{T<:Real}(d::Geometric{T}, x::Int)
     if x >= 0
         p = d.p
         return p < one(p) / 10 ? p * exp(log1p(-p) * x) : d.p * (one(p) - p)^x
@@ -75,7 +75,7 @@ function pdf{T <: Real}(d::Geometric{T}, x::Int)
     end
 end
 
-function logpdf{T <: Real}(d::Geometric{T}, x::Int)
+function logpdf{T<:Real}(d::Geometric{T}, x::Int)
     x >= 0 ? log(d.p) + log1p(-d.p) * x : -T(Inf)
 end
 
@@ -88,21 +88,21 @@ nextpdf(s::RecursiveGeomProbEvaluator, p::Real, x::Integer) = p * s.p0
 _pdf!(r::AbstractArray, d::Geometric, rgn::UnitRange) = _pdf!(r, d, rgn, RecursiveGeomProbEvaluator(d))
 
 
-function cdf{T <: Real}(d::Geometric{T}, x::Int)
+function cdf{T<:Real}(d::Geometric{T}, x::Int)
     x < 0 && return zero(T)
     p = succprob(d)
     n = x + 1
     p < 1/2 ? -expm1(log1p(-p)*n) : 1 - (1 - p)^n
 end
 
-function ccdf{T <: Real}(d::Geometric{T}, x::Int)
+function ccdf{T<:Real}(d::Geometric{T}, x::Int)
     x < 0 && return one(T)
     p = succprob(d)
     n = x + 1
     p < 1/2 ? exp(log1p(-p)*n) : (1 - p)^n
 end
 
-function logcdf{T <: Real}(d::Geometric{T}, x::Int)
+function logcdf{T<:Real}(d::Geometric{T}, x::Int)
     x < 0 ? -T(Inf) : log1mexp(log1p(-d.p) * (x + 1))
 end
 
@@ -114,7 +114,7 @@ cquantile(d::Geometric, p::Real) = invlogccdf(d, log(p))
 
 invlogcdf(d::Geometric, lp::Real) = invlogccdf(d, log1mexp(lp))
 
-function invlogccdf{T <: Real}(d::Geometric{T}, lp::Real)
+function invlogccdf{T<:Real}(d::Geometric{T}, lp::Real)
     if (lp > zero(d.p)) || isnan(lp)
         return T(NaN)
     elseif isinf(lp)

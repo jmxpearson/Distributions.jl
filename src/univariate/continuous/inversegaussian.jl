@@ -21,7 +21,7 @@ External links
 * [Inverse Gaussian distribution on Wikipedia](http://en.wikipedia.org/wiki/Inverse_Gaussian_distribution)
 
 """
-immutable InverseGaussian{T <: Real} <: ContinuousUnivariateDistribution
+immutable InverseGaussian{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     λ::T
 
@@ -31,7 +31,7 @@ immutable InverseGaussian{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-InverseGaussian{T <: Real}(μ::T, λ::T) = InverseGaussian{T}(μ, λ)
+InverseGaussian{T<:Real}(μ::T, λ::T) = InverseGaussian{T}(μ, λ)
 InverseGaussian(μ::Real, λ::Real) = InverseGaussian(promote(μ, λ)...)
 InverseGaussian(μ::Integer, λ::Integer) = InverseGaussian(Float64(μ), Float64(λ))
 InverseGaussian(μ::Real) = InverseGaussian(μ, 1.0)
@@ -73,7 +73,7 @@ end
 
 #### Evaluation
 
-function pdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function pdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         return sqrt(λ / (twoπ * x^3)) * exp(-λ * (x - μ)^2 / (2.0 * μ^2 * x))
@@ -82,7 +82,7 @@ function pdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     end
 end
 
-function logpdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function logpdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         return 0.5 * (log(λ) - (log2π + 3.0 * log(x)) - λ * (x - μ)^2 / (μ^2 * x))
@@ -91,7 +91,7 @@ function logpdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     end
 end
 
-function cdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function cdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
@@ -102,7 +102,7 @@ function cdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     end
 end
 
-function ccdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function ccdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
@@ -113,7 +113,7 @@ function ccdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     end
 end
 
-function logcdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function logcdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)
@@ -126,7 +126,7 @@ function logcdf{T <: Real}(d::InverseGaussian{T}, x::Real)
     end
 end
 
-function logccdf{T <: Real}(d::InverseGaussian{T}, x::Real)
+function logccdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0.0
         μ, λ = params(d)
         u = sqrt(λ / x)

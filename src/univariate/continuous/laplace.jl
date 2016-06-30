@@ -21,14 +21,14 @@ External links
 
 """
 
-immutable Laplace{T <: Real} <: ContinuousUnivariateDistribution
+immutable Laplace{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     θ::T
 
     Laplace(μ::T, θ::T) = (@check_args(Laplace, θ > zero(θ)); new(μ, θ))
 end
 
-Laplace{T <: Real}(μ::T, θ::T) = Laplace{T}(μ, θ)
+Laplace{T<:Real}(μ::T, θ::T) = Laplace{T}(μ, θ)
 Laplace(μ::Real, θ::Real) = Laplace(promote(μ, θ)...)
 Laplace(μ::Real) = Laplace(μ, 1.0)
 Laplace() = Laplace(0.0, 1.0)
@@ -61,8 +61,8 @@ mode(d::Laplace) = d.μ
 
 var(d::Laplace) = 2.0 * d.θ^2
 std(d::Laplace) = sqrt2 * d.θ
-skewness{T <: Real}(d::Laplace{T}) = zero(T)
-kurtosis{T <: Real}(d::Laplace{T}) = 3.0*one(T)
+skewness{T<:Real}(d::Laplace{T}) = zero(T)
+kurtosis{T<:Real}(d::Laplace{T}) = 3.0*one(T)
 
 entropy(d::Laplace) = log(2.0 * d.θ) + 1.0
 

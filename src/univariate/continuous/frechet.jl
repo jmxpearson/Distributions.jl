@@ -21,7 +21,7 @@ External links
 * [Fréchet_distribution on Wikipedia](http://en.wikipedia.org/wiki/Fréchet_distribution)
 
 """
-immutable Frechet{T <: Real} <: ContinuousUnivariateDistribution
+immutable Frechet{T<:Real} <: ContinuousUnivariateDistribution
     α::T
     θ::T
 
@@ -32,7 +32,7 @@ immutable Frechet{T <: Real} <: ContinuousUnivariateDistribution
 
 end
 
-Frechet{T <: Real}(α::T, θ::T) = Frechet{T}(α, θ)
+Frechet{T<:Real}(α::T, θ::T) = Frechet{T}(α, θ)
 Frechet(α::Real, θ::Real) = Frechet(promote(α, θ)...)
 Frechet(α::Integer, θ::Integer) = Frechet(Float64(α), Float64(θ))
 Frechet(α::Real) = Frechet(α, 1.0)
@@ -57,7 +57,7 @@ params(d::Frechet) = (d.α, d.θ)
 
 #### Statistics
 
-function mean{T <: Real}(d::Frechet{T})
+function mean{T<:Real}(d::Frechet{T})
     (α = d.α; α > 1.0 ? d.θ * gamma(1.0 - 1.0 / α) : T(Inf))
 end
 
@@ -65,7 +65,7 @@ median(d::Frechet) = d.θ * logtwo^(-1.0 / d.α)
 
 mode(d::Frechet) = (iα = -1.0/d.α; d.θ * (1.0 - iα) ^ iα)
 
-function var{T <: Real}(d::Frechet{T})
+function var{T<:Real}(d::Frechet{T})
     if d.α > 2.0
         iα = 1.0 / d.α
         return d.θ^2 * (gamma(1.0 - 2.0 * iα) - gamma(1.0 - iα)^2)
@@ -74,7 +74,7 @@ function var{T <: Real}(d::Frechet{T})
     end
 end
 
-function skewness{T <: Real}(d::Frechet{T})
+function skewness{T<:Real}(d::Frechet{T})
     if d.α > 3.0
         iα = 1.0 / d.α
         g1 = gamma(1.0 - iα)
@@ -86,7 +86,7 @@ function skewness{T <: Real}(d::Frechet{T})
     end
 end
 
-function kurtosis{T <: Real}(d::Frechet{T})
+function kurtosis{T<:Real}(d::Frechet{T})
     if d.α > 3.0
         iα = 1.0 / d.α
         g1 = gamma(1.0 - iα)
@@ -107,7 +107,7 @@ end
 
 #### Evaluation
 
-function logpdf{T <: Real}(d::Frechet{T}, x::Real)
+function logpdf{T<:Real}(d::Frechet{T}, x::Real)
     (α, θ) = params(d)
     if x > 0.0
         z = θ / x
@@ -119,17 +119,17 @@ end
 
 pdf(d::Frechet, x::Real) = exp(logpdf(d, x))
 
-cdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? exp(-((d.θ / x) ^ d.α)) : zero(T)
-ccdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -expm1(-((d.θ / x) ^ d.α)) : one(T)
-logcdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -(d.θ / x) ^ d.α : -T(Inf)
-logccdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? log1mexp(-((d.θ / x) ^ d.α)) : zero(T)
+cdf{T<:Real}(d::Frechet{T}, x::Real) = x > 0.0 ? exp(-((d.θ / x) ^ d.α)) : zero(T)
+ccdf{T<:Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -expm1(-((d.θ / x) ^ d.α)) : one(T)
+logcdf{T<:Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -(d.θ / x) ^ d.α : -T(Inf)
+logccdf{T<:Real}(d::Frechet{T}, x::Real) = x > 0.0 ? log1mexp(-((d.θ / x) ^ d.α)) : zero(T)
 
 quantile(d::Frechet, p::Real) = d.θ * (-log(p)) ^ (-1.0 / d.α)
 cquantile(d::Frechet, p::Real) = d.θ * (-log1p(-p)) ^ (-1.0 / d.α)
 invlogcdf(d::Frechet, lp::Real) = d.θ * (-lp)^(-1.0 / d.α)
 invlogccdf(d::Frechet, lp::Real) = d.θ * (-log1mexp(lp))^(-1.0 / d.α)
 
-function gradlogpdf{T <: Real}(d::Frechet{T}, x::Real)
+function gradlogpdf{T<:Real}(d::Frechet{T}, x::Real)
     (α, θ) = params(d)
     insupport(Frechet, x) ? -(α + 1.0) / x + α * (θ^α) * x^(-α-1.0)  : zero(T)
 end

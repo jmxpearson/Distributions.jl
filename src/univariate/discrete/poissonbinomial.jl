@@ -21,7 +21,7 @@ External links:
 * [Poisson-binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Poisson_binomial_distribution)
 
 """
-immutable PoissonBinomial{T <: Real} <: DiscreteUnivariateDistribution
+immutable PoissonBinomial{T<:Real} <: DiscreteUnivariateDistribution
 
     p::Vector{T}
     pmf::Vector{T}
@@ -38,7 +38,7 @@ immutable PoissonBinomial{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-PoissonBinomial{T <: Real}(p::AbstractArray{T}) = PoissonBinomial{T}(p)
+PoissonBinomial{T<:Real}(p::AbstractArray{T}) = PoissonBinomial{T}(p)
 
 @distr_support PoissonBinomial 0 length(d.p)
 
@@ -106,7 +106,7 @@ function cf(d::PoissonBinomial, t::Real)
 end
 
 pdf(d::PoissonBinomial, k::Int) = insupport(d, k) ? d.pmf[k+1] : 0.
-function logpdf{T <: Real}(d::PoissonBinomial{T}, k::Int)
+function logpdf{T<:Real}(d::PoissonBinomial{T}, k::Int)
     insupport(d, k) ? log(d.pmf[k+1]) : -T(Inf)
 end
 pdf(d::PoissonBinomial) = copy(d.pmf)

@@ -23,7 +23,7 @@ External links:
 * [Bernoulli distribution on Wikipedia](http://en.wikipedia.org/wiki/Bernoulli_distribution)
 """
 
-immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
+immutable Bernoulli{T<:Real} <: DiscreteUnivariateDistribution
     p::T
 
     function Bernoulli(p::T)
@@ -33,14 +33,14 @@ immutable Bernoulli{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-Bernoulli{T <: Real}(p::T) = Bernoulli{T}(p)
+Bernoulli{T<:Real}(p::T) = Bernoulli{T}(p)
 Bernoulli(p::Integer) = Bernoulli(Float64(p))
 Bernoulli() = Bernoulli(0.5)
 
 @distr_support Bernoulli 0 1
 
 #### Conversions
-convert{T <: Real}(::Type{Bernoulli{T}}, p::Real) = Bernoulli(T(p))
+convert{T<:Real}(::Type{Bernoulli{T}}, p::Real) = Bernoulli(T(p))
 convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, d::Bernoulli{S}) = Bernoulli(T(d.p))
 
 #### Parameters
@@ -91,10 +91,10 @@ ccdf(d::Bernoulli, x::Bool) = x ? succprob(d) : one(d.p)
 ccdf(d::Bernoulli, x::Int) = x < 0 ? one(d.p) :
                              x < 1 ? succprob(d) : zero(d.p)
 
-function quantile{T <: Real}(d::Bernoulli{T}, p::Real)
+function quantile{T<:Real}(d::Bernoulli{T}, p::Real)
     0.0 <= p <= 1.0 ? (p <= failprob(d) ? 0 : 1) : T(NaN)
 end
-function cquantile{T <: Real}(d::Bernoulli{T}, p::Real)
+function cquantile{T<:Real}(d::Bernoulli{T}, p::Real)
     0.0 <= p <= 1.0 ? (p >= succprob(d) ? 0 : 1) : T(NaN)
 end
 

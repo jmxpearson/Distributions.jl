@@ -25,7 +25,7 @@ External links:
 
 """
 
-immutable NegativeBinomial{T <: Real} <: DiscreteUnivariateDistribution
+immutable NegativeBinomial{T<:Real} <: DiscreteUnivariateDistribution
     r::T
     p::T
 
@@ -37,7 +37,7 @@ immutable NegativeBinomial{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-NegativeBinomial{T <: Real}(r::T, p::T) = NegativeBinomial{T}(r, p)
+NegativeBinomial{T<:Real}(r::T, p::T) = NegativeBinomial{T}(r, p)
 NegativeBinomial(r::Real, p::Real) = NegativeBinomial(promote(r, p)...)
 NegativeBinomial(r::Real) = NegativeBinomial(r, 0.5)
 NegativeBinomial() = NegativeBinomial(1.0, 0.5)
@@ -47,7 +47,7 @@ NegativeBinomial() = NegativeBinomial(1.0, 0.5)
 
 #### Conversions
 
-function convert{T <: Real}(::Type{NegativeBinomial{T}}, r::Real, p::Real)
+function convert{T<:Real}(::Type{NegativeBinomial{T}}, r::Real, p::Real)
     NegativeBinomial(T(r), T(p))
 end
 function convert{T <: Real, S <: Real}(::Type{NegativeBinomial{T}}, d::NegativeBinomial{S})

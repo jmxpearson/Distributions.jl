@@ -19,7 +19,7 @@ External links
  * [Pareto distribution on Wikipedia](http://en.wikipedia.org/wiki/Pareto_distribution)
 
 """
-immutable Pareto{T <: Real} <: ContinuousUnivariateDistribution
+immutable Pareto{T<:Real} <: ContinuousUnivariateDistribution
     α::T
     θ::T
 
@@ -29,7 +29,7 @@ immutable Pareto{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-Pareto{T <: Real}(α::T, θ::T) = Pareto{T}(α, θ)
+Pareto{T<:Real}(α::T, θ::T) = Pareto{T}(α, θ)
 Pareto(α::Real, θ::Real) = Pareto(promote(α, θ)...)
 Pareto(α::Integer, θ::Integer) = Pareto(Float64(α), Float64(θ))
 Pareto(α::Real) = Pareto(α, 1.0)
@@ -38,7 +38,7 @@ Pareto() = Pareto(1.0, 1.0)
 @distr_support Pareto d.θ Inf
 
 #### Conversions
-convert{T <: Real}(::Type{Pareto{T}}, α::Real, θ::Real) = Pareto(T(α), T(θ))
+convert{T<:Real}(::Type{Pareto{T}}, α::Real, θ::Real) = Pareto(T(α), T(θ))
 convert{T <: Real, S <: Real}(::Type{Pareto{T}}, d::Pareto{S}) = Pareto(T(d.α), T(d.θ))
 
 #### Parameters
@@ -51,24 +51,24 @@ params(d::Pareto) = (d.α, d.θ)
 
 #### Statistics
 
-function mean{T <: Real}(d::Pareto{T})
+function mean{T<:Real}(d::Pareto{T})
     (α, θ) = params(d)
     α > 1.0 ? α * θ / (α - 1.0) : T(Inf)
 end
 median(d::Pareto) = ((α, θ) = params(d); θ * 2.0 ^ (1.0 / α))
 mode(d::Pareto) = d.θ
 
-function var{T <: Real}(d::Pareto{T})
+function var{T<:Real}(d::Pareto{T})
     (α, θ) = params(d)
     α > 2.0 ? (θ^2 * α) / ((α - 1.0)^2 * (α - 2.0)) : T(Inf)
 end
 
-function skewness{T <: Real}(d::Pareto{T})
+function skewness{T<:Real}(d::Pareto{T})
     α = shape(d)
     α > 3.0 ? ((2.0 * (1.0 + α)) / (α - 3.0)) * sqrt((α - 2.0) / α) : T(NaN)
 end
 
-function kurtosis{T <: Real}(d::Pareto{T})
+function kurtosis{T<:Real}(d::Pareto{T})
     α = shape(d)
     α > 4.0 ? (6.0 * (α^3 + α^2 - 6.0 * α - 2.0)) / (α * (α - 3.0) * (α - 4.0)) : T(NaN)
 end
@@ -78,24 +78,24 @@ entropy(d::Pareto) = ((α, θ) = params(d); log(θ / α) + 1.0 / α + 1.0)
 
 #### Evaluation
 
-function pdf{T <: Real}(d::Pareto{T}, x::Real)
+function pdf{T<:Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
     x >= θ ? α * (θ / x)^α * (1.0 / x) : zero(T)
 end
 
-function logpdf{T <: Real}(d::Pareto{T}, x::Real)
+function logpdf{T<:Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
     x >= θ ? log(α) + α * log(θ) - (α + 1.0) * log(x) : -T(Inf)
 end
 
-function ccdf{T <: Real}(d::Pareto{T}, x::Real)
+function ccdf{T<:Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
     x >= θ ? (θ / x)^α : one(T)
 end
 
 cdf(d::Pareto, x::Real) = 1.0 - ccdf(d, x)
 
-function logccdf{T <: Real}(d::Pareto{T}, x::Real)
+function logccdf{T<:Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
     x >= θ ? α * log(θ / x) : zero(T)
 end
@@ -113,7 +113,7 @@ rand(d::Pareto) = d.θ * exp(randexp() / d.α)
 
 ## Fitting
 
-function fit_mle{T <: Real}(::Type{Pareto}, x::AbstractArray{T})
+function fit_mle{T<:Real}(::Type{Pareto}, x::AbstractArray{T})
     # Based on
     # https://en.wikipedia.org/wiki/Pareto_distribution#Parameter_estimation
 

@@ -21,7 +21,7 @@ External links:
 * [Binomial distribution on Wikipedia](http://en.wikipedia.org/wiki/Binomial_distribution)
 """
 
-immutable Binomial{T <: Real} <: DiscreteUnivariateDistribution
+immutable Binomial{T<:Real} <: DiscreteUnivariateDistribution
     n::Int
     p::T
 
@@ -33,7 +33,7 @@ immutable Binomial{T <: Real} <: DiscreteUnivariateDistribution
 
 end
 
-Binomial{T <: Real}(n::Int, p::T) = Binomial{T}(n, p)
+Binomial{T<:Real}(n::Int, p::T) = Binomial{T}(n, p)
 Binomial{T <: Int}(n::Int, p::T) = Binomial(n, Float64(p))
 Binomial(n::Int) = Binomial(n, 0.5)
 Binomial() = Binomial(1, 0.5)
@@ -42,7 +42,7 @@ Binomial() = Binomial(1, 0.5)
 
 #### Conversions
 
-function convert{T <: Real}(::Type{Binomial{T}}, n::Int, p::Real)
+function convert{T<:Real}(::Type{Binomial{T}}, n::Int, p::Real)
     Binomial(n, T(p))
 end
 function convert{T <: Real, S <: Real}(::Type{Binomial{T}}, d::Binomial{S})
@@ -63,7 +63,7 @@ params(d::Binomial) = (d.n, d.p)
 
 mean(d::Binomial) = ntrials(d) * succprob(d)
 var(d::Binomial) = ntrials(d) * succprob(d) * failprob(d)
-function mode{T <: Real}(d::Binomial{T})
+function mode{T<:Real}(d::Binomial{T})
     (n, p) = params(d)
     n > 0 ? round(Int,(n + 1) * d.prob) : zero(T)
 end

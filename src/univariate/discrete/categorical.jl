@@ -14,7 +14,7 @@ External links:
 * [Categorical distribution on Wikipedia](http://en.wikipedia.org/wiki/Categorical_distribution)
 """
 
-immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
+immutable Categorical{T<:Real} <: DiscreteUnivariateDistribution
     K::Int
     p::Vector{T}
 
@@ -31,9 +31,9 @@ immutable Categorical{T <: Real} <: DiscreteUnivariateDistribution
     end
 end
 
-Categorical{T <: Real}(p::Vector{T}, ::NoArgCheck) = Categorical{T}(p, NoArgCheck())
+Categorical{T<:Real}(p::Vector{T}, ::NoArgCheck) = Categorical{T}(p, NoArgCheck())
 Categorical{T <: Integer}(p::Vector{T}, ::NoArgCheck) = Categorical(Vector{Float64}(p), NoArgCheck())
-Categorical{T <: Real}(p::Vector{T}) = Categorical{T}(p)
+Categorical{T<:Real}(p::Vector{T}) = Categorical{T}(p)
 Categorical{T <: Integer}(p::Vector{T}) = Categorical(Vector{Float64}(p))
 Categorical(k::Integer) = Categorical{Float64}(k)
 
@@ -57,7 +57,7 @@ params(d::Categorical) = (d.p,)
 
 ### Statistics
 
-function categorical_mean{T <: Real}(p::AbstractArray{T})
+function categorical_mean{T<:Real}(p::AbstractArray{T})
     k = length(p)
     s = zero(T)
     for i = 1:k
@@ -80,7 +80,7 @@ function median(d::Categorical)
     i
 end
 
-function var{T <: Real}(d::Categorical{T})
+function var{T<:Real}(d::Categorical{T})
     k = ncategories(d)
     p = probs(d)
     m = categorical_mean(p)
@@ -116,7 +116,7 @@ end
 
 entropy(d::Categorical) = entropy(d.p)
 
-function mgf{T <: Real}(d::Categorical{T}, t::Real)
+function mgf{T<:Real}(d::Categorical{T}, t::Real)
     k = ncategories(d)
     p = probs(d)
     s = zero(T)
@@ -126,7 +126,7 @@ function mgf{T <: Real}(d::Categorical{T}, t::Real)
     s
 end
 
-function cf{T <: Real}(d::Categorical{T}, t::Real)
+function cf{T<:Real}(d::Categorical{T}, t::Real)
     k = ncategories(d)
     p = probs(d)
     s = zero(T) + zero(T)*im
@@ -166,7 +166,7 @@ function cdf(d::Categorical, x::Int)
     return c
 end
 
-pdf{T <: Real}(d::Categorical{T}, x::Int) = insupport(d, x) ? d.p[x] : zero(T)
+pdf{T<:Real}(d::Categorical{T}, x::Int) = insupport(d, x) ? d.p[x] : zero(T)
 
 logpdf(d::Categorical, x::Int) = insupport(d, x) ? log(d.p[x]) : -Inf
 

@@ -30,7 +30,7 @@ External links
 
 """
 
-immutable GeneralizedPareto{T <: Real} <: ContinuousUnivariateDistribution
+immutable GeneralizedPareto{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     σ::T
     ξ::T
@@ -42,7 +42,7 @@ immutable GeneralizedPareto{T <: Real} <: ContinuousUnivariateDistribution
 
 end
 
-GeneralizedPareto{T <: Real}(μ::T, σ::T, ξ::T) = GeneralizedPareto{T}(μ, σ, ξ)
+GeneralizedPareto{T<:Real}(μ::T, σ::T, ξ::T) = GeneralizedPareto{T}(μ, σ, ξ)
 GeneralizedPareto(μ::Real, σ::Real, ξ::Real) = GeneralizedPareto(promote(μ, σ, ξ)...)
 function GeneralizedPareto(μ::Integer, σ::Integer, ξ::Integer)
     GeneralizedPareto(Float64(μ), Float64(σ), Float64(ξ))
@@ -51,7 +51,7 @@ GeneralizedPareto(ξ::Real, σ::Real) = GeneralizedPareto(0.0, σ, ξ)
 GeneralizedPareto() = GeneralizedPareto(0.0, 1.0, 1.0)
 
 minimum(d::GeneralizedPareto) = d.μ
-maximum{T <: Real}(d::GeneralizedPareto{T}) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
+maximum{T<:Real}(d::GeneralizedPareto{T}) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
 
 #### Conversions
 function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, μ::S, σ::S, ξ::S)
@@ -73,7 +73,7 @@ params(d::GeneralizedPareto) = (d.μ, d.σ, d.ξ)
 
 median(d::GeneralizedPareto) = d.μ + d.σ * expm1(d.ξ * log(2.0)) / d.ξ
 
-function mean{T <: Real}(d::GeneralizedPareto{T})
+function mean{T<:Real}(d::GeneralizedPareto{T})
     if d.ξ < 1.0
         return d.μ + d.σ / (1.0 - d.ξ)
     else
@@ -81,7 +81,7 @@ function mean{T <: Real}(d::GeneralizedPareto{T})
     end
 end
 
-function var{T <: Real}(d::GeneralizedPareto{T})
+function var{T<:Real}(d::GeneralizedPareto{T})
     if d.ξ < 0.5
         return d.σ^2 / ((1.0 - d.ξ)^2 * (1.0 - 2.0 * d.ξ))
     else
@@ -89,7 +89,7 @@ function var{T <: Real}(d::GeneralizedPareto{T})
     end
 end
 
-function skewness{T <: Real}(d::GeneralizedPareto{T})
+function skewness{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < (1.0 / 3.0)
@@ -99,7 +99,7 @@ function skewness{T <: Real}(d::GeneralizedPareto{T})
     end
 end
 
-function kurtosis{T <: Real}(d::GeneralizedPareto{T})
+function kurtosis{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < 0.25
@@ -114,7 +114,7 @@ end
 
 #### Evaluation
 
-function logpdf{T <: Real}(d::GeneralizedPareto{T}, x::Real)
+function logpdf{T<:Real}(d::GeneralizedPareto{T}, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logpdf is log(0) outside the support range.
@@ -134,7 +134,7 @@ end
 
 pdf(d::GeneralizedPareto, x::Real) = exp(logpdf(d, x))
 
-function logccdf{T <: Real}(d::GeneralizedPareto{T}, x::Real)
+function logccdf{T<:Real}(d::GeneralizedPareto{T}, x::Real)
     (μ, σ, ξ) = params(d)
 
     # The logccdf is log(0) outside the support range.
@@ -155,7 +155,7 @@ end
 ccdf(d::GeneralizedPareto, x::Real) = exp(logccdf(d, x))
 cdf(d::GeneralizedPareto, x::Real) = -expm1(logccdf(d, x))
 
-function quantile{T <: Real}(d::GeneralizedPareto{T}, p::Real)
+function quantile{T<:Real}(d::GeneralizedPareto{T}, p::Real)
     (μ, σ, ξ) = params(d)
 
     if p == 0.0

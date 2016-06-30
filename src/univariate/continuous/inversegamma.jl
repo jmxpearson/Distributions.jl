@@ -24,7 +24,7 @@ External links
 * [Inverse gamma distribution on Wikipedia](http://en.wikipedia.org/wiki/Inverse-gamma_distribution)
 
 """
-immutable InverseGamma{T <: Real} <: ContinuousUnivariateDistribution
+immutable InverseGamma{T<:Real} <: ContinuousUnivariateDistribution
     invd::Gamma{T}
     θ::T
 

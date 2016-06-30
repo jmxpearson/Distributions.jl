@@ -15,7 +15,7 @@ External links
 
 """
 
-immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
+immutable Erlang{T<:Real} <: ContinuousUnivariateDistribution
     α::Int
     θ::T
 
@@ -25,7 +25,7 @@ immutable Erlang{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-Erlang{T <: Real}(α::Int, θ::T) = Erlang{T}(α, θ)
+Erlang{T<:Real}(α::Int, θ::T) = Erlang{T}(α, θ)
 Erlang(α::Real) = Erlang(α, 1.0)
 Erlang() = Erlang(1, 1.0)
 

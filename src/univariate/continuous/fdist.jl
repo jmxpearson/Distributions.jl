@@ -22,7 +22,7 @@ External links
 
 * [F distribution on Wikipedia](http://en.wikipedia.org/wiki/F-distribution)
     """
-immutable FDist{T <: Real} <: ContinuousUnivariateDistribution
+immutable FDist{T<:Real} <: ContinuousUnivariateDistribution
     ν1::T
     ν2::T
 
@@ -32,7 +32,7 @@ immutable FDist{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-FDist{T <: Real}(ν1::T, ν2::T) = FDist{T}(ν1, ν2)
+FDist{T<:Real}(ν1::T, ν2::T) = FDist{T}(ν1, ν2)
 FDist(ν1::Integer, ν2::Integer) = FDist(Float64(ν1), Float64(ν2))
 FDist(ν1::Real, ν2::Real) = FDist(promote(ν1, ν2)...)
 
@@ -53,19 +53,19 @@ params(d::FDist) = (d.ν1, d.ν2)
 
 #### Statistics
 
-mean{T <: Real}(d::FDist{T}) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : T(NaN))
+mean{T<:Real}(d::FDist{T}) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : T(NaN))
 
-function mode{T <: Real}(d::FDist{T})
+function mode{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     ν1 > 2.0 ? ((ν1 - 2.0)/ν1) * (ν2 / (ν2 + 2.0)) : zero(T)
 end
 
-function var{T <: Real}(d::FDist{T})
+function var{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     ν2 > 4.0 ? 2.0 * ν2^2 * (ν1 + ν2 - 2.0) / (ν1 * (ν2 - 2.0)^2 * (ν2 - 4.0)) : T(NaN)
 end
 
-function skewness{T <: Real}(d::FDist{T})
+function skewness{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 6.0
         return (2.0 * ν1 + ν2 - 2.0) * sqrt(8.0 * (ν2 - 4.0)) / ((ν2 - 6.0) * sqrt(ν1 * (ν1 + ν2 - 2.0)))
@@ -74,7 +74,7 @@ function skewness{T <: Real}(d::FDist{T})
     end
 end
 
-function kurtosis{T <: Real}(d::FDist{T})
+function kurtosis{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 8.0
         a = ν1 * (5. * ν2 - 22.) * (ν1 + ν2 - 2.) + (ν2 - 4.) * (ν2 - 2.)^2

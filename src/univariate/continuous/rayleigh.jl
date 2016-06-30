@@ -21,13 +21,13 @@ External links
 
 """
 
-immutable Rayleigh{T <: Real} <: ContinuousUnivariateDistribution
+immutable Rayleigh{T<:Real} <: ContinuousUnivariateDistribution
     σ::T
 
     Rayleigh(σ::T) = (@check_args(Rayleigh, σ > zero(σ)); new(σ))
 end
 
-Rayleigh{T <: Real}(σ::T) = Rayleigh{T}(σ)
+Rayleigh{T<:Real}(σ::T) = Rayleigh{T}(σ)
 Rayleigh{T <: Integer}(σ::T) = Rayleigh(Float64(σ))
 Rayleigh() = Rayleigh(1.0)
 
@@ -53,20 +53,20 @@ mode(d::Rayleigh) = d.σ
 var(d::Rayleigh) = 0.429203673205103381 * d.σ^2   # (2.0 - π / 2) = 0.429203673205103381
 std(d::Rayleigh) = 0.655136377562033553 * d.σ
 
-skewness{T <: Real}(d::Rayleigh{T}) = 0.631110657818937138*one(T)
-kurtosis{T <: Real}(d::Rayleigh{T}) = 0.245089300687638063*one(T)
+skewness{T<:Real}(d::Rayleigh{T}) = 0.631110657818937138*one(T)
+kurtosis{T<:Real}(d::Rayleigh{T}) = 0.245089300687638063*one(T)
 
 entropy(d::Rayleigh) = 0.942034242170793776 + log(d.σ)
 
 
 #### Evaluation
 
-function pdf{T <: Real}(d::Rayleigh{T}, x::Real)
+function pdf{T<:Real}(d::Rayleigh{T}, x::Real)
 	σ2 = d.σ^2
 	x > 0.0 ? (x / σ2) * exp(- (x^2) / (2.0 * σ2)) : zero(T)
 end
 
-function logpdf{T <: Real}(d::Rayleigh{T}, x::Real)
+function logpdf{T<:Real}(d::Rayleigh{T}, x::Real)
 	σ2 = d.σ^2
 	x > 0.0 ? log(x / σ2) - (x^2) / (2.0 * σ2) : -T(Inf)
 end

@@ -13,7 +13,7 @@ External links
 * [Normal-inverse Gaussian distribution on Wikipedia](http://en.wikipedia.org/wiki/Normal-inverse_Gaussian_distribution)
 
 """
-immutable NormalInverseGaussian{T <: Real} <: ContinuousUnivariateDistribution
+immutable NormalInverseGaussian{T<:Real} <: ContinuousUnivariateDistribution
   μ::T
   α::T
   β::T
@@ -24,7 +24,7 @@ immutable NormalInverseGaussian{T <: Real} <: ContinuousUnivariateDistribution
   end
 end
 
-NormalInverseGaussian{T <: Real}(μ::T, α::T, β::T, δ::T) = NormalInverseGaussian{T}(μ, α, β, δ)
+NormalInverseGaussian{T<:Real}(μ::T, α::T, β::T, δ::T) = NormalInverseGaussian{T}(μ, α, β, δ)
 NormalInverseGaussian(μ::Real, α::Real, β::Real, δ::Real) = NormalInverseGaussian(promote(μ, α, β, δ)...)
 function NormalInverseGaussian(μ::Integer, α::Integer, β::Integer, δ::Integer)
     NormalInverseGaussian(Float64(μ), Float64(α), Float64(β), Float64(δ))
@@ -33,7 +33,7 @@ end
 @distr_support NormalInverseGaussian -Inf Inf
 
 #### Conversions
-function convert{T <: Real}(::Type{NormalInverseGaussian{T}}, μ::Real, α::Real, β::Real, δ::Real)
+function convert{T<:Real}(::Type{NormalInverseGaussian{T}}, μ::Real, α::Real, β::Real, δ::Real)
     NormalInverseGaussian(T(μ), T(α), T(β), T(δ))
 end
 function convert{T <: Real, S <: Real}(::Type{NormalInverseGaussian{T}}, d::NormalInverseGaussian{S})

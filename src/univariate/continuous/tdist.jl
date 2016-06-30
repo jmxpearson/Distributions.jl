@@ -18,19 +18,19 @@ External links
 [Student's T distribution on Wikipedia](https://en.wikipedia.org/wiki/Student%27s_t-distribution)
 
 """
-immutable TDist{T <: Real} <: ContinuousUnivariateDistribution
+immutable TDist{T<:Real} <: ContinuousUnivariateDistribution
     ν::T
 
     TDist(ν::T) = (@check_args(TDist, ν > zero(ν)); new(ν))
 end
 
-TDist{T <: Real}(ν::T) = TDist{T}(ν)
+TDist{T<:Real}(ν::T) = TDist{T}(ν)
 TDist(ν::Integer) = TDist(Float64(ν))
 
 @distr_support TDist -Inf Inf
 
 #### Conversions
-convert{T <: Real}(::Type{TDist{T}}, ν::Real) = TDist(T(ν))
+convert{T<:Real}(::Type{TDist{T}}, ν::Real) = TDist(T(ν))
 convert{T <: Real, S <: Real}(::Type{TDist{T}}, d::TDist{S}) = TDist(T(d.ν))
 
 #### Parameters
@@ -41,19 +41,19 @@ params(d::TDist) = (d.ν,)
 
 #### Statistics
 
-mean{T <: Real}(d::TDist{T}) = d.ν > 1.0 ? zero(T) : T(NaN)
-median{T <: Real}(d::TDist{T}) = zero(T)
-mode{T <: Real}(d::TDist{T}) = zero(T)
+mean{T<:Real}(d::TDist{T}) = d.ν > 1.0 ? zero(T) : T(NaN)
+median{T<:Real}(d::TDist{T}) = zero(T)
+mode{T<:Real}(d::TDist{T}) = zero(T)
 
-function var{T <: Real}(d::TDist{T})
+function var{T<:Real}(d::TDist{T})
     ν = d.ν
     ν > 2.0 ? ν / (ν - 2.0) :
     ν > 1.0 ? T(Inf) : T(NaN)
 end
 
-skewness{T <: Real}(d::TDist{T}) = d.ν > 3.0 ? zero(T) : T(NaN)
+skewness{T<:Real}(d::TDist{T}) = d.ν > 3.0 ? zero(T) : T(NaN)
 
-function kurtosis{T <: Real}(d::TDist{T})
+function kurtosis{T<:Real}(d::TDist{T})
     ν = d.ν
     ν > 4.0 ? 6.0 / (ν - 4.0) :
     ν > 2.0 ? T(Inf) : T(NaN)

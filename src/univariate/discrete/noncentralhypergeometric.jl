@@ -1,7 +1,7 @@
 # Noncentral hypergeometric distribution
 # TODO: this distribution needs clean-up and testing
 
-abstract NoncentralHypergeometric{T <: Real} <: DiscreteUnivariateDistribution
+abstract NoncentralHypergeometric{T<:Real} <: DiscreteUnivariateDistribution
 
 ### handling support
 
@@ -13,7 +13,7 @@ end
 
 # Functions
 
-function quantile{T <: Real}(d::NoncentralHypergeometric{T}, q::Real)
+function quantile{T<:Real}(d::NoncentralHypergeometric{T}, q::Real)
     if !(zero(q) <= q <= one(q))
         T(NaN)
     else
@@ -36,7 +36,7 @@ params(d::NoncentralHypergeometric) = (d.ns, d.nf, d.n, d.ω)
 
 ## Fisher's noncentral hypergeometric distribution
 
-immutable FisherNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric{T}
+immutable FisherNoncentralHypergeometric{T<:Real} <: NoncentralHypergeometric{T}
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size
@@ -50,7 +50,7 @@ immutable FisherNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric{
     end
 end
 
-function FisherNoncentralHypergeometric{T <: Real}(ns::Real, nf::Real, n::Real, ω::T)
+function FisherNoncentralHypergeometric{T<:Real}(ns::Real, nf::Real, n::Real, ω::T)
     FisherNoncentralHypergeometric{T}(ns, nf, n, ω)
 end
 
@@ -96,7 +96,7 @@ pdf(d::FisherNoncentralHypergeometric, k::Int) = exp(logpdf(d, k))
 
 ## Wallenius' noncentral hypergeometric distribution
 
-immutable WalleniusNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometric{T}
+immutable WalleniusNoncentralHypergeometric{T<:Real} <: NoncentralHypergeometric{T}
     ns::Int    # number of successes in population
     nf::Int    # number of failures in population
     n::Int     # sample size
@@ -110,7 +110,7 @@ immutable WalleniusNoncentralHypergeometric{T <: Real} <: NoncentralHypergeometr
     end
 end
 
-function WalleniusNoncentralHypergeometric{T <: Real}(ns::Real, nf::Real, n::Real, ω::T)
+function WalleniusNoncentralHypergeometric{T<:Real}(ns::Real, nf::Real, n::Real, ω::T)
     WalleniusNoncentralHypergeometric{T}(ns, nf, n, ω)
 end
 

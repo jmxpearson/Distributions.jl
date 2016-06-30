@@ -22,14 +22,14 @@ External links
 
 """
 
-immutable Logistic{T <: Real} <: ContinuousUnivariateDistribution
+immutable Logistic{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     θ::T
 
     Logistic(μ::T, θ::T) = (@check_args(Logistic, θ > zero(θ)); new(μ, θ))
 end
 
-Logistic{T <: Real}(μ::T, θ::T) = Logistic{T}(μ, θ)
+Logistic{T<:Real}(μ::T, θ::T) = Logistic{T}(μ, θ)
 Logistic(μ::Real, θ::Real) = Logistic(promote(μ, θ)...)
 Logistic(μ::Real) = Logistic(μ, 1.0)
 Logistic() = Logistic(0.0, 1.0)
@@ -60,8 +60,8 @@ mode(d::Logistic) = d.μ
 
 std(d::Logistic) = π * d.θ / sqrt3
 var(d::Logistic) = (π * d.θ)^2 / 3.0
-skewness{T <: Real}(d::Logistic{T}) = zero(T)
-kurtosis{T <: Real}(d::Logistic{T}) = 1.2*one(T)
+skewness{T<:Real}(d::Logistic{T}) = zero(T)
+kurtosis{T<:Real}(d::Logistic{T}) = 1.2*one(T)
 
 entropy(d::Logistic) = log(d.θ) + 2.0
 

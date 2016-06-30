@@ -25,7 +25,7 @@ External links
 
     """
 
-immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
+immutable BetaPrime{T<:Real} <: ContinuousUnivariateDistribution
     α::T
     β::T
 
@@ -35,7 +35,7 @@ immutable BetaPrime{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-BetaPrime{T <: Real}(α::T, β::T) = BetaPrime{T}(α, β)
+BetaPrime{T<:Real}(α::T, β::T) = BetaPrime{T}(α, β)
 BetaPrime(α::Real, β::Real) = BetaPrime(promote(α, β)...)
 BetaPrime(α::Integer, β::Integer) = BetaPrime(Float64(α), Float64(β))
 BetaPrime(α::Real) = BetaPrime(α, α)
@@ -44,7 +44,7 @@ BetaPrime() = BetaPrime(1.0, 1.0)
 @distr_support BetaPrime 0.0 Inf
 
 #### Conversions
-function convert{T <: Real}(::Type{BetaPrime{T}}, α::Real, β::Real)
+function convert{T<:Real}(::Type{BetaPrime{T}}, α::Real, β::Real)
     BetaPrime(T(α), T(β))
 end
 function convert{T <: Real, S <: Real}(::Type{BetaPrime{T}}, d::BetaPrime{S})
@@ -58,20 +58,20 @@ params(d::BetaPrime) = (d.α, d.β)
 
 #### Statistics
 
-function mean{T <: Real}(d::BetaPrime{T})
+function mean{T<:Real}(d::BetaPrime{T})
     ((α, β) = params(d); β > 1.0 ? α / (β - 1.0) : T(NaN))
 end
 
-function mode{T <: Real}(d::BetaPrime{T})
+function mode{T<:Real}(d::BetaPrime{T})
     ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : zero(T))
 end
 
-function var{T <: Real}(d::BetaPrime{T})
+function var{T<:Real}(d::BetaPrime{T})
     (α, β) = params(d)
     β > 2.0 ? α * (α + β - 1.0) / ((β - 2.0) * (β - 1.0)^2) : T(NaN)
 end
 
-function skewness{T <: Real}(d::BetaPrime{T})
+function skewness{T<:Real}(d::BetaPrime{T})
     (α, β) = params(d)
     if β > 3.0
         s = α + β - 1.0

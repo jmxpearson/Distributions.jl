@@ -1,11 +1,11 @@
-immutable Biweight{T <: Real} <: ContinuousUnivariateDistribution
+immutable Biweight{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     σ::T
 
     Biweight(μ::T, σ::T) = (@check_args(Biweight, σ > zero(σ)); new(μ, σ))
 end
 
-Biweight{T <: Real}(μ::T, σ::T) = Biweight{T}(μ, σ)
+Biweight{T<:Real}(μ::T, σ::T) = Biweight{T}(μ, σ)
 Biweight(μ::Real, σ::Real) = Biweight(promote(μ, σ)...)
 Biweight(μ::Integer, σ::Integer) = Biweight(Float64(μ), Float64(σ))
 Biweight(μ::Real) = Biweight(μ, 1.0)
@@ -22,23 +22,23 @@ median(d::Biweight) = d.μ
 mode(d::Biweight) = d.μ
 
 var(d::Biweight) = d.σ^2 / 7.0
-skewness{T <: Real}(d::Biweight{T}) = zero(T)
-kurtosis{T <: Real}(d::Biweight{T}) = -2.9523809523809526*one(T)  # = 1/21-3
+skewness{T<:Real}(d::Biweight{T}) = zero(T)
+kurtosis{T<:Real}(d::Biweight{T}) = -2.9523809523809526*one(T)  # = 1/21-3
 
 ## Functions
-function pdf{T <: Real}(d::Biweight{T}, x::Real)
+function pdf{T<:Real}(d::Biweight{T}, x::Real)
     u = abs(x - d.μ) / d.σ
     u >= 1.0 ? zero(T) : 0.9375 * (1 - u^2)^2 / d.σ
 end
 
-function cdf{T <: Real}(d::Biweight{T}, x::Real)
+function cdf{T<:Real}(d::Biweight{T}, x::Real)
     u = (x - d.μ) / d.σ
     u <= -1.0 ? zero(T) :
     u >= 1.0 ? one(T) :
     0.0625 * (u + 1.0)^3 * @horner(u,8.0,-9.0,3.0)
 end
 
-function ccdf{T <: Real}(d::Biweight{T}, x::Real)
+function ccdf{T<:Real}(d::Biweight{T}, x::Real)
     u = (d.μ - x) / d.σ
     u <= -1.0 ? one(T) :
     u >= 1.0 ? zero(T) :
@@ -47,14 +47,14 @@ end
 
 @quantile_newton Biweight
 
-function mgf{T <: Real}(d::Biweight{T}, t::Real)
+function mgf{T<:Real}(d::Biweight{T}, t::Real)
     a = d.σ*t
     a2 = a^2
     a == 0 ? one(T) :
     15.0 * exp(d.μ * t) * (-3.0 * cosh(a) + (a + 3.0/a) * sinh(a)) / (a2^2)
 end
 
-function cf{T <: Real}(d::Biweight{T}, t::Real)
+function cf{T<:Real}(d::Biweight{T}, t::Real)
     a = d.σ * t
     a2 = a^2
     a == 0 ? one(T)+zero(T)*im :

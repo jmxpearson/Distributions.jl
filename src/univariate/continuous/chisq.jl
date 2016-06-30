@@ -19,13 +19,13 @@ External links
 * [Chi-squared distribution on Wikipedia](http://en.wikipedia.org/wiki/Chi-squared_distribution)
 """
 
-immutable Chisq{T <: Real} <: ContinuousUnivariateDistribution
+immutable Chisq{T<:Real} <: ContinuousUnivariateDistribution
     ν::T
 
     Chisq(ν::T) = (@check_args(Chisq, ν > zero(ν)); new(ν))
 end
 
-Chisq{T <: Real}(ν::T) = Chisq{T}(ν)
+Chisq{T<:Real}(ν::T) = Chisq{T}(ν)
 Chisq(ν::Integer) = Chisq(Float64(ν))
 
 @distr_support Chisq 0.0 Inf
@@ -36,7 +36,7 @@ dof(d::Chisq) = d.ν
 params(d::Chisq) = (d.ν,)
 
 ### Conversions
-convert{T <: Real}(::Type{Chisq{T}}, ν::Real) = Chisq(T(ν))
+convert{T<:Real}(::Type{Chisq{T}}, ν::Real) = Chisq(T(ν))
 convert{T <: Real, S <: Real}(::Type{Chisq{T}}, d::Chisq{S}) = Chisq(T(d.ν))
 
 
@@ -50,7 +50,7 @@ skewness(d::Chisq) = sqrt(8.0 / d.ν)
 
 kurtosis(d::Chisq) = 12.0 / d.ν
 
-mode{T <: Real}(d::Chisq{T}) = d.ν > 2.0 ? d.ν - 2.0 : zero(T)
+mode{T<:Real}(d::Chisq{T}) = d.ν > 2.0 ? d.ν - 2.0 : zero(T)
 
 function median(d::Chisq; approx::Bool=false)
     if approx
@@ -74,7 +74,7 @@ mgf(d::Chisq, t::Real) = (1.0 - 2.0 * t)^(-d.ν * 0.5)
 
 cf(d::Chisq, t::Real) = (1.0 - 2.0 * im * t)^(-d.ν * 0.5)
 
-gradlogpdf{T <: Real}(d::Chisq{T}, x::Real) =  x > 0.0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
+gradlogpdf{T<:Real}(d::Chisq{T}, x::Real) =  x > 0.0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
 
 
 #### Sampling

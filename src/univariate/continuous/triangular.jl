@@ -25,7 +25,7 @@ External links
 * [Triangular distribution on Wikipedia](http://en.wikipedia.org/wiki/Triangular_distribution)
 
 """
-immutable TriangularDist{T <: Real} <: ContinuousUnivariateDistribution
+immutable TriangularDist{T<:Real} <: ContinuousUnivariateDistribution
     a::T
     b::T
     c::T
@@ -100,7 +100,7 @@ function pdf{T<:Real}(d::TriangularDist{T}, x::Real)
     x <= b ? 2 * (b - x) / ((b - a) * (b - c)) : zero(T)
 end
 
-function cdf{T <: Real}(d::TriangularDist{T}, x::Real)
+function cdf{T<:Real}(d::TriangularDist{T}, x::Real)
     (a, b, c) = params(d)
     x <= a ? zero(T) :
     x <  c ? (x - a)^2 / ((b - a) * (c - a)) :
@@ -117,7 +117,7 @@ function quantile(d::TriangularDist, p::Real)
               b - sqrt(b_m_a * (b - c) * (1 - p))
 end
 
-function mgf{T <: Real}(d::TriangularDist{T}, t::Real)
+function mgf{T<:Real}(d::TriangularDist{T}, t::Real)
     if t == zero(t)
         return one(T)
     else
@@ -128,7 +128,7 @@ function mgf{T <: Real}(d::TriangularDist{T}, t::Real)
     end
 end
 
-function cf{T <: Real}(d::TriangularDist{T}, t::Real)
+function cf{T<:Real}(d::TriangularDist{T}, t::Real)
     # Is this correct?
     if t == zero(t)
         return Complex{one(T)}

@@ -21,7 +21,7 @@ External links
 * [Normal distribution on Wikipedia](http://en.wikipedia.org/wiki/Normal_distribution)
 
 """
-immutable Normal{T <: Real} <: ContinuousUnivariateDistribution
+immutable Normal{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     σ::T
 
@@ -56,8 +56,8 @@ mode(d::Normal) = d.μ
 
 var(d::Normal) = abs2(d.σ)
 std(d::Normal) = d.σ
-skewness{T <: Real}(d::Normal{T}) = zero(T)
-kurtosis{T <: Real}(d::Normal{T}) = zero(T)
+skewness{T<:Real}(d::Normal{T}) = zero(T)
+kurtosis{T<:Real}(d::Normal{T}) = zero(T)
 
 entropy(d::Normal) = 0.5 * (log2π + 1.0) + log(d.σ)
 

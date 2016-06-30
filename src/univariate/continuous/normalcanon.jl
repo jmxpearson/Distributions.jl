@@ -38,8 +38,8 @@ mean(d::NormalCanon) = d.μ
 median(d::NormalCanon) = mean(d)
 mode(d::NormalCanon) = mean(d)
 
-skewness{T <: Real}(d::NormalCanon{T}) = zero(T)
-kurtosis{T <: Real}(d::NormalCanon{T}) = zero(T)
+skewness{T<:Real}(d::NormalCanon{T}) = zero(T)
+kurtosis{T<:Real}(d::NormalCanon{T}) = zero(T)
 
 var(d::NormalCanon) = 1.0 / d.λ
 std(d::NormalCanon) = sqrt(var(d))

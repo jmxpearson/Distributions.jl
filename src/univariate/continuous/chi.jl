@@ -20,19 +20,19 @@ External links
 
 """
 
-immutable Chi{T <: Real} <: ContinuousUnivariateDistribution
+immutable Chi{T<:Real} <: ContinuousUnivariateDistribution
     ν::T
 
     Chi(ν::T) = (@check_args(Chi, ν > zero(ν)); new(ν))
 end
 
-Chi{T <: Real}(ν::T) = Chi{T}(ν)
+Chi{T<:Real}(ν::T) = Chi{T}(ν)
 Chi(ν::Integer) = Chi(Float64(ν))
 
 @distr_support Chi 0.0 Inf
 
 ### Conversions
-convert{T <: Real}(::Type{Chi{T}}, ν::Real) = Chi(T(ν))
+convert{T<:Real}(::Type{Chi{T}}, ν::Real) = Chi(T(ν))
 convert{T <: Real, S <: Real}(::Type{Chi{T}}, d::Chi{S}) = Chi(T(d.ν))
 
 #### Parameters
@@ -78,7 +78,7 @@ logpdf(d::Chi, x::Real) = (ν = d.ν;
     (1.0 - 0.5 * ν) * logtwo + (ν - 1.0) * log(x) - 0.5 * x^2 - lgamma(0.5 * ν)
 )
 
-gradlogpdf{T <: Real}(d::Chi{T}, x::Real) = x >= 0.0 ? (d.ν - 1.0) / x - x : zero(T)
+gradlogpdf{T<:Real}(d::Chi{T}, x::Real) = x >= 0.0 ? (d.ν - 1.0) / x - x : zero(T)
 
 cdf(d::Chi, x::Real) = chisqcdf(d.ν, x^2)
 ccdf(d::Chi, x::Real) = chisqccdf(d.ν, x^2)

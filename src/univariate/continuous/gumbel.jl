@@ -20,14 +20,14 @@ External links
 
 * [Gumbel distribution on Wikipedia](http://en.wikipedia.org/wiki/Gumbel_distribution)
 """
-immutable Gumbel{T <: Real} <: ContinuousUnivariateDistribution
+immutable Gumbel{T<:Real} <: ContinuousUnivariateDistribution
     μ::T  # location
     θ::T  # scale
 
     Gumbel(μ::T, θ::T) = (@check_args(Gumbel, θ > zero(θ)); new(μ, θ))
 end
 
-Gumbel{T <: Real}(μ::T, θ::T) = Gumbel{T}(μ, θ)
+Gumbel{T<:Real}(μ::T, θ::T) = Gumbel{T}(μ, θ)
 Gumbel(μ::Real, θ::Real) = Gumbel(promote(μ, θ)...)
 Gumbel(μ::Real) = Gumbel(μ, 1.0)
 Gumbel() = Gumbel(0.0, 1.0)
@@ -58,9 +58,9 @@ mode(d::Gumbel) = d.μ
 
 var(d::Gumbel) = 1.6449340668482264 * d.θ^2
 
-skewness{T <: Real}(d::Gumbel{T}) = 1.13954709940464866*one(T)
+skewness{T<:Real}(d::Gumbel{T}) = 1.13954709940464866*one(T)
 
-kurtosis{T <: Real}(d::Gumbel{T}) = 2.4*one(T)
+kurtosis{T<:Real}(d::Gumbel{T}) = 2.4*one(T)
 
 entropy(d::Gumbel) = 1.57721566490153286 + log(d.θ)
 

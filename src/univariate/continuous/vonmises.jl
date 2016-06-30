@@ -16,7 +16,7 @@ External links
 * [von Mises distribution on Wikipedia](http://en.wikipedia.org/wiki/Von_Mises_distribution)
 
 """
-immutable VonMises{T <: Real} <: ContinuousUnivariateDistribution
+immutable VonMises{T<:Real} <: ContinuousUnivariateDistribution
     μ::T      # mean
     κ::T      # concentration
     I0κ::T    # I0(κ), where I0 is the modified Bessel function of order 0
@@ -27,7 +27,7 @@ immutable VonMises{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-VonMises{T <: Real}(μ::T, κ::T) = VonMises{T}(μ, κ)
+VonMises{T<:Real}(μ::T, κ::T) = VonMises{T}(μ, κ)
 VonMises(μ::Real, κ::Real) = VonMises(promote(μ, κ)...)
 VonMises(μ::Integer, κ::Integer) = VonMises(Float64(μ), Float64(κ))
 VonMises(κ::Real) = VonMises(0.0, κ)

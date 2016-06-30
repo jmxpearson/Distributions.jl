@@ -133,7 +133,7 @@ rand(d::DiscreteUniform) = randi(d.a, d.b)
 
 # Fit model
 
-function fit_mle{T <: Real}(::Type{DiscreteUniform}, x::AbstractArray{T})
+function fit_mle{T<:Real}(::Type{DiscreteUniform}, x::AbstractArray{T})
     if isempty(x)
         throw(ArgumentError("x cannot be empty."))
     end

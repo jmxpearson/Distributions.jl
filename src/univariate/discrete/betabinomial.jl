@@ -17,7 +17,7 @@ External links:
 * [Beta-binomial distribution on Wikipedia](https://en.wikipedia.org/wiki/Beta-binomial_distribution)
 """
 
-immutable BetaBinomial{T <: Real} <: DiscreteUnivariateDistribution
+immutable BetaBinomial{T<:Real} <: DiscreteUnivariateDistribution
     n::Int
     α::T
     β::T
@@ -28,7 +28,7 @@ immutable BetaBinomial{T <: Real} <: DiscreteUnivariateDistribution
     end
 end
 
-BetaBinomial{T <: Real}(n::Int, α::T, β::T) = BetaBinomial{T}(n, α, β)
+BetaBinomial{T<:Real}(n::Int, α::T, β::T) = BetaBinomial{T}(n, α, β)
 BetaBinomial(n::Int, α::Real, β::Real) = BetaBinomial(n, promote(α, β)...)
 BetaBinomial(n::Int, α::Integer, β::Integer) = BetaBinomial(n, Float64(α), Float64(β))
 
@@ -97,7 +97,7 @@ end
 
 entropy(d::BetaBinomial) = entropy(Categorical(pdf(d)))
 median(d::BetaBinomial) = median(Categorical(pdf(d))) - 1
-mode{T <: Real}(d::BetaBinomial{T}) = indmax(pdf(d)) - one(T)
+mode{T<:Real}(d::BetaBinomial{T}) = indmax(pdf(d)) - one(T)
 modes(d::BetaBinomial) = [x - 1 for x in modes(Categorical(pdf(d)))]
 
 quantile(d::BetaBinomial, p::Float64) = quantile(Categorical(pdf(d)), p) - 1

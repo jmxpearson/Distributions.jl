@@ -1,4 +1,4 @@
-immutable NoncentralBeta{T <: Real} <: ContinuousUnivariateDistribution
+immutable NoncentralBeta{T<:Real} <: ContinuousUnivariateDistribution
     α::T
     β::T
     λ::T
@@ -10,7 +10,7 @@ immutable NoncentralBeta{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-NoncentralBeta{T <: Real}(α::T, β::T, λ::T) = NoncentralBeta{T}(α, β, λ)
+NoncentralBeta{T<:Real}(α::T, β::T, λ::T) = NoncentralBeta{T}(α, β, λ)
 NoncentralBeta(α::Real, β::Real, λ::Real) = NoncentralBeta(promote(α, β, λ)...)
 
 @distr_support NoncentralBeta 0.0 1.0

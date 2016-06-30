@@ -23,14 +23,14 @@ External links
 
 """
 
-immutable Arcsine{T <: Real} <: ContinuousUnivariateDistribution
+immutable Arcsine{T<:Real} <: ContinuousUnivariateDistribution
     a::T
     b::T
 
     Arcsine(a::T, b::T) = (@check_args(Arcsine, a < b); new(a, b))
 end
 
-Arcsine{T <: Real}(a::T, b::T) = Arcsine{T}(a, b)
+Arcsine{T<:Real}(a::T, b::T) = Arcsine{T}(a, b)
 Arcsine(a::Real, b::Real) = Arcsine(promote(a, b)...)
 Arcsine(a::Integer, b::Integer) = Arcsine(Float64(a), Float64(b))
 Arcsine(b::Real) = Arcsine(0.0, b)
@@ -39,7 +39,7 @@ Arcsine() = Arcsine(0.0, 1.0)
 @distr_support Arcsine d.a d.b
 
 #### Conversions
-function convert{T <: Real}(::Type{Arcsine{T}}, a::Real, b::Real)
+function convert{T<:Real}(::Type{Arcsine{T}}, a::Real, b::Real)
     Arcsine(T(a), T(b))
 end
 function convert{T <: Real, S <: Real}(::Type{Arcsine{T}}, d::Arcsine{S})
@@ -61,8 +61,8 @@ mode(d::Arcsine) = d.a
 modes(d::Arcsine) = [d.a, d.b]
 
 var(d::Arcsine) = 0.125 * abs2(d.b - d.a)
-skewness{T <: Real}(d::Arcsine{T}) = zero(T)
-kurtosis{T <: Real}(d::Arcsine{T}) = -1.5*one(T)
+skewness{T<:Real}(d::Arcsine{T}) = zero(T)
+kurtosis{T<:Real}(d::Arcsine{T}) = -1.5*one(T)
 
 entropy(d::Arcsine) = -0.24156447527049044469 + log(scale(d))
 
@@ -73,11 +73,11 @@ function pdf(d::Arcsine, x::Real)
     insupport(d, x) ? one(d.a) / (π * sqrt((x - d.a) * (d.b - x))) : zero(d.a)
 end
 
-function logpdf{T <: Real}(d::Arcsine{T}, x::Real)
+function logpdf{T<:Real}(d::Arcsine{T}, x::Real)
     insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -T(Inf)
 end
 
-cdf{T <: Real}(d::Arcsine{T}, x::Real) = x < d.a ? zero(T) :
+cdf{T<:Real}(d::Arcsine{T}, x::Real) = x < d.a ? zero(T) :
                               x > d.b ? one(T) :
                               0.636619772367581343 * asin(sqrt((x - d.a) / (d.b - d.a)))
 

@@ -21,7 +21,7 @@ External links
 
 """
 
-immutable Cauchy{T <: Real} <: ContinuousUnivariateDistribution
+immutable Cauchy{T<:Real} <: ContinuousUnivariateDistribution
     μ::T
     σ::T
 
@@ -31,7 +31,7 @@ immutable Cauchy{T <: Real} <: ContinuousUnivariateDistribution
     end
 end
 
-Cauchy{T <: Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
+Cauchy{T<:Real}(μ::T, σ::T) = Cauchy{T}(μ, σ)
 Cauchy(μ::Real, σ::Real) = Cauchy(promote(μ, σ)...)
 Cauchy(μ::Integer, σ::Integer) = Cauchy(Float64(μ), Float64(σ))
 Cauchy(μ::Real) = Cauchy(μ, 1.0)
@@ -40,7 +40,7 @@ Cauchy() = Cauchy(0.0, 1.0)
 @distr_support Cauchy -Inf Inf
 
 #### Conversions
-function convert{T <: Real}(::Type{Cauchy{T}}, μ::Real, σ::Real)
+function convert{T<:Real}(::Type{Cauchy{T}}, μ::Real, σ::Real)
     Cauchy(T(μ), T(σ))
 end
 function convert{T <: Real, S <: Real}(::Type{Cauchy{T}}, d::Cauchy{S})
@@ -57,13 +57,13 @@ params(d::Cauchy) = (d.μ, d.σ)
 
 #### Statistics
 
-mean{T <: Real}(d::Cauchy{T}) = T(NaN)
+mean{T<:Real}(d::Cauchy{T}) = T(NaN)
 median(d::Cauchy) = d.μ
 mode(d::Cauchy) = d.μ
 
-var{T <: Real}(d::Cauchy{T}) = T(NaN)
-skewness{T <: Real}(d::Cauchy{T}) = T(NaN)
-kurtosis{T <: Real}(d::Cauchy{T}) = T(NaN)
+var{T<:Real}(d::Cauchy{T}) = T(NaN)
+skewness{T<:Real}(d::Cauchy{T}) = T(NaN)
+kurtosis{T<:Real}(d::Cauchy{T}) = T(NaN)
 
 entropy(d::Cauchy) = log4π + log(d.σ)
 
@@ -96,7 +96,7 @@ function cquantile(d::Cauchy, p::Real)
     μ + σ * tan(π * (0.5 - p))
 end
 
-mgf{T <: Real}(d::Cauchy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)
+mgf{T<:Real}(d::Cauchy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)
 cf(d::Cauchy, t::Real) = exp(im * (t * d.μ) - d.σ * abs(t))
 
 
