@@ -52,14 +52,14 @@ meanlogx(d::LogNormal) = d.μ
 varlogx(d::LogNormal) = abs2(d.σ)
 stdlogx(d::LogNormal) = d.σ
 
-mean(d::LogNormal) = ((μ, σ) = params(d); exp(μ + 0.5 * σ^2))
+mean(d::LogNormal) = ((μ, σ) = params(d); exp(μ + 1/2*σ^2))
 median(d::LogNormal) = exp(d.μ)
 mode(d::LogNormal) = ((μ, σ) = params(d); exp(μ - σ^2))
 
 function var(d::LogNormal)
     (μ, σ) = params(d)
     σ2 = σ^2
-    (exp(σ2) - 1) * exp(2 * μ + σ2)
+    (exp(σ2) - 1) * exp(2μ + σ2)
 end
 
 function skewness(d::LogNormal)
@@ -74,12 +74,12 @@ function kurtosis(d::LogNormal)
     e2 = e * e
     e3 = e2 * e
     e4 = e3 * e
-    e4 + 2 * e3 + 3 * e2 - 6
+    e4 + 2*e3 + 3*e2 - 6
 end
 
 function entropy(d::LogNormal)
     (μ, σ) = params(d)
-    0.5 * (1 + log(twoπ * σ^2)) + μ
+    1/2*(1 + log(twoπ * σ^2)) + μ
 end
 
 

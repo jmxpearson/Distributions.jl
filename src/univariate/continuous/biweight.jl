@@ -35,14 +35,14 @@ function cdf{T<:Real}(d::Biweight{T}, x::Real)
     u = (x - d.μ) / d.σ
     u <= -1 ? zero(T) :
     u >= 1 ? one(T) :
-    0.0625 * (u + 1)^3 * @horner(u,8,-9,3)
+    0.0625(u + 1)^3 * @horner(u,8,-9,3)
 end
 
 function ccdf{T<:Real}(d::Biweight{T}, x::Real)
     u = (d.μ - x) / d.σ
     u <= -1 ? one(T) :
     u >= 1 ? zero(T) :
-    0.0625 * (u + 1)^3 * @horner(u,8,-9,3)
+    0.0625(u + 1)^3 * @horner(u,8,-9,3)
 end
 
 @quantile_newton Biweight
@@ -51,12 +51,12 @@ function mgf{T<:Real}(d::Biweight{T}, t::Real)
     a = d.σ*t
     a2 = a^2
     a == 0 ? one(T) :
-    15 * exp(d.μ * t) * (-3 * cosh(a) + (a + 3/a) * sinh(a)) / (a2^2)
+    15exp(d.μ * t) * (-3cosh(a) + (a + 3/a) * sinh(a)) / (a2^2)
 end
 
 function cf{T<:Real}(d::Biweight{T}, t::Real)
     a = d.σ * t
     a2 = a^2
     a == 0 ? one(T)+zero(T)*im :
-    -15 * cis(d.μ * t) * (3 * cos(a) + (a - 3/a) * sin(a)) / (a2^2)
+    -15cis(d.μ * t) * (3cos(a) + (a - 3/a) * sin(a)) / (a2^2)
 end

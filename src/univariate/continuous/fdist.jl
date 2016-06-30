@@ -62,13 +62,13 @@ end
 
 function var{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
-    ν2 > 4 ? 2 * ν2^2 * (ν1 + ν2 - 2) / (ν1 * (ν2 - 2)^2 * (ν2 - 4)) : T(NaN)
+    ν2 > 4 ? 2ν2^2 * (ν1 + ν2 - 2) / (ν1 * (ν2 - 2)^2 * (ν2 - 4)) : T(NaN)
 end
 
 function skewness{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 6
-        return (2 * ν1 + ν2 - 2) * sqrt(8 * (ν2 - 4)) / ((ν2 - 6) * sqrt(ν1 * (ν1 + ν2 - 2)))
+        return (2ν1 + ν2 - 2) * sqrt(8(ν2 - 4)) / ((ν2 - 6) * sqrt(ν1 * (ν1 + ν2 - 2)))
     else
         return T(NaN)
     end
@@ -77,9 +77,9 @@ end
 function kurtosis{T<:Real}(d::FDist{T})
     (ν1, ν2) = params(d)
     if ν2 > 8
-        a = ν1 * (5. * ν2 - 22.) * (ν1 + ν2 - 2.) + (ν2 - 4.) * (ν2 - 2.)^2
-        b = ν1 * (ν2 - 6.) * (ν2 - 8.) * (ν2 - 2.)
-        return 12. * a / b
+        a = ν1 * (5ν2 - 22) * (ν1 + ν2 - 2) + (ν2 - 4) * (ν2 - 2)^2
+        b = ν1 * (ν2 - 6) * (ν2 - 8) * (ν2 - 2)
+        return 12a / b
     else
         return T(NaN)
     end
@@ -87,9 +87,9 @@ end
 
 function entropy(d::FDist)
     (ν1, ν2) = params(d)
-    hν1 = ν1 * 0.5
-    hν2 = ν2 * 0.5
-    hs = (ν1 + ν2) * 0.5
+    hν1 = ν1/2
+    hν2 = ν2/2
+    hs = (ν1 + ν2)/2
     return log(ν2 / ν1) + lgamma(hν1) + lgamma(hν2) - lgamma(hs) +
         (1 - hν1) * digamma(hν1) + (-1 - hν2) * digamma(hν2) +
         hs * digamma(hs)

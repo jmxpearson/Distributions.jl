@@ -63,21 +63,21 @@ entropy(d::Rayleigh) = 0.942034242170793776 + log(d.σ)
 
 function pdf{T<:Real}(d::Rayleigh{T}, x::Real)
 	σ2 = d.σ^2
-	x > 0 ? (x / σ2) * exp(- (x^2) / (2 * σ2)) : zero(T)
+	x > 0 ? (x / σ2) * exp(- (x^2) / (2σ2)) : zero(T)
 end
 
 function logpdf{T<:Real}(d::Rayleigh{T}, x::Real)
 	σ2 = d.σ^2
-	x > 0 ? log(x / σ2) - (x^2) / (2 * σ2) : -T(Inf)
+	x > 0 ? log(x / σ2) - (x^2) / (2σ2) : -T(Inf)
 end
 
-logccdf(d::Rayleigh, x::Real) = - (x^2) / (2 * d.σ^2)
+logccdf(d::Rayleigh, x::Real) = - (x^2) / (2d.σ^2)
 ccdf(d::Rayleigh, x::Real) = exp(logccdf(d, x))
 
 cdf(d::Rayleigh, x::Real) = 1 - ccdf(d, x)
 logcdf(d::Rayleigh, x::Real) = log1mexp(logccdf(d, x))
 
-quantile(d::Rayleigh, p::Real) = sqrt(-2 * d.σ^2 * log1p(-p))
+quantile(d::Rayleigh, p::Real) = sqrt(-2d.σ^2 * log1p(-p))
 
 
 #### Sampling

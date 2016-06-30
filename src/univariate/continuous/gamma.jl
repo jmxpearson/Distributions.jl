@@ -98,8 +98,8 @@ immutable GammaStats <: SufficientStats
 end
 
 function suffstats{T<:Real}(::Type{Gamma}, x::AbstractArray{T})
-    sx = 0.
-    slogx = 0.
+    sx = 0
+    slogx = 0
     for xi = x
         sx += xi
         slogx += log(xi)
@@ -113,9 +113,9 @@ function suffstats{T<:Real}(::Type{Gamma}, x::AbstractArray{T}, w::AbstractArray
         throw(ArgumentError("Inconsistent argument dimensions."))
     end
 
-    sx = 0.
-    slogx = 0.
-    tw = 0.
+    sx = 0
+    slogx = 0
+    tw = 0
     for i = 1:n
         @inbounds xi = x[i]
         @inbounds wi = w[i]
@@ -139,7 +139,7 @@ function fit_mle(::Type{Gamma}, ss::GammaStats;
     logmx = log(mx)
     mlogx = ss.slogx / ss.tw
 
-    a::Float64 = isnan(alpha0) ? 0.5 / (logmx - mlogx) : alpha0
+    a::Float64 = isnan(alpha0) ? (logmx - mlogx)/2 : alpha0
     converged = false
 
     t = 0

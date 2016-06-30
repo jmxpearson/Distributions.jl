@@ -40,21 +40,21 @@ kurtosis{T<:Real}(d::Epanechnikov{T}) = -2.914285714285714*one(T)  # 3/35-3
 ## Functions
 function pdf{T<:Real}(d::Epanechnikov{T}, x::Real)
     u = abs(x - d.μ) / d.σ
-    u >= 1 ? zero(T) : 0.75 * (1 - u^2) / d.σ
+    u >= 1 ? zero(T) : (3/4) * (1 - u^2) / d.σ
 end
 
 function cdf{T<:Real}(d::Epanechnikov{T}, x::Real)
     u = (x - d.μ) / d.σ
     u <= -1 ? one(T) :
     u >= 1 ? zero(T) :
-    0.5 + u * (0.75 - 0.25 * u^2)
+    1//2 + u * (3//4 - u^2/4)
 end
 
 function ccdf{T<:Real}(d::Epanechnikov{T}, x::Real)
     u = (d.μ - x) / d.σ
     u <= -1 ? one(T) :
     u >= 1 ? zero(T) :
-    0.5 + u * (0.75 - 0.25 * u^2)
+    1//2 + u * (3//4 - u^2/4)
 end
 
 @quantile_newton Epanechnikov
@@ -62,11 +62,11 @@ end
 function mgf{T<:Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
     a == 0 ? one(T) :
-    3 * exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
+    3exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
 end
 
 function cf{T<:Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
     a == 0 ? one(T)+zero(T)*im :
-    -3 * exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
+    -3exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
 end

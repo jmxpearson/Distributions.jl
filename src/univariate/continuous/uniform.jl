@@ -57,7 +57,7 @@ modes(d::Uniform) = Float64[]
 var(d::Uniform) = (w = d.b - d.a; w^2 / 12)
 
 skewness{T<:Real}(d::Uniform{T}) = zero(T)
-kurtosis{T<:Real}(d::Uniform{T}) = -1.2*one(T)
+kurtosis{T<:Real}(d::Uniform{T}) = -6/5*one(T)
 
 entropy(d::Uniform) = log(d.b - d.a)
 
@@ -85,17 +85,17 @@ cquantile(d::Uniform, p::Real) = d.b + p * (d.a - d.b)
 
 function mgf(d::Uniform, t::Real)
     (a, b) = params(d)
-    u = 0.5 * (b - a) * t
+    u = (b - a) * t / 2
     u == zero(u) && return one(u)
-    v = 0.5 * (a + b) *t
+    v = (a + b) * t / 2
     exp(v) * (sinh(u) / u)
 end
 
 function cf(d::Uniform, t::Real)
     (a, b) = params(d)
-    u = 0.5 * (b - a) * t
+    u = (b - a) * t / 2
     u == zero(u) && return complex(one(u))
-    v = 0.5 * (a + b) * t
+    v = (a + b) * t / 2
     cis(v) * (sin(u) / u)
 end
 

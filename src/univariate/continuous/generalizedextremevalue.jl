@@ -103,7 +103,7 @@ function mode(d::GeneralizedExtremeValue)
     if abs(ξ) < eps() # ξ == 0
         return μ
     else
-        return μ + σ * ((1 + ξ) ^ (- ξ) - 1) / ξ
+        return μ + σ * ((1 + ξ) ^ (-ξ) - 1) / ξ
     end
 end
 
@@ -111,9 +111,9 @@ function var{T<:Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0
-        return σ ^ 2 * π ^ 2 / 6
-    elseif ξ < 0.5
-        return σ ^ 2 * (g(d, 2) - g(d, 1) ^ 2) / ξ ^ 2
+        return σ ^ 2π ^ 2 / 6
+    elseif ξ < 1/2
+        return σ ^ 2(g(d, 2) - g(d, 1) ^ 2) / ξ^2
     else
         return T(Inf)
     end
@@ -123,12 +123,12 @@ function skewness{T<:Real}(d::GeneralizedExtremeValue{T})
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0
-        return 12 * sqrt(6) * zeta(3) / pi ^ 3 * one(T)
-    elseif ξ < 1 / 3
+        return 12sqrt(6) * zeta(3) / pi ^ 3 * one(T)
+    elseif ξ < 1/3
         g1 = g(d, 1)
         g2 = g(d, 2)
         g3 = g(d, 3)
-        return sign(ξ) * (g3 - 3 * g1 * g2 + 2 * g1 ^ 3) / (g2 - g1 ^ 2) ^ (3 / 2)
+        return sign(ξ) * (g3 - 3g1 * g2 + 2g1^3) / (g2 - g1^2) ^ (3/2)
     else
         return T(Inf)
     end
@@ -144,7 +144,7 @@ function kurtosis{T<:Real}(d::GeneralizedExtremeValue{T})
         g2 = g(d, 2)
         g3 = g(d, 3)
         g4 = g(d, 4)
-        return (g4 - 4 * g1 * g3 + 6 * g2 * g1 ^ 2 - 3 * g1 ^ 4) / (g2 - g1 ^ 2) ^ 2 - 3
+        return (g4 - 4g1 * g3 + 6g2 * g1 ^ 2 - 3 * g1 ^ 4) / (g2 - g1^2) ^ 2 - 3
     else
         return T(Inf)
     end
@@ -159,9 +159,9 @@ function quantile(d::GeneralizedExtremeValue, p::Real)
     (μ, σ, ξ) = params(d)
 
     if abs(ξ) < eps() # ξ == 0
-        return μ + σ * (- log(- log(p)))
+        return μ + σ * (-log(-log(p)))
     else
-        return μ + σ * ((- log(p)) ^ (- ξ) - 1) / ξ
+        return μ + σ * ((-log(p)) ^ (-ξ) - 1) / ξ
     end
 end
 
@@ -182,12 +182,12 @@ function logpdf{T<:Real}(d::GeneralizedExtremeValue{T}, x::Real)
         z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0
             t = z
-            return - log(σ) - t - exp(- t)
+            return -log(σ) - t - exp(-t)
         else
             if z * ξ == -1 # Otherwise, would compute zero to the power something.
                 return -T(Inf)
             else
-                t = (1 + z * ξ) ^ (- 1 / ξ)
+                t = (1 + z * ξ) ^ (-1/ξ)
                 return - log(σ) + (ξ + 1) * log(t) - t
             end
         end
@@ -202,14 +202,14 @@ function pdf{T<:Real}(d::GeneralizedExtremeValue{T}, x::Real)
 
         z = (x - μ) / σ # Normalise x.
         if abs(ξ) < eps() # ξ == 0
-            t = exp(- z)
-            return (t * exp(- t)) / σ
+            t = exp(-z)
+            return (t * exp(-t)) / σ
         else
             if z * ξ == -1 # In this case: zero to the power something.
                 return zero(T)
             else
-                t = (1 + z * ξ) ^ (- 1 / ξ)
-                return (t ^ (ξ + 1) * exp(- t)) / σ
+                t = (1 + z*ξ)^(- 1 / ξ)
+                return (t^(ξ + 1) * exp(- t)) / σ
             end
         end
     end
@@ -223,7 +223,7 @@ function logcdf{T<:Real}(d::GeneralizedExtremeValue{T}, x::Real)
         if abs(ξ) < eps() # ξ == 0
             return - exp(- z)
         else
-            return - (1 + z * ξ) ^ ( -1 / ξ)
+            return - (1 + z * ξ) ^ ( -1/ξ)
         end
     elseif x <= minimum(d)
         return -T(Inf)
@@ -240,7 +240,7 @@ function cdf{T<:Real}(d::GeneralizedExtremeValue{T}, x::Real)
         if abs(ξ) < eps() # ξ == 0
             t = exp(- z)
         else
-            t = (1 + z * ξ) ^ (- 1 / ξ)
+            t = (1 + z * ξ) ^ (-1/ξ)
         end
         return exp(- t)
     elseif x <= minimum(d)

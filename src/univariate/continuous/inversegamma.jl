@@ -68,12 +68,12 @@ end
 
 function skewness{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 3 ? 4 * sqrt(α - 2) / (α - 3) : T(NaN)
+    α > 3 ? 4sqrt(α - 2) / (α - 3) : T(NaN)
 end
 
 function kurtosis{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 4 ? (30 * α - 66) / ((α - 3) * (α - 4)) : T(NaN)
+    α > 4 ? (30α - 66) / ((α - 3) * (α - 4)) : T(NaN)
 end
 
 function entropy(d::InverseGamma)
@@ -103,12 +103,12 @@ invlogccdf(d::InverseGamma, p::Real) = 1 / invlogcdf(d.invd, p)
 
 function mgf{T<:Real}(d::InverseGamma{T}, t::Real)
     (a, b) = params(d)
-    t == zero(t) ? one(T) : 2*(-b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4*b*t))
+    t == zero(t) ? one(T) : 2(-b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4*b*t))
 end
 
 function cf{T<:Real}(d::InverseGamma{T}, t::Real)
     (a, b) = params(d)
-    t == zero(t) ? one(T)+zero(T)*im : 2*(-im*b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4*im*b*t))
+    t == zero(t) ? one(T)+zero(T)*im : 2(-im*b*t)^(0.5a) / gamma(a) * besselk(a, sqrt(-4*im*b*t))
 end
 
 

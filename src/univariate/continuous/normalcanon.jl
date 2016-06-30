@@ -44,13 +44,13 @@ kurtosis{T<:Real}(d::NormalCanon{T}) = zero(T)
 var(d::NormalCanon) = 1 / d.λ
 std(d::NormalCanon) = sqrt(var(d))
 
-entropy(d::NormalCanon) = 0.5 * (log2π + 1 - log(d.λ))
+entropy(d::NormalCanon) = (log2π + 1 - log(d.λ)) / 2
 
 
 #### Evaluation
 
-pdf(d::NormalCanon, x::Real) = (sqrt(d.λ) / sqrt2π) * exp(-0.5 * d.λ * abs2(x - d.μ))
-logpdf(d::NormalCanon, x::Real) = 0.5 * (log(d.λ) - log2π - d.λ * abs2(x - d.μ))
+pdf(d::NormalCanon, x::Real) = (sqrt(d.λ) / sqrt2π) * exp(-1/2* d.λ * abs2(x - d.μ))
+logpdf(d::NormalCanon, x::Real) = 1/2 * (log(d.λ) - log2π - d.λ * abs2(x - d.μ))
 
 zval(d::NormalCanon, x::Real) = (x - d.μ) * sqrt(d.λ)
 xval(d::NormalCanon, z::Real) = d.μ + z / sqrt(d.λ)

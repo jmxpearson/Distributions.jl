@@ -29,14 +29,14 @@ params(d::NoncentralT) = (d.ν, d.λ)
 function mean{T<:Real}(d::NoncentralT{T})
     if d.ν > 1
         isinf(d.ν) ? d.λ :
-        sqrt(0.5*d.ν) * d.λ * gamma(0.5*(d.ν-1)) / gamma(0.5*d.ν)
+        sqrt(d.ν/2) * d.λ * gamma((d.ν - 1)/2) / gamma(d.ν/2)
     else
         T(NaN)
     end
 end
 
 function var{T<:Real}(d::NoncentralT{T})
-    d.ν > 2 ? d.ν*(1+d.λ^2)/(d.ν-2) - mean(d)^2 : T(NaN)
+    d.ν > 2 ? d.ν*(1 + d.λ^2) / (d.ν - 2) - mean(d)^2 : T(NaN)
 end
 
 ### Evaluation & Sampling

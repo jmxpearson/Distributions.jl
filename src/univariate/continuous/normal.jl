@@ -59,7 +59,7 @@ std(d::Normal) = d.σ
 skewness{T<:Real}(d::Normal{T}) = zero(T)
 kurtosis{T<:Real}(d::Normal{T}) = zero(T)
 
-entropy(d::Normal) = 0.5 * (log2π + 1) + log(d.σ)
+entropy(d::Normal) = (log2π + 1)/2 + log(d.σ)
 
 
 #### Evaluation
@@ -68,8 +68,8 @@ entropy(d::Normal) = 0.5 * (log2π + 1) + log(d.σ)
 
 gradlogpdf(d::Normal, x::Real) = (d.μ - x) / d.σ^2
 
-mgf(d::Normal, t::Real) = exp(t * d.μ + 0.5 * d.σ^2 * t^2)
-cf(d::Normal, t::Real) = exp(im * t * d.μ - 0.5 * d.σ^2 * t^2)
+mgf(d::Normal, t::Real) = exp(t * d.μ + d.σ^2/2 * t^2)
+cf(d::Normal, t::Real) = exp(im * t * d.μ - d.σ^2/2 * t^2)
 
 
 #### Sampling

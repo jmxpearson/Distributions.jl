@@ -92,8 +92,8 @@ end
 function skewness{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
-    if ξ < (1 / 3)
-        return 2 * (1 + ξ) * sqrt(1 - 2 * ξ) / (1 - 3 * ξ)
+    if ξ < (1/3)
+        return 2(1 + ξ) * sqrt(1 - 2ξ) / (1 - 3ξ)
     else
         return T(Inf)
     end
@@ -103,9 +103,9 @@ function kurtosis{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < 0.25
-        k1 = (1 - 2 * ξ) * (2 * ξ^2 + ξ + 3)
-        k2 = (1 - 3 * ξ) * (1 - 4 * ξ)
-        return 3 * k1 / k2 - 3
+        k1 = (1 - 2ξ) * (2ξ^2 + ξ + 3)
+        k2 = (1 - 3ξ) * (1 - 4ξ)
+        return 3k1 / k2 - 3
     else
         return T(Inf)
     end

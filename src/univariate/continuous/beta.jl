@@ -85,7 +85,7 @@ function skewness(d::Beta)
         return zero(α)
     else
         s = α + β
-        (2 * (β - α) * sqrt(s + 1)) / ((s + 2) * sqrt(α * β))
+        (2(β - α) * sqrt(s + 1)) / ((s + 2) * sqrt(α * β))
     end
 end
 
@@ -93,7 +93,7 @@ function kurtosis(d::Beta)
     α, β = params(d)
     s = α + β
     p = α * β
-    6 * (abs2(α - β) * (s + 1) - p * (s + 2)) / (p * (s + 2) * (s + 3))
+    6(abs2(α - β) * (s + 1) - p * (s + 2)) / (p * (s + 2) * (s + 3))
 end
 
 function entropy(d::Beta)

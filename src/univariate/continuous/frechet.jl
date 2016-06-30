@@ -80,7 +80,7 @@ function skewness{T<:Real}(d::Frechet{T})
         g1 = gamma(1 - iα)
         g2 = gamma(1 - 2 * iα)
         g3 = gamma(1 - 3 * iα)
-        return (g3 - 3 * g2 * g1 + 2 * g1^3) / ((g2 - g1^2)^1.5)
+        return (g3 - 3g2 * g1 + 2 * g1^3) / ((g2 - g1^2)^1.5)
     else
         return T(Inf)
     end
@@ -90,10 +90,10 @@ function kurtosis{T<:Real}(d::Frechet{T})
     if d.α > 3
         iα = 1 / d.α
         g1 = gamma(1 - iα)
-        g2 = gamma(1 - 2 * iα)
-        g3 = gamma(1 - 3 * iα)
-        g4 = gamma(1 - 4 * iα)
-        return (g4 - 4 * g3 * g1 + 3 * g2^2) / ((g2 - g1^2)^2) - 6
+        g2 = gamma(1 - 2iα)
+        g3 = gamma(1 - 3iα)
+        g4 = gamma(1 - 4iα)
+        return (g4 - 4g3 * g1 + 3 * g2^2) / ((g2 - g1^2)^2) - 6
     else
         return T(Inf)
     end

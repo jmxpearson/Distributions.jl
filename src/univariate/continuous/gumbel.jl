@@ -60,7 +60,7 @@ var(d::Gumbel) = 1.6449340668482264 * d.θ^2
 
 skewness{T<:Real}(d::Gumbel{T}) = 1.13954709940464866*one(T)
 
-kurtosis{T<:Real}(d::Gumbel{T}) = 2.4*one(T)
+kurtosis{T<:Real}(d::Gumbel{T}) = 12/5*one(T)
 
 entropy(d::Gumbel) = 1.57721566490153286 + log(d.θ)
 

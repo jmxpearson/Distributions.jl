@@ -61,7 +61,7 @@ mode(d::Logistic) = d.μ
 std(d::Logistic) = π * d.θ / sqrt3
 var(d::Logistic) = (π * d.θ)^2 / 3
 skewness{T<:Real}(d::Logistic{T}) = zero(T)
-kurtosis{T<:Real}(d::Logistic{T}) = 1.2*one(T)
+kurtosis{T<:Real}(d::Logistic{T}) = 6/5*one(T)
 
 entropy(d::Logistic) = log(d.θ) + 2
 
@@ -72,7 +72,7 @@ zval(d::Logistic, x::Real) = (x - d.μ) / d.θ
 xval(d::Logistic, z::Real) = d.μ + z * d.θ
 
 pdf(d::Logistic, x::Real) = (e = exp(-zval(d, x)); e / (d.θ * (1 + e)^2))
-logpdf(d::Logistic, x::Real) = (u = -abs(zval(d, x)); u - 2 * log1pexp(u) - log(d.θ))
+logpdf(d::Logistic, x::Real) = (u = -abs(zval(d, x)); u - 2*log1pexp(u) - log(d.θ))
 
 cdf(d::Logistic, x::Real) = logistic(zval(d, x))
 ccdf(d::Logistic, x::Real) = logistic(-zval(d, x))
@@ -86,7 +86,7 @@ invlogccdf(d::Logistic, lp::Real) = xval(d, logexpm1(-lp))
 
 function gradlogpdf(d::Logistic, x::Real)
     e = exp(-zval(d, x))
-    ((2 * e) / (1 + e) - 1) / d.θ
+    ((2e) / (1 + e) - 1) / d.θ
 end
 
 mgf(d::Logistic, t::Real) = exp(t * d.μ) / sinc(d.θ * t)

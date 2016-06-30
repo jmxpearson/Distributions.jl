@@ -78,22 +78,22 @@ logpdf(d::Cauchy, x::Real) = - (log1psq(zval(d, x)) + logπ + log(d.σ))
 
 function cdf(d::Cauchy, x::Real)
     μ, σ = params(d)
-    invπ * atan2(x - μ, σ) + 0.5
+    invπ * atan2(x - μ, σ) + 1//2
 end
 
 function ccdf(d::Cauchy, x::Real)
     μ, σ = params(d)
-    invπ * atan2(μ - x, σ) + 0.5
+    invπ * atan2(μ - x, σ) + 1//2
 end
 
 function quantile(d::Cauchy, p::Real)
     μ, σ = params(d)
-    μ + σ * tan(π * (p - 0.5))
+    μ + σ * tan(π * (p - 1//2))
 end
 
 function cquantile(d::Cauchy, p::Real)
     μ, σ = params(d)
-    μ + σ * tan(π * (0.5 - p))
+    μ + σ * tan(π * (1//2 - p))
 end
 
 mgf{T<:Real}(d::Cauchy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)

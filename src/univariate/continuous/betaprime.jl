@@ -75,7 +75,7 @@ function skewness{T<:Real}(d::BetaPrime{T})
     (α, β) = params(d)
     if β > 3
         s = α + β - 1
-        2 * (α + s) / (β - 3) * sqrt((β - 2) / (α * s))
+        2(α + s) / (β - 3) * sqrt((β - 2) / (α * s))
     else
         return T(NaN)
     end

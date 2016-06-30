@@ -16,7 +16,7 @@ function cdf(d::KSDist,x::Float64)
     n = d.n
     b = x*n
     # known exact values
-    if b <= 0.5
+    if b <= 1/2
         return 0
     elseif b <= 1
         # accuracy could be improved
@@ -41,7 +41,7 @@ function cdf(d::KSDist,x::Float64)
     end
 end
 
-function ccdf(d::KSDist,x::Float64)    
+function ccdf(d::KSDist,x::Float64)
     n = d.n
     b = x*n
     # Ruben and Gambino (1982) known exact values
@@ -73,12 +73,12 @@ function cdf_durbin(d::KSDist,x::Float64)
     k, ch, h = ceil_rems_mult(n,x)
 
     m = 2*k-1
-    H = Array(Float64,m,m)    
+    H = Array(Float64,m,m)
     for i = 1:m, j = 1:m
-        H[i,j] = i-j+1 >= 0 ? 1 : 0        
+        H[i,j] = i-j+1 >= 0 ? 1 : 0
     end
     r = 1
-    for i = 1:m 
+    for i = 1:m
         # (1-h^i) = (1-h)(1+h+...+h^(i-1))
         H[i,1] = H[m,m-i+1] = ch*r
         r += h^i
@@ -120,11 +120,11 @@ function ceil_rems_mult(n,x)
 end
 
 # n!*(e/n)^n
-function stirling(n)    
+function stirling(n)
     if n < 500
         s = 1
         for i = 1:n
-            s *= i/n*e 
+            s *= i/n*e
         end
         return s
     else

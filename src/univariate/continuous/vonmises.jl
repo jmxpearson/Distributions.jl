@@ -70,7 +70,7 @@ function _vmcdf(κ::Real, I0κ::Real, x::Real, tol::Real)
         cj = besseli(j, κ) / j
         s += cj * sin(j * x)
     end
-    return (x + 2 * s / I0κ) / twoπ + 0.5
+    return (x + 2s / I0κ) / twoπ + 1//2
 end
 
 

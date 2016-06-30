@@ -53,7 +53,7 @@ kurtosis{T<:Real}(d::Levy{T}) = T(NaN)
 
 mode(d::Levy) = d.σ / 3 + d.μ
 
-entropy(d::Levy) = (1 - 3 * digamma(1) + log(16π * d.σ^2)) / 2
+entropy(d::Levy) = (1 - 3digamma(1) + log(16π * d.σ^2)) / 2
 
 median(d::Levy) = d.μ + d.σ / 0.4549364231195728  # 0.454... = (2 * erfcinv(0.5)^2)
 
@@ -63,26 +63,26 @@ median(d::Levy) = d.μ + d.σ / 0.4549364231195728  # 0.454... = (2 * erfcinv(0.
 function pdf(d::Levy, x::Real)
     μ, σ = params(d)
     z = x - μ
-    (sqrt(σ) / sqrt2π) * exp((-σ) / (2 * z)) / z^1.5
+    (sqrt(σ) / sqrt2π) * exp((-σ) / (2z)) / z^(3//2)
 end
 
 function logpdf(d::Levy, x::Real)
     μ, σ = params(d)
     z = x - μ
-    0.5 * (log(σ) - log2π - σ / z - 3 * log(z))
+    1/2 * (log(σ) - log2π - σ / z - 3log(z))
 end
 
-cdf(d::Levy, x::Real) = erfc(sqrt(d.σ / (2 * (x - d.μ))))
-ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2 * (x - d.μ))))
+cdf(d::Levy, x::Real) = erfc(sqrt(d.σ / (2(x - d.μ))))
+ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2(x - d.μ))))
 
-quantile(d::Levy, p::Real) = d.μ + d.σ / (2 * erfcinv(p)^2)
-cquantile(d::Levy, p::Real) = d.μ + d.σ / (2 * erfinv(p)^2)
+quantile(d::Levy, p::Real) = d.μ + d.σ / (2*erfcinv(p)^2)
+cquantile(d::Levy, p::Real) = d.μ + d.σ / (2*erfinv(p)^2)
 
 mgf{T<:Real}(d::Levy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)
 
 function cf(d::Levy, t::Real)
     μ, σ = params(d)
-    exp(im * μ * t - sqrt(-2 * im * σ * t))
+    exp(im * μ * t - sqrt(-2im * σ * t))
 end
 
 

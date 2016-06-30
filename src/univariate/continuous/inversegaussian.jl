@@ -60,14 +60,14 @@ mean(d::InverseGaussian) = d.μ
 
 var(d::InverseGaussian) = d.μ^3 / d.λ
 
-skewness(d::InverseGaussian) = 3 * sqrt(d.μ / d.λ)
+skewness(d::InverseGaussian) = 3sqrt(d.μ / d.λ)
 
-kurtosis(d::InverseGaussian) = 15 * d.μ / d.λ
+kurtosis(d::InverseGaussian) = 15d.μ / d.λ
 
 function mode(d::InverseGaussian)
     μ, λ = params(d)
     r = μ / λ
-    μ * (sqrt(1 + 2.25 * r^2) - 1.5 * r)
+    μ * (sqrt(1 + (9/4)*r^2) - (3/2)*r)
 end
 
 
@@ -76,7 +76,7 @@ end
 function pdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0
         μ, λ = params(d)
-        return sqrt(λ / (twoπ * x^3)) * exp(-λ * (x - μ)^2 / (2 * μ^2 * x))
+        return sqrt(λ / (twoπ * x^3)) * exp(-λ * (x - μ)^2 / (2μ^2 * x))
     else
         return zero(T)
     end
@@ -85,7 +85,7 @@ end
 function logpdf{T<:Real}(d::InverseGaussian{T}, x::Real)
     if x > 0
         μ, λ = params(d)
-        return 0.5 * (log(λ) - (log2π + 3 * log(x)) - λ * (x - μ)^2 / (μ^2 * x))
+        return 1/2*(log(λ) - (log2π + 3log(x)) - λ * (x - μ)^2 / (μ^2 * x))
     else
         return -T(Inf)
     end
@@ -96,7 +96,7 @@ function cdf{T<:Real}(d::InverseGaussian{T}, x::Real)
         μ, λ = params(d)
         u = sqrt(λ / x)
         v = x / μ
-        return normcdf(u * (v - 1)) + exp(2 * λ / μ) * normcdf(-u * (v + 1))
+        return normcdf(u * (v - 1)) + exp(2λ / μ) * normcdf(-u * (v + 1))
     else
         return zero(T)
     end
@@ -107,7 +107,7 @@ function ccdf{T<:Real}(d::InverseGaussian{T}, x::Real)
         μ, λ = params(d)
         u = sqrt(λ / x)
         v = x / μ
-        normccdf(u * (v - 1)) - exp(2 * λ / μ) * normcdf(-u * (v + 1))
+        normccdf(u * (v - 1)) - exp(2λ / μ) * normcdf(-u * (v + 1))
     else
         return one(T)
     end
@@ -119,7 +119,7 @@ function logcdf{T<:Real}(d::InverseGaussian{T}, x::Real)
         u = sqrt(λ / x)
         v = x / μ
         a = normlogcdf(u * (v -1))
-        b = 2 * λ / μ + normlogcdf(-u * (v + 1))
+        b = 2λ / μ + normlogcdf(-u * (v + 1))
         a + log1pexp(b - a)
     else
         return -T(Inf)
@@ -132,7 +132,7 @@ function logccdf{T<:Real}(d::InverseGaussian{T}, x::Real)
         u = sqrt(λ / x)
         v = x / μ
         a = normlogccdf(u * (v - 1))
-        b = 2 * λ / μ + normlogcdf(-u * (v + 1))
+        b = 2λ / μ + normlogcdf(-u * (v + 1))
         a + log1mexp(b - a)
     else
         return zero(T)
@@ -152,7 +152,7 @@ function rand(d::InverseGaussian)
     z = randn()
     v = z * z
     w = μ * v
-    x1 = μ + μ / (2 * λ) * (w - sqrt(w * (4 * λ + w)))
+    x1 = μ + μ / (2λ) * (w - sqrt(w * (4λ + w)))
     p1 = μ / (μ + x1)
     u = rand()
     u >= p1 ? μ^2 / x1 : x1

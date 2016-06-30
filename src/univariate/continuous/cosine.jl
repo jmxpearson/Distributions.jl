@@ -54,7 +54,7 @@ kurtosis{T<:Real}(d::Cosine{T}) = -0.59376287559828102362*one(T)
 function pdf{T<:Real}(d::Cosine{T}, x::Real)
     if insupport(d, x)
         z = (x - d.μ) / d.σ
-        return (1 + cospi(z)) / (2 * d.σ)
+        return (1 + cospi(z)) / (2d.σ)
     else
         return zero(T)
     end
@@ -66,12 +66,12 @@ end
 
 function cdf(d::Cosine, x::Real)
     z = (x - d.μ) / d.σ
-    0.5 * (1 + z + sinpi(z) * invπ)
+    (1 + z + sinpi(z) * invπ) / 2
 end
 
 function ccdf(d::Cosine, x::Real)
     nz = (d.μ - x) / d.σ
-    0.5 * (1 + nz + sinpi(nz) * invπ)
+    (1 + nz + sinpi(nz) * invπ) / 2
 end
 
 quantile(d::Cosine, p::Real) = quantile_bisect(d, p)

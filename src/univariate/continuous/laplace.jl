@@ -59,12 +59,12 @@ mean(d::Laplace) = d.μ
 median(d::Laplace) = d.μ
 mode(d::Laplace) = d.μ
 
-var(d::Laplace) = 2 * d.θ^2
+var(d::Laplace) = 2d.θ^2
 std(d::Laplace) = sqrt2 * d.θ
 skewness{T<:Real}(d::Laplace{T}) = zero(T)
-kurtosis{T<:Real}(d::Laplace{T}) = 3*one(T)
+kurtosis{T<:Real}(d::Laplace{T}) = 3one(T)
 
-entropy(d::Laplace) = log(2 * d.θ) + 1
+entropy(d::Laplace) = log(2d.θ) + 1
 
 
 #### Evaluations
@@ -72,16 +72,16 @@ entropy(d::Laplace) = log(2 * d.θ) + 1
 zval(d::Laplace, x::Real) = (x - d.μ) / d.θ
 xval(d::Laplace, z::Real) = d.μ + z * d.θ
 
-pdf(d::Laplace, x::Real) = 0.5 * exp(-abs(zval(d, x))) / scale(d)
-logpdf(d::Laplace, x::Real) = - (abs(zval(d, x)) + log(2 * scale(d)))
+pdf(d::Laplace, x::Real) = exp(-abs(zval(d, x))) / 2scale(d)
+logpdf(d::Laplace, x::Real) = - (abs(zval(d, x)) + log(2scale(d)))
 
-cdf(d::Laplace, x::Real) = (z = zval(d, x); z < 0 ? 0.5 * exp(z) : 1 - 0.5 * exp(-z))
-ccdf(d::Laplace, x::Real) = (z = zval(d, x); z > 0 ? 0.5 * exp(-z) : 1 - 0.5 * exp(z))
+cdf(d::Laplace, x::Real) = (z = zval(d, x); z < 0 ? exp(z)/2 : 1 - exp(-z)/2)
+ccdf(d::Laplace, x::Real) = (z = zval(d, x); z > 0 ? exp(-z)/2 : 1 - exp(z)/2)
 logcdf(d::Laplace, x::Real) = (z = zval(d, x); z < 0 ? loghalf + z : loghalf + log2mexp(-z))
 logccdf(d::Laplace, x::Real) = (z = zval(d, x); z > 0 ? loghalf - z : loghalf + log2mexp(z))
 
-quantile(d::Laplace, p::Real) = p < 0.5 ? xval(d, log(2 * p)) : xval(d, -log(2 * (1 - p)))
-cquantile(d::Laplace, p::Real) = p > 0.5 ? xval(d, log(2 * (1 - p))) : xval(d, -log(2 * p))
+quantile(d::Laplace, p::Real) = p < 1/2 ? xval(d, log(2p)) : xval(d, -log(2(1 - p)))
+cquantile(d::Laplace, p::Real) = p > 1/2 ? xval(d, log(2(1 - p))) : xval(d, -log(2p))
 invlogcdf(d::Laplace, lp::Real) = lp < loghalf ? xval(d, logtwo + lp) : xval(d, -(logtwo + log1mexp(lp)))
 invlogccdf(d::Laplace, lp::Real) = lp > loghalf ? xval(d, logtwo + log1mexp(lp)) : xval(d, -(logtwo + lp))
 

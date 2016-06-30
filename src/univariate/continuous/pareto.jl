@@ -55,7 +55,7 @@ function mean{T<:Real}(d::Pareto{T})
     (α, θ) = params(d)
     α > 1 ? α * θ / (α - 1) : T(Inf)
 end
-median(d::Pareto) = ((α, θ) = params(d); θ * 2 ^ (1 / α))
+median(d::Pareto) = ((α, θ) = params(d); θ * 2^(1/α))
 mode(d::Pareto) = d.θ
 
 function var{T<:Real}(d::Pareto{T})
@@ -65,12 +65,12 @@ end
 
 function skewness{T<:Real}(d::Pareto{T})
     α = shape(d)
-    α > 3 ? ((2 * (1 + α)) / (α - 3)) * sqrt((α - 2) / α) : T(NaN)
+    α > 3 ? ((2(1 + α)) / (α - 3)) * sqrt((α - 2) / α) : T(NaN)
 end
 
 function kurtosis{T<:Real}(d::Pareto{T})
     α = shape(d)
-    α > 4 ? (6 * (α^3 + α^2 - 6 * α - 2)) / (α * (α - 3) * (α - 4)) : T(NaN)
+    α > 4 ? (6(α^3 + α^2 - 6α - 2)) / (α * (α - 3) * (α - 4)) : T(NaN)
 end
 
 entropy(d::Pareto) = ((α, θ) = params(d); log(θ / α) + 1 / α + 1)
@@ -80,7 +80,7 @@ entropy(d::Pareto) = ((α, θ) = params(d); log(θ / α) + 1 / α + 1)
 
 function pdf{T<:Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
-    x >= θ ? α * (θ / x)^α * (1 / x) : zero(T)
+    x >= θ ? α * (θ / x)^α * (1/x) : zero(T)
 end
 
 function logpdf{T<:Real}(d::Pareto{T}, x::Real)

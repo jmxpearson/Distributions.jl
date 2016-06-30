@@ -73,7 +73,7 @@ function median(d::TriangularDist)
              b - sqrt((b - a) * (b - c)/2)
 end
 
-_pretvar(a::Real, b::Real, c::Real) = a*a + b*b + c*c - a*b - a*c - b*c
+_pretvar(a::Real, b::Real, c::Real) = a^2 + b^2 + c^2 - a*b - a*c - b*c
 
 function var(d::TriangularDist)
     (a, b, c) = params(d)
@@ -85,7 +85,7 @@ function skewness(d::TriangularDist)
     sqrt2 * (a + b - 2c) * (2a - b - c) * (a - 2b + c) / (5 * _pretvar(a, b, c)^3//2)
 end
 
-kurtosis{T<:Real}(d::TriangularDist{T}) = -0.6 * one(T)
+kurtosis{T<:Real}(d::TriangularDist{T}) = -3/5 * one(T)
 
 entropy(d::TriangularDist) = 1//2 + log((d.b - d.a) / 2)
 

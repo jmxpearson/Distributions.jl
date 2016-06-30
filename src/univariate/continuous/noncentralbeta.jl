@@ -28,7 +28,7 @@ params(d::NoncentralBeta) = (d.α, d.β, d.λ)
 @_delegate_statsfuns NoncentralBeta nbeta α β λ
 
 function rand(d::NoncentralBeta)
-    a = rand(NoncentralChisq(2 * d.α, d.β))
-    b = rand(Chisq(2 * d.β))
+    a = rand(NoncentralChisq(2d.α, d.β))
+    b = rand(Chisq(2d.β))
     a / (a + b)
 end

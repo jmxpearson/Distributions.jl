@@ -48,10 +48,11 @@ skewness(d::NormalInverseGaussian) = 3d.β / (d.α * sqrt(d.δ * sqrt(d.α^2 - d
 
 function pdf(d::NormalInverseGaussian, x::Real)
 	μ, α, β, δ = params(d)
-	α * δ * besselk(1, α*sqrt(δ^2+(x-μ)^2)) / (π*sqrt(δ^2+(x-μ)^2)) * exp(δ*sqrt(α^2-β^2) + β*(x-μ))
+	α * δ * besselk(1, α*sqrt(δ^2+(x - μ)^2)) / (π*sqrt(δ^2 + (x - μ)^2)) * exp(δ*sqrt(α^2 - β^2) + β*(x - μ))
 end
 
 function logpdf(d::NormalInverseGaussian, x::Real)
   μ, α, β, δ = params(d)
-  log(α*δ) + log(besselk(1, α*sqrt(δ^2+(x-μ)^2))) - log(π*sqrt(δ^2+(x-μ)^2)) + δ*sqrt(α^2-β^2) + β*(x-μ)
+  log(α*δ) + log(besselk(1, α*sqrt(δ^2 + (x - μ)^2))) - log(π*sqrt(δ^2 + (x - μ)^2))
+        + δ*sqrt(α^2 - β^2) + β*(x - μ)
 end

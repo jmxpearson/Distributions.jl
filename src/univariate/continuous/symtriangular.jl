@@ -58,9 +58,9 @@ mode(d::SymTriangularDist) = d.μ
 
 var(d::SymTriangularDist) = d.σ^2 / 6
 skewness{T<:Real}(d::SymTriangularDist{T}) = zero(T)
-kurtosis{T<:Real}(d::SymTriangularDist{T}) = -0.6*one(T)
+kurtosis{T<:Real}(d::SymTriangularDist{T}) = -3/5*one(T)
 
-entropy(d::SymTriangularDist) = 0.5 + log(d.σ)
+entropy(d::SymTriangularDist) = 1//2 + log(d.σ)
 
 
 #### Evaluation
@@ -78,56 +78,56 @@ end
 function cdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? zero(T) :
-    x <= μ ? 0.5 * (1 + zval(d, x))^2 :
-    x < μ + σ ? 1 - 0.5 * (1 - zval(d, x))^2 : one(T)
+    x <= μ ? 1/2 * (1 + zval(d, x))^2 :
+    x < μ + σ ? 1 - 1/2 * (1 - zval(d, x))^2 : one(T)
 end
 
 function ccdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? one(T) :
-    x <= μ ? 1 - 0.5 * (1 + zval(d, x))^2 :
-    x < μ + σ ? 0.5 * (1 - zval(d, x))^2 : zero(T)
+    x <= μ ? 1 - 1/2 * (1 + zval(d, x))^2 :
+    x < μ + σ ? 1/2 * (1 - zval(d, x))^2 : zero(T)
 end
 
 function logcdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? -T(Inf) :
-    x <= μ ? loghalf + 2 * log1p(zval(d, x)) :
-    x < μ + σ ? log1p(-0.5 * (1 - zval(d, x))^2) : zero(T)
+    x <= μ ? loghalf + 2*log1p(zval(d, x)) :
+    x < μ + σ ? log1p(-1/2 * (1 - zval(d, x))^2) : zero(T)
 end
 
 function logccdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? zero(T) :
-    x <= μ ? log1p(-0.5 * (1 + zval(d, x))^2) :
-    x < μ + σ ? loghalf + 2 * log1p(-zval(d, x)) : -T(Inf)
+    x <= μ ? log1p(-1/2 * (1 + zval(d, x))^2) :
+    x < μ + σ ? loghalf + 2*log1p(-zval(d, x)) : -T(Inf)
 end
 
-quantile(d::SymTriangularDist, p::Real) = p < 0.5 ? xval(d, sqrt(2 * p) - 1) :
-                                                       xval(d, 1 - sqrt(2 * (1 - p)))
+quantile(d::SymTriangularDist, p::Real) = p < 1/2 ? xval(d, sqrt(2p) - 1) :
+                                                       xval(d, 1 - sqrt(2(1 - p)))
 
-cquantile(d::SymTriangularDist, p::Real) = p > 0.5 ? xval(d, sqrt(2 * (1-p)) - 1) :
-                                                        xval(d, 1 - sqrt(2 * p))
+cquantile(d::SymTriangularDist, p::Real) = p > 1/2 ? xval(d, sqrt(2(1-p)) - 1) :
+                                                        xval(d, 1 - sqrt(2p))
 
-invlogcdf(d::SymTriangularDist, lp::Real) = lp < loghalf ? xval(d, expm1(0.5*(lp - loghalf))) :
-                                                              xval(d, 1 - sqrt(-2 * expm1(lp)))
+invlogcdf(d::SymTriangularDist, lp::Real) = lp < loghalf ? xval(d, expm1(1/2*(lp - loghalf))) :
+                                                              xval(d, 1 - sqrt(-2expm1(lp)))
 
-invlogccdf(d::SymTriangularDist, lp::Real) = lp > loghalf ? xval(d, sqrt(-2 * expm1(lp)) - 1) :
-                                                               xval(d, -(expm1(0.5 * (lp - loghalf))))
+invlogccdf(d::SymTriangularDist, lp::Real) = lp > loghalf ? xval(d, sqrt(-2*expm1(lp)) - 1) :
+                                                               xval(d, -(expm1(1/2*(lp - loghalf))))
 
 
 function mgf(d::SymTriangularDist, t::Real)
     (μ, σ) = params(d)
     a = σ * t
     a == zero(a) && return one(a)
-    4 * exp(μ * t) * (sinh(0.5 * a) / a)^2
+    4*exp(μ * t) * (sinh(a/2) / a)^2
 end
 
 function cf(d::SymTriangularDist, t::Real)
     (μ, σ) = params(d)
     a = σ * t
     a == zero(a) && return complex(one(a))
-    4 * cis(μ * t) * (sin(0.5 * a) / a)^2
+    4*cis(μ * t) * (sin(a/2) / a)^2
 end
 
 

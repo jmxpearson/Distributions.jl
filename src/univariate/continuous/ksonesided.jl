@@ -26,4 +26,3 @@ function ccdf(d::KSOneSided, x::Float64)
 end
 
 cdf(d::KSOneSided, x::Float64) = 1 - ccdf(d,x)
-

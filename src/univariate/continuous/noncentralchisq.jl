@@ -30,16 +30,16 @@ params(d::NoncentralChisq) = (d.ν, d.λ)
 ### Statistics
 
 mean(d::NoncentralChisq) = d.ν + d.λ
-var(d::NoncentralChisq) = 2*(d.ν + 2*d.λ)
-skewness(d::NoncentralChisq) = 2*sqrt2*(d.ν + 3*d.λ)/sqrt(d.ν + 2*d.λ)^3
-kurtosis(d::NoncentralChisq) = 12*(d.ν + 4*d.λ)/(d.ν + 2*d.λ)^2
+var(d::NoncentralChisq) = 2(d.ν + 2d.λ)
+skewness(d::NoncentralChisq) = 2sqrt2*(d.ν + 3d.λ)/sqrt(d.ν + 2d.λ)^3
+kurtosis(d::NoncentralChisq) = 12(d.ν + 4d.λ)/(d.ν + 2d.λ)^2
 
 function mgf(d::NoncentralChisq, t::Real)
-    exp(d.λ * t/(1 - 2 * t))*(1 - 2 * t)^(-d.ν / 2)
+    exp(d.λ * t/(1 - 2t))*(1 - 2t)^(-d.ν/2)
 end
 
 function cf(d::NoncentralChisq, t::Real)
-    cis(d.λ * t/(1 - 2 * im * t))*(1 - 2 * im * t)^(-d.ν / 2)
+    cis(d.λ * t/(1 - 2im*t))*(1 - 2im*t)^(-d.ν/2)
 end
 
 

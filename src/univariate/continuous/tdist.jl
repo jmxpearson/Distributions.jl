@@ -60,9 +60,9 @@ function kurtosis{T<:Real}(d::TDist{T})
 end
 
 function entropy(d::TDist)
-    h = 0.5 * d.ν
-    h1 = h + 0.5
-    h1 * (digamma(h1) - digamma(h)) + 0.5 * log(d.ν) + lbeta(h, 0.5)
+    h = d.ν/2
+    h1 = h + 1//2
+    h1 * (digamma(h1) - digamma(h)) + log(d.ν)/2 + lbeta(h, 0.5)
 end
 
 
@@ -74,10 +74,9 @@ rand(d::TDist) = StatsFuns.Rmath.tdistrand(d.ν)
 
 function cf(d::TDist, t::Real)
     t == 0 && return complex(1)
-    h = d.ν * 0.5
-    q = d.ν * 0.25
-    t2 = t*t
-    complex(2*(q*t2)^q*besselk(h,sqrt(d.ν)*abs(t))/gamma(h))
+    h = d.ν/2
+    q = d.ν/4
+    complex(2(q*t^2)^q * besselk(h, sqrt(d.ν) * abs(t)) / gamma(h))
 end
 
 gradlogpdf(d::TDist, x::Real) = -((d.ν + 1) * x) / (x^2 + d.ν)

@@ -12,8 +12,8 @@ params(d::Kolmogorov) = ()
 
 #### Statistics
 
-mean(d::Kolmogorov) = 0.5*sqrt2π*log(2)
-var(d::Kolmogorov) = pi*pi/12 - 0.5*pi*log(2)^2
+mean(d::Kolmogorov) = sqrt2π*log(2)/2
+var(d::Kolmogorov) = pi^2/12 - pi*log(2)^2/2
 # TODO: higher-order moments also exist, can be obtained by differentiating series
 
 mode(d::Kolmogorov) = 0.735467907916572
@@ -32,20 +32,15 @@ median(d::Kolmogorov) = 0.8275735551899077
 # both series so assume error in table.
 
 function cdf_raw(d::Kolmogorov, x::Real)
-    a = -(pi*pi)/(x*x)
+    a = -(pi^2)/(x^2)
     f = exp(a)
-    f2 = f*f
-    u = (1 + f*(1 + f2))
+    u = (1 + f*(1 + f^2))
     sqrt2π*exp(a/8)*u/x
 end
 
 function ccdf_raw(d::Kolmogorov, x::Real)
-    f = exp(-2*x*x)
-    f2 = f*f
-    f3 = f2*f
-    f5 = f2*f3
-    f7 = f2*f5
-    u = (1 - f3*(1 - f5*(1 - f7)))
+    f = exp(-2x^2)
+    u = (1 - f^3*(1 - f^5*(1 - f^7)))
     2f*u
 end
 
@@ -77,14 +72,14 @@ function pdf(d::Kolmogorov,x::Real)
         c = π/(2*x)
         s = 0
         for i = 1:20
-            k = ((2*i-1)*c)^2
-            s += (k-1)*exp(-k/2)
+            k = ((2i - 1)*c)^2
+            s += (k - 1)*exp(-k/2)
         end
         return sqrt2π*s/x^2
     else
         s = 0
         for i = 1:20
-            s += (iseven(i) ? -1 : 1)*i^2*exp(-2*(i*x)^2)
+            s += (iseven(i) ? -1 : 1)*i^2*exp(-2(i*x)^2)
         end
         return 8*x*s
     end
@@ -105,9 +100,9 @@ function rand(d::Kolmogorov)
         while true
             g = rand_trunc_gamma()
 
-            x = pi/sqrt(8*g)
+            x = pi/sqrt(8g)
             w = 0
-            z = 1/(2*g)
+            z = 1/(2g)
             p = exp(-g)
             n = 1
             q = 1
@@ -118,27 +113,26 @@ function rand(d::Kolmogorov)
                     return x
                 end
                 n += 2
-                nsq = n*n
-                q = p^(nsq-1)
-                w -= nsq*q
+                q = p^(n^2 - 1)
+                w -= n^2*q
             end
         end
     else
         while true
             e = randexp()
             u = rand()
-            x = sqrt(t*t+e/2)
+            x = sqrt(t^2 + e/2)
             w = 0
             n = 1
-            z = exp(-2*x*x)
+            z = exp(-2x^2)
             while u > w
                 n += 1
-                w += n*n*z^(n*n-1)
+                w += n^2*z^(n^2 - 1)
                 if u >= w
                     return x
                 end
                 n += 1
-                w -= n*n*z^(n*n-1)
+                w -= n^2*z^(n^2 - 1)
             end
         end
     end
@@ -152,7 +146,7 @@ function rand_trunc_gamma()
         e0 = rand(Exponential(1.2952909208355123))
         e1 = rand(Exponential(2))
         g = tp + e0
-        if (e0*e0 <= tp*e1*(g+tp)) || (g/tp - 1 - log(g/tp) <= e1)
+        if (e0^2 <= tp*e1*(g+tp)) || (g/tp - 1 - log(g/tp) <= e1)
             return g
         end
     end
