@@ -41,22 +41,22 @@ params(d::TDist) = (d.ν,)
 
 #### Statistics
 
-mean{T <: Real}(d::TDist{T}) = d.ν > 1.0 ? zero(T) : convert(T, NaN)
+mean{T <: Real}(d::TDist{T}) = d.ν > 1.0 ? zero(T) : T(NaN)
 median{T <: Real}(d::TDist{T}) = zero(T)
 mode{T <: Real}(d::TDist{T}) = zero(T)
 
 function var{T <: Real}(d::TDist{T})
     ν = d.ν
     ν > 2.0 ? ν / (ν - 2.0) :
-    ν > 1.0 ? T(Inf) : convert(T, NaN)
+    ν > 1.0 ? T(Inf) : T(NaN)
 end
 
-skewness{T <: Real}(d::TDist{T}) = d.ν > 3.0 ? zero(T) : convert(T, NaN)
+skewness{T <: Real}(d::TDist{T}) = d.ν > 3.0 ? zero(T) : T(NaN)
 
 function kurtosis{T <: Real}(d::TDist{T})
     ν = d.ν
     ν > 4.0 ? 6.0 / (ν - 4.0) :
-    ν > 2.0 ? T(Inf) : convert(T, NaN)
+    ν > 2.0 ? T(Inf) : T(NaN)
 end
 
 function entropy(d::TDist)

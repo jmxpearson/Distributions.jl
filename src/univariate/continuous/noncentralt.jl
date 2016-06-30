@@ -31,12 +31,12 @@ function mean{T <: Real}(d::NoncentralT{T})
         isinf(d.ν) ? d.λ :
         sqrt(0.5*d.ν) * d.λ * gamma(0.5*(d.ν-1)) / gamma(0.5*d.ν)
     else
-        convert(T, NaN)
+        T(NaN)
     end
 end
 
 function var{T <: Real}(d::NoncentralT{T})
-    d.ν > 2.0 ? d.ν*(1+d.λ^2)/(d.ν-2.0) - mean(d)^2 : convert(T, NaN)
+    d.ν > 2.0 ? d.ν*(1+d.λ^2)/(d.ν-2.0) - mean(d)^2 : T(NaN)
 end
 
 ### Evaluation & Sampling

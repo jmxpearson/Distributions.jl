@@ -68,12 +68,12 @@ end
 
 function skewness{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 3.0 ? 4.0 * sqrt(α - 2.0) / (α - 3.0) : convert(T, NaN)
+    α > 3.0 ? 4.0 * sqrt(α - 2.0) / (α - 3.0) : T(NaN)
 end
 
 function kurtosis{T<:Real}(d::InverseGamma{T})
     α = shape(d)
-    α > 4.0 ? (30.0 * α - 66.0) / ((α - 3.0) * (α - 4.0)) : convert(T, NaN)
+    α > 4.0 ? (30.0 * α - 66.0) / ((α - 3.0) * (α - 4.0)) : T(NaN)
 end
 
 function entropy(d::InverseGamma)

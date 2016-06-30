@@ -169,7 +169,7 @@ function quantile{T <: Real}(d::GeneralizedPareto{T}, p::Real)
             z = expm1(-ξ * log1p(-p)) / ξ
         end
     else
-      z = convert(T, NaN)
+      z = T(NaN)
     end
 
     return μ + σ * z

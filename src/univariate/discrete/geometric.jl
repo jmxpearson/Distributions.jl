@@ -116,7 +116,7 @@ invlogcdf(d::Geometric, lp::Real) = invlogccdf(d, log1mexp(lp))
 
 function invlogccdf{T <: Real}(d::Geometric{T}, lp::Real)
     if (lp > zero(d.p)) || isnan(lp)
-        return convert(T, NaN)
+        return T(NaN)
     elseif isinf(lp)
         return T(Inf)
     elseif lp == zero(d.p)

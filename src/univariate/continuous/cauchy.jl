@@ -57,13 +57,13 @@ params(d::Cauchy) = (d.μ, d.σ)
 
 #### Statistics
 
-mean{T <: Real}(d::Cauchy{T}) = convert(T, NaN)
+mean{T <: Real}(d::Cauchy{T}) = T(NaN)
 median(d::Cauchy) = d.μ
 mode(d::Cauchy) = d.μ
 
-var{T <: Real}(d::Cauchy{T}) = convert(T, NaN)
-skewness{T <: Real}(d::Cauchy{T}) = convert(T, NaN)
-kurtosis{T <: Real}(d::Cauchy{T}) = convert(T, NaN)
+var{T <: Real}(d::Cauchy{T}) = T(NaN)
+skewness{T <: Real}(d::Cauchy{T}) = T(NaN)
+kurtosis{T <: Real}(d::Cauchy{T}) = T(NaN)
 
 entropy(d::Cauchy) = log4π + log(d.σ)
 
@@ -96,7 +96,7 @@ function cquantile(d::Cauchy, p::Real)
     μ + σ * tan(π * (0.5 - p))
 end
 
-mgf{T <: Real}(d::Cauchy{T}, t::Real) = t == zero(t) ? one(T) : convert(T, NaN)
+mgf{T <: Real}(d::Cauchy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)
 cf(d::Cauchy, t::Real) = exp(im * (t * d.μ) - d.σ * abs(t))
 
 

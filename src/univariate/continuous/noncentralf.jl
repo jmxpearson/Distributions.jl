@@ -33,12 +33,12 @@ params(d::NoncentralF) = (d.ν1, d.ν2, d.λ)
 ### Statistics
 
 function mean{T <: Real}(d::NoncentralF{T})
-    d.ν2 > 2.0 ? d.ν2 / (d.ν2 - 2.0) * (d.ν1 + d.λ) / d.ν1 : convert(T, NaN)
+    d.ν2 > 2.0 ? d.ν2 / (d.ν2 - 2.0) * (d.ν1 + d.λ) / d.ν1 : T(NaN)
 end
 
 var{T <: Real}(d::NoncentralF{T}) = d.ν2 > 4.0 ? 2.0 * d.ν2^2 *
 		       ((d.ν1+d.λ)^2 + (d.ν2 - 2.0)*(d.ν1 + 2.0*d.λ)) /
-		       (d.ν1 * (d.ν2 - 2.0)^2 * (d.ν2 - 4.0)) : convert(T, NaN)
+		       (d.ν1 * (d.ν2 - 2.0)^2 * (d.ν2 - 4.0)) : T(NaN)
 
 
 ### Evaluation & Sampling

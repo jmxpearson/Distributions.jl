@@ -65,12 +65,12 @@ end
 
 function skewness{T <: Real}(d::Pareto{T})
     α = shape(d)
-    α > 3.0 ? ((2.0 * (1.0 + α)) / (α - 3.0)) * sqrt((α - 2.0) / α) : convert(T, NaN)
+    α > 3.0 ? ((2.0 * (1.0 + α)) / (α - 3.0)) * sqrt((α - 2.0) / α) : T(NaN)
 end
 
 function kurtosis{T <: Real}(d::Pareto{T})
     α = shape(d)
-    α > 4.0 ? (6.0 * (α^3 + α^2 - 6.0 * α - 2.0)) / (α * (α - 3.0) * (α - 4.0)) : convert(T, NaN)
+    α > 4.0 ? (6.0 * (α^3 + α^2 - 6.0 * α - 2.0)) / (α * (α - 3.0) * (α - 4.0)) : T(NaN)
 end
 
 entropy(d::Pareto) = ((α, θ) = params(d); log(θ / α) + 1.0 / α + 1.0)

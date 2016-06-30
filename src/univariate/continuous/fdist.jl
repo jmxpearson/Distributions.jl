@@ -53,7 +53,7 @@ params(d::FDist) = (d.ν1, d.ν2)
 
 #### Statistics
 
-mean{T <: Real}(d::FDist{T}) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : convert(T, NaN))
+mean{T <: Real}(d::FDist{T}) = (ν2 = d.ν2; ν2 > 2.0 ? ν2 / (ν2 - 2.0) : T(NaN))
 
 function mode{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
@@ -62,7 +62,7 @@ end
 
 function var{T <: Real}(d::FDist{T})
     (ν1, ν2) = params(d)
-    ν2 > 4.0 ? 2.0 * ν2^2 * (ν1 + ν2 - 2.0) / (ν1 * (ν2 - 2.0)^2 * (ν2 - 4.0)) : convert(T, NaN)
+    ν2 > 4.0 ? 2.0 * ν2^2 * (ν1 + ν2 - 2.0) / (ν1 * (ν2 - 2.0)^2 * (ν2 - 4.0)) : T(NaN)
 end
 
 function skewness{T <: Real}(d::FDist{T})
@@ -70,7 +70,7 @@ function skewness{T <: Real}(d::FDist{T})
     if ν2 > 6.0
         return (2.0 * ν1 + ν2 - 2.0) * sqrt(8.0 * (ν2 - 4.0)) / ((ν2 - 6.0) * sqrt(ν1 * (ν1 + ν2 - 2.0)))
     else
-        return convert(T, NaN)
+        return T(NaN)
     end
 end
 
@@ -81,7 +81,7 @@ function kurtosis{T <: Real}(d::FDist{T})
         b = ν1 * (ν2 - 6.) * (ν2 - 8.) * (ν2 - 2.)
         return 12. * a / b
     else
-        return convert(T, NaN)
+        return T(NaN)
     end
 end
 

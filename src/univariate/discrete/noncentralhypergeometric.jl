@@ -15,7 +15,7 @@ end
 
 function quantile{T <: Real}(d::NoncentralHypergeometric{T}, q::Real)
     if !(zero(q) <= q <= one(q))
-        convert(T, NaN)
+        T(NaN)
     else
         range = support(d)
         if q > 0.5
