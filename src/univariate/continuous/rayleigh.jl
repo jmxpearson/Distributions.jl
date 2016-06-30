@@ -68,7 +68,7 @@ end
 
 function logpdf{T <: Real}(d::Rayleigh{T}, x::Real)
 	σ2 = d.σ^2
-	x > 0.0 ? log(x / σ2) - (x^2) / (2.0 * σ2) : -convert(T, Inf)
+	x > 0.0 ? log(x / σ2) - (x^2) / (2.0 * σ2) : -T(Inf)
 end
 
 logccdf(d::Rayleigh, x::Real) = - (x^2) / (2.0 * d.σ^2)

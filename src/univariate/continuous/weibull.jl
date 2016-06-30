@@ -103,7 +103,7 @@ function logpdf{T <: Real}(d::Weibull{T}, x::Real)
         z = x / θ
         log(α / θ) + (α - 1.0) * log(z) - z^α
     else
-        -convert(T, Inf)
+        -T(Inf)
     end
 end
 
@@ -112,7 +112,7 @@ xv(d::Weibull, z::Real) = d.θ * z ^ (1.0 / d.α)
 
 cdf{T <: Real}(d::Weibull{T}, x::Real) = x > 0.0 ? -expm1(-zv(d, x)) : zero(T)
 ccdf{T <: Real}(d::Weibull{T}, x::Real) = x > 0.0 ? exp(-zv(d, x)) : one(T)
-logcdf{T <: Real}(d::Weibull{T}, x::Real) = x > 0.0 ? log1mexp(-zv(d, x)) : -convert(T, Inf)
+logcdf{T <: Real}(d::Weibull{T}, x::Real) = x > 0.0 ? log1mexp(-zv(d, x)) : -T(Inf)
 logccdf{T <: Real}(d::Weibull{T}, x::Real) = x > 0.0 ? -zv(d, x) : zero(T)
 
 quantile(d::Weibull, p::Real) = xv(d, -log1p(-p))

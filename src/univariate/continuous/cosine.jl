@@ -61,7 +61,7 @@ function pdf{T <: Real}(d::Cosine{T}, x::Real)
 end
 
 function logpdf{T <: Real}(d::Cosine{T}, x::Real)
-    insupport(d, x) ? log(pdf(d, x)) : -convert(T, Inf)
+    insupport(d, x) ? log(pdf(d, x)) : -T(Inf)
 end
 
 function cdf(d::Cosine, x::Real)

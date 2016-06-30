@@ -74,7 +74,7 @@ function pdf(d::Arcsine, x::Real)
 end
 
 function logpdf{T <: Real}(d::Arcsine{T}, x::Real)
-    insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -convert(T,Inf)
+    insupport(d, x) ? -(logπ + 0.5 * log((x - d.a) * (d.b - x))) : -T(Inf)
 end
 
 cdf{T <: Real}(d::Arcsine{T}, x::Real) = x < d.a ? zero(T) :

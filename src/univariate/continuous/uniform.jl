@@ -65,7 +65,7 @@ entropy(d::Uniform) = log(d.b - d.a)
 #### Evaluation
 
 pdf{T <: Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? 1.0 / (d.b - d.a) : zero(T)
-logpdf{T <: Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? -log(d.b - d.a) : -convert(T, Inf)
+logpdf{T <: Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? -log(d.b - d.a) : -T(Inf)
 
 function cdf{T <: Real}(d::Uniform{T}, x::Real)
     (a, b) = params(d)

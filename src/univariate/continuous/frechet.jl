@@ -58,7 +58,7 @@ params(d::Frechet) = (d.α, d.θ)
 #### Statistics
 
 function mean{T <: Real}(d::Frechet{T})
-    (α = d.α; α > 1.0 ? d.θ * gamma(1.0 - 1.0 / α) : convert(T, Inf))
+    (α = d.α; α > 1.0 ? d.θ * gamma(1.0 - 1.0 / α) : T(Inf))
 end
 
 median(d::Frechet) = d.θ * logtwo^(-1.0 / d.α)
@@ -70,7 +70,7 @@ function var{T <: Real}(d::Frechet{T})
         iα = 1.0 / d.α
         return d.θ^2 * (gamma(1.0 - 2.0 * iα) - gamma(1.0 - iα)^2)
     else
-        return convert(T, Inf)
+        return T(Inf)
     end
 end
 
@@ -82,7 +82,7 @@ function skewness{T <: Real}(d::Frechet{T})
         g3 = gamma(1.0 - 3.0 * iα)
         return (g3 - 3.0 * g2 * g1 + 2 * g1^3) / ((g2 - g1^2)^1.5)
     else
-        return convert(T, Inf)
+        return T(Inf)
     end
 end
 
@@ -95,7 +95,7 @@ function kurtosis{T <: Real}(d::Frechet{T})
         g4 = gamma(1.0 - 4.0 * iα)
         return (g4 - 4.0 * g3 * g1 + 3 * g2^2) / ((g2 - g1^2)^2) - 6.0
     else
-        return convert(T, Inf)
+        return T(Inf)
     end
 end
 
@@ -113,7 +113,7 @@ function logpdf{T <: Real}(d::Frechet{T}, x::Real)
         z = θ / x
         return log(α / θ) + (1.0 + α) * log(z) - z^α
     else
-        return -convert(T, Inf)
+        return -T(Inf)
     end
 end
 
@@ -121,7 +121,7 @@ pdf(d::Frechet, x::Real) = exp(logpdf(d, x))
 
 cdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? exp(-((d.θ / x) ^ d.α)) : zero(T)
 ccdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -expm1(-((d.θ / x) ^ d.α)) : one(T)
-logcdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -(d.θ / x) ^ d.α : -convert(T, Inf)
+logcdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? -(d.θ / x) ^ d.α : -T(Inf)
 logccdf{T <: Real}(d::Frechet{T}, x::Real) = x > 0.0 ? log1mexp(-((d.θ / x) ^ d.α)) : zero(T)
 
 quantile(d::Frechet, p::Real) = d.θ * (-log(p)) ^ (-1.0 / d.α)

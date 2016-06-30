@@ -53,14 +53,14 @@ params(d::Pareto) = (d.α, d.θ)
 
 function mean{T <: Real}(d::Pareto{T})
     (α, θ) = params(d)
-    α > 1.0 ? α * θ / (α - 1.0) : convert(T, Inf)
+    α > 1.0 ? α * θ / (α - 1.0) : T(Inf)
 end
 median(d::Pareto) = ((α, θ) = params(d); θ * 2.0 ^ (1.0 / α))
 mode(d::Pareto) = d.θ
 
 function var{T <: Real}(d::Pareto{T})
     (α, θ) = params(d)
-    α > 2.0 ? (θ^2 * α) / ((α - 1.0)^2 * (α - 2.0)) : convert(T, Inf)
+    α > 2.0 ? (θ^2 * α) / ((α - 1.0)^2 * (α - 2.0)) : T(Inf)
 end
 
 function skewness{T <: Real}(d::Pareto{T})
@@ -85,7 +85,7 @@ end
 
 function logpdf{T <: Real}(d::Pareto{T}, x::Real)
     (α, θ) = params(d)
-    x >= θ ? log(α) + α * log(θ) - (α + 1.0) * log(x) : -convert(T, Inf)
+    x >= θ ? log(α) + α * log(θ) - (α + 1.0) * log(x) : -T(Inf)
 end
 
 function ccdf{T <: Real}(d::Pareto{T}, x::Real)

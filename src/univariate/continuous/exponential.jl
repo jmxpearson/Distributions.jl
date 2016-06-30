@@ -64,12 +64,12 @@ xval(d::Exponential, z::Real) = z * d.θ
 
 pdf(d::Exponential, x::Real) = (λ = rate(d); x < 0.0 ? zero(λ) : λ * exp(-λ * x))
 function logpdf{T <: Real}(d::Exponential{T}, x::Real)
-    (λ = rate(d); x < 0.0 ? -convert(T, Inf) : log(λ) - λ * x)
+    (λ = rate(d); x < 0.0 ? -T(Inf) : log(λ) - λ * x)
 end
 
 cdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : zero(T)
 ccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? exp(-zval(d, x)) : zero(T)
-logcdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -convert(T, Inf)
+logcdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -T(Inf)
 logccdf{T <: Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -zval(d, x) : zero(T)
 
 quantile(d::Exponential, p::Real) = -xval(d, log1p(-p))

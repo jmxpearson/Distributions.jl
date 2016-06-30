@@ -37,7 +37,7 @@ InverseGaussian(μ::Integer, λ::Integer) = InverseGaussian(Float64(μ), Float64
 InverseGaussian(μ::Real) = InverseGaussian(μ, 1.0)
 InverseGaussian() = InverseGaussian(1.0, 1.0)
 
-@distr_support InverseGaussian 0.0 convert(T, Inf)
+@distr_support InverseGaussian 0.0 T(Inf)
 
 #### Conversions
 
@@ -87,7 +87,7 @@ function logpdf{T <: Real}(d::InverseGaussian{T}, x::Real)
         μ, λ = params(d)
         return 0.5 * (log(λ) - (log2π + 3.0 * log(x)) - λ * (x - μ)^2 / (μ^2 * x))
     else
-        return -convert(T, Inf)
+        return -T(Inf)
     end
 end
 
@@ -122,7 +122,7 @@ function logcdf{T <: Real}(d::InverseGaussian{T}, x::Real)
         b = 2.0 * λ / μ + normlogcdf(-u * (v + 1.0))
         a + log1pexp(b - a)
     else
-        return -convert(T, Inf)
+        return -T(Inf)
     end
 end
 

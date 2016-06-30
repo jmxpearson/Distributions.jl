@@ -72,7 +72,7 @@ xval(d::SymTriangularDist, z::Real) = d.μ + z * d.σ
 pdf{T <: Real}(d::SymTriangularDist{T}, x::Real) = insupport(d, x) ? (1.0 - abs(zval(d, x))) / scale(d) : zero(T)
 
 function logpdf{T <: Real}(d::SymTriangularDist{T}, x::Real)
-    insupport(d, x) ? log((1.0 - abs(zval(d, x))) / scale(d)) : -convert(T, convert(T, Inf))
+    insupport(d, x) ? log((1.0 - abs(zval(d, x))) / scale(d)) : -convert(T, T(Inf))
 end
 
 function cdf{T <: Real}(d::SymTriangularDist{T}, x::Real)
@@ -91,7 +91,7 @@ end
 
 function logcdf{T <: Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
-    x <= μ - σ ? -convert(T, Inf) :
+    x <= μ - σ ? -T(Inf) :
     x <= μ ? loghalf + 2.0 * log1p(zval(d, x)) :
     x < μ + σ ? log1p(-0.5 * (1.0 - zval(d, x))^2) : zero(T)
 end
@@ -100,7 +100,7 @@ function logccdf{T <: Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? zero(T) :
     x <= μ ? log1p(-0.5 * (1.0 + zval(d, x))^2) :
-    x < μ + σ ? loghalf + 2.0 * log1p(-zval(d, x)) : -convert(T, Inf)
+    x < μ + σ ? loghalf + 2.0 * log1p(-zval(d, x)) : -T(Inf)
 end
 
 quantile(d::SymTriangularDist, p::Real) = p < 0.5 ? xval(d, sqrt(2.0 * p) - 1.0) :

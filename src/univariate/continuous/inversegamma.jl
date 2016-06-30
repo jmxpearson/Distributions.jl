@@ -40,7 +40,7 @@ InverseGamma(α::Integer, θ::Integer) = InverseGamma(Float64(α), Float64(θ))
 InverseGamma(α::Real) = InverseGamma(α, 1.0)
 InverseGamma() = InverseGamma(1.0, 1.0)
 
-@distr_support InverseGamma 0.0 convert(T, Inf)
+@distr_support InverseGamma 0.0 T(Inf)
 
 #### Conversions
 convert{T <: Real, S <: Real}(::Type{InverseGamma{T}}, α::S, θ::S) = InverseGamma(T(α), T(θ))
@@ -57,13 +57,13 @@ params(d::InverseGamma) = (shape(d), scale(d))
 
 #### Parameters
 
-mean{T<:Real}(d::InverseGamma{T}) = ((α, θ) = params(d); α  > 1.0 ? θ / (α - 1.0) : convert(T, Inf))
+mean{T<:Real}(d::InverseGamma{T}) = ((α, θ) = params(d); α  > 1.0 ? θ / (α - 1.0) : T(Inf))
 
 mode(d::InverseGamma) = scale(d) / (shape(d) + 1.0)
 
 function var{T<:Real}(d::InverseGamma{T})
     (α, θ) = params(d)
-    α > 2.0 ? θ^2 / ((α - 1.0)^2 * (α - 2.0)) : convert(T, Inf)
+    α > 2.0 ? θ^2 / ((α - 1.0)^2 * (α - 2.0)) : T(Inf)
 end
 
 function skewness{T<:Real}(d::InverseGamma{T})

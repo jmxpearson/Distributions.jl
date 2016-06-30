@@ -31,7 +31,7 @@ Levy(μ::Real, σ::Real) = Levy(promote(μ, σ)...)
 Levy(μ::Real) = Levy(μ, 1.0)
 Levy() = Levy(0.0, 1.0)
 
-@distr_support Levy d.μ convert(T, Inf)
+@distr_support Levy d.μ T(Inf)
 
 #### Conversions
 
@@ -46,8 +46,8 @@ params(d::Levy) = (d.μ, d.σ)
 
 #### Statistics
 
-mean{T <: Real}(d::Levy{T}) = convert(T, Inf)
-var{T <: Real}(d::Levy{T}) = convert(T, Inf)
+mean{T <: Real}(d::Levy{T}) = T(Inf)
+var{T <: Real}(d::Levy{T}) = T(Inf)
 skewness{T <: Real}(d::Levy{T}) = convert(T, NaN)
 kurtosis{T <: Real}(d::Levy{T}) = convert(T, NaN)
 
