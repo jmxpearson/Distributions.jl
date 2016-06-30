@@ -74,7 +74,7 @@ skewness(d::NegativeBinomial) = (p = succprob(d); (2 - p) / sqrt((1 - p) * d.r))
 
 kurtosis(d::NegativeBinomial) = (p = succprob(d); 6 / d.r + (p * p) / ((1 - p) * d.r))
 
-mode(d::NegativeBinomial) = (p = succprob(d); floor(Int,(1 - p) * (d.r - 1.) / p))
+mode(d::NegativeBinomial) = (p = succprob(d); floor(Int,(1 - p) * (d.r - 1) / p))
 
 
 #### Evaluation & Sampling

@@ -71,9 +71,9 @@ mean(d::Categorical) = categorical_mean(d.p)
 function median(d::Categorical)
     k = ncategories(d)
     p = probs(d)
-    cp = 0.
+    cp = 0
     i = 0
-    while cp < 0.5 && i <= k
+    while cp < 1/2 && i <= k
         i += 1
         @inbounds cp += p[i]
     end
@@ -85,7 +85,7 @@ function var{T<:Real}(d::Categorical{T})
     p = probs(d)
     m = categorical_mean(p)
     s = zero(T)
-    for i = 1 : k
+    for i = 1:k
         @inbounds s += abs2(i - m) * p[i]
     end
     s
@@ -96,7 +96,7 @@ function skewness(d::Categorical)
     p = probs(d)
     m = categorical_mean(p)
     s = 0
-    for i = 1 : k
+    for i = 1:k
         @inbounds s += (i - m)^3 * p[i]
     end
     v = var(d)
@@ -108,7 +108,7 @@ function kurtosis(d::Categorical)
     p = probs(d)
     m = categorical_mean(p)
     s = 0
-    for i = 1 : k
+    for i = 1:k
         @inbounds s += (i - m)^4 * p[i]
     end
     s / abs2(var(d)) - 3
@@ -120,7 +120,7 @@ function mgf{T<:Real}(d::Categorical{T}, t::Real)
     k = ncategories(d)
     p = probs(d)
     s = zero(T)
-    for i = 1 : k
+    for i = 1:k
         @inbounds s += p[i] * exp(t)
     end
     s
@@ -188,7 +188,7 @@ function _pdf!{T<:Real}(r::AbstractArray, d::Categorical{T}, rgn::UnitRange)
         r[v - fm1] = p[v]
     end
     if vr < vlast
-        for i = (vr-vfirst+2):length(rgn)
+        for i = (vr - vfirst + 2):length(rgn)
             r[i] = zero(T)
         end
     end

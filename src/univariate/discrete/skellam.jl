@@ -56,7 +56,7 @@ mean(d::Skellam) = d.μ1 - d.μ2
 
 var(d::Skellam) = d.μ1 + d.μ2
 
-skewness(d::Skellam) = mean(d) / (var(d)^1.5)
+skewness(d::Skellam) = mean(d) / (var(d)^(3//2))
 
 kurtosis(d::Skellam) = 1 / var(d)
 
@@ -65,7 +65,7 @@ kurtosis(d::Skellam) = 1 / var(d)
 
 function logpdf(d::Skellam, x::Int)
     μ1, μ2 = params(d)
-    - (μ1 + μ2) + (x / 2) * log(μ1 / μ2) + log(besseli(x, 2 * sqrt(μ1) * sqrt(μ2)))
+    - (μ1 + μ2) + (x/2) * log(μ1/μ2) + log(besseli(x, 2*sqrt(μ1)*sqrt(μ2)))
 end
 
 pdf(d::Skellam, x::Int) = exp(logpdf(d, x))

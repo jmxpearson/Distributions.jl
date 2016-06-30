@@ -61,7 +61,7 @@ end
 
 function skewness(d::BetaBinomial)
     n, α, β = d.n, d.α, d.β
-    t1 = (α + β + 2 * n) * (β - α) / (α + β + 2)
+    t1 = (α + β + 2n) * (β - α) / (α + β + 2)
     t2 = sqrt((1 + α +β) / (n * α * β * (n + α + β)))
     return t1 * t2
 end
@@ -73,9 +73,9 @@ function kurtosis(d::BetaBinomial)
     numerator = ((alpha_beta_sum)^2) * (1 + alpha_beta_sum)
     denominator = (n * alpha_beta_product) * (alpha_beta_sum + 2) * (alpha_beta_sum + 3) * (alpha_beta_sum + n)
     left = numerator / denominator
-    right = (alpha_beta_sum) * (alpha_beta_sum - 1 + 6*n) + 3 * alpha_beta_product * (n - 2) + 6 * n^2
-    right -= (3 * alpha_beta_product * n * (6 - n)) / alpha_beta_sum
-    right -= (18 * alpha_beta_product * n^2) / (alpha_beta_sum)^2
+    right = (alpha_beta_sum) * (alpha_beta_sum - 1 + 6n) + 3*alpha_beta_product * (n - 2) + 6n^2
+    right -= (3*alpha_beta_product * n * (6 - n)) / alpha_beta_sum
+    right -= (18*alpha_beta_product * n^2) / (alpha_beta_sum)^2
     return (left * right) - 3
 end
 

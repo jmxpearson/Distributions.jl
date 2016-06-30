@@ -80,7 +80,7 @@ end
 function kurtosis(d::Binomial)
     n, p = params(d)
     u = p * (1 - p)
-    (1 - 6 * u) / (n * u)
+    (1 - 6u) / (n * u)
 end
 
 function entropy(d::Binomial; approx::Bool=false)
@@ -88,7 +88,7 @@ function entropy(d::Binomial; approx::Bool=false)
     (p1 == 0 || p1 == 1 || n == 0) && return zero(p1)
     p0 = 1 - p1
     if approx
-        return 0.5 * (log(twoπ * n * p0 * p1) + 1)
+        return (log(twoπ * n * p0 * p1) + 1) / 2
     else
         lg = log(p1 / p0)
         lp = n * log(p0)
@@ -118,7 +118,7 @@ nextpdf(s::RecursiveBinomProbEvaluator, pv::Float64, x::Integer) = ((s.n - x + 1
 
 function _pdf!(r::AbstractArray, d::Binomial, X::UnitRange)
     vl,vr, vfirst, vlast = _pdf_fill_outside!(r, d, X)
-    if succprob(d) <= 0.5
+    if succprob(d) <= 1/2
         # fill normal
         rpe = RecursiveBinomProbEvaluator(d::Binomial)
 
@@ -126,7 +126,7 @@ function _pdf!(r::AbstractArray, d::Binomial, X::UnitRange)
         if vl <= vr
             fm1 = vfirst - 1
             r[vl - fm1] = pv = pdf(d, vl)
-            for v = (vl+1):vr
+            for v = (vl + 1):vr
                 r[v - fm1] = pv = nextpdf(rpe, pv, v)
             end
         end
@@ -178,8 +178,8 @@ function suffstats{T<:Integer}(::Type{Binomial}, n::Integer, x::AbstractArray{T}
 end
 
 function suffstats{T<:Integer}(::Type{Binomial}, n::Integer, x::AbstractArray{T}, w::AbstractArray{Float64})
-    ns = 0.
-    ne = 0.
+    ns = 0
+    ne = 0
     for i = 1:length(x)
         @inbounds xi = x[i]
         @inbounds wi = w[i]

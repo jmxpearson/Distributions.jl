@@ -49,7 +49,7 @@ mode(d::Poisson) = floor(Int,d.λ)
 
 function modes(d::Poisson)
     λ = d.λ
-    isinteger(λ) ? [round(Int, λ)-1, round(Int, λ)] : [floor(Int, λ)]
+    isinteger(λ) ? [round(Int, λ) - 1, round(Int, λ)] : [floor(Int, λ)]
 end
 
 var(d::Poisson) = d.λ
@@ -71,10 +71,10 @@ function entropy{T<:Real}(d::Poisson{T})
         end
         return λ * (1 - log(λ)) + exp(-λ) * s
     else
-        return 0.5 * log(2 * pi * e * λ) -
-               (1 / (12 * λ)) -
-               (1 / (24 * λ * λ)) -
-               (19 / (360 * λ * λ * λ))
+        return log(2 * pi * e * λ)/2 -
+               (1 / (12λ)) -
+               (1 / (24λ^2)) -
+               (19 / (360λ^3))
     end
 end
 

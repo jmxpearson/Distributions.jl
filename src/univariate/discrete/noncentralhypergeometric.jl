@@ -18,8 +18,8 @@ function quantile{T<:Real}(d::NoncentralHypergeometric{T}, q::Real)
         T(NaN)
     else
         range = support(d)
-        if q > 0.5
-            q = 1-q
+        if q > 1/2
+            q = 1 - q
             range = reverse(range)
         end
 
@@ -77,7 +77,7 @@ function _mode(d::FisherNoncentralHypergeometric)
     A = d.ω - 1
     B = d.n - d.nf - (d.ns + d.n + 2)*d.ω
     C = (d.ns + 1)*(d.n + 1)*d.ω
-    -2*C / (B - sqrt(B^2-4*A*C))
+    -2C / (B - sqrt(B^2-4A*C))
 end
 
 mean(d::FisherNoncentralHypergeometric) = exp(_P(d,1) - _P(d,0))

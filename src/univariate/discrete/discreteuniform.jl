@@ -63,7 +63,7 @@ skewness{T<:Real}(d::DiscreteUniform{T}) = zero(T)
 
 function kurtosis(d::DiscreteUniform)
     n2 = span(d)^2
-    -1.2 * (n2 + 1) / (n2 - 1)
+    -6/5 * (n2 + 1) / (n2 - 1)
 end
 
 entropy(d::DiscreteUniform) = log(span(d))
@@ -102,7 +102,7 @@ function _pdf!(r::AbstractArray, d::DiscreteUniform, rgn::UnitRange)
         end
     end
     if vr < vlast
-        for i = (vr-vfirst+2):length(rgn)
+        for i = (vr - vfirst + 2):length(rgn)
             r[i] = 0
         end
     end
@@ -128,7 +128,7 @@ end
 function cf(d::DiscreteUniform, t::Real)
     a, b = d.a, d.b
     u = b - a + 1
-    t == 0 ? complex(1) : (im*cos(t*(a+b)/2) + sin(t*(a-b-1)/2)) / (u*sin(t/2))
+    t == 0 ? complex(1) : (im*cos(t*(a + b)/2) + sin(t*(a - b - 1)/2)) / (u*sin(t/2))
 end
 
 

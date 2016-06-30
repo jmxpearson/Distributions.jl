@@ -59,15 +59,15 @@ skewness(d::Bernoulli) = (p0 = failprob(d); p1 = succprob(d); (p0 - p1) / sqrt(p
 kurtosis(d::Bernoulli) = 1 / var(d) - 6
 
 
-mode(d::Bernoulli) = ifelse(succprob(d) > 0.5, 1, 0)
+mode(d::Bernoulli) = ifelse(succprob(d) > 1/2, 1, 0)
 
 function modes(d::Bernoulli)
     p = succprob(d)
-    p < 0.5 ? [0] :
-    p > 0.5 ? [1] : [0, 1]
+    p < 1/2 ? [0] :
+    p > 1/2 ? [1] : [0, 1]
 end
 
-median(d::Bernoulli) = ifelse(succprob(d) <= 0.5, 0, 1)
+median(d::Bernoulli) = ifelse(succprob(d) <= 1/2, 0, 1)
 
 function entropy(d::Bernoulli)
     p0 = failprob(d)
