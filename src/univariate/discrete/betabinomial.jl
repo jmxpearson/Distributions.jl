@@ -55,7 +55,7 @@ mean(d::BetaBinomial) = (d.n * d.α) / (d.α + d.β)
 function var(d::BetaBinomial)
     n, α, β = d.n, d.α, d.β
     numerator = n * α * β * (α + β + n)
-    denominator = (α + β)^2.0 * (α + β + 1.0)
+    denominator = (α + β)^2 * (α + β + 1)
     return numerator / denominator
 end
 

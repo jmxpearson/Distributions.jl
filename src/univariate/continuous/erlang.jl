@@ -4,8 +4,8 @@ doc"""
 The *Erlang distribution* is a special case of a [`Gamma`](:func:`Gamma`) distribution with integer shape parameter.
 
 ```julia
-Erlang()       # Erlang distribution with unit shape and unit scale, i.e. Erlang(1.0, 1.0)
-Erlang(a)      # Erlang distribution with shape parameter a and unit scale, i.e. Erlang(a, 1.0)
+Erlang()       # Erlang distribution with unit shape and unit scale, i.e. Erlang(1, 1)
+Erlang(a)      # Erlang distribution with shape parameter a and unit scale, i.e. Erlang(a, 1)
 Erlang(a, s)   # Erlang distribution with shape parameter a and scale b
 ```
 
@@ -27,9 +27,9 @@ end
 
 Erlang{T<:Real}(α::Int, θ::T) = Erlang{T}(α, θ)
 Erlang(α::Real) = Erlang(α, 1.0)
-Erlang() = Erlang(1, 1.0)
+Erlang() = Erlang(1.0, 1.0)
 
-@distr_support Erlang 0.0 Inf
+@distr_support Erlang 0 Inf
 
 #### Conversions
 function convert{T <: Real, S <: Real}(::Type{Erlang{T}}, α::Int, θ::S)
@@ -50,21 +50,21 @@ params(d::Erlang) = (d.α, d.θ)
 
 mean(d::Erlang) = d.α * d.θ
 var(d::Erlang) = d.α * d.θ^2
-skewness(d::Erlang) = 2.0 / sqrt(d.α)
-kurtosis(d::Erlang) = 6.0 / d.α
+skewness(d::Erlang) = 2 / sqrt(d.α)
+kurtosis(d::Erlang) = 6 / d.α
 
 function mode(d::Erlang)
     (α, θ) = params(d)
-    α >= 1 ? θ * (α - 1) : error("Erlang has no mode when α < 1.0")
+    α >= 1 ? θ * (α - 1) : error("Erlang has no mode when α < 1")
 end
 
 function entropy(d::Erlang)
     (α, θ) = params(d)
-    α + lgamma(α) + (1.0 - α) * digamma(α) + log(θ)
+    α + lgamma(α) + (1 - α) * digamma(α) + log(θ)
 end
 
-mgf(d::Erlang, t::Real) = (1.0 - t * d.θ)^(-d.α)
-cf(d::Erlang, t::Real)  = (1.0 - im * t * d.θ)^(-d.α)
+mgf(d::Erlang, t::Real) = (1 - t * d.θ)^(-d.α)
+cf(d::Erlang, t::Real)  = (1 - im * t * d.θ)^(-d.α)
 
 
 #### Evaluation & Sampling

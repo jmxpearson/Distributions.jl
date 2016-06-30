@@ -43,14 +43,14 @@ end
 
 TriangularDist{T<:Real}(a::T, b::T, c::T) = TriangularDist{T}(a, b, c)
 TriangularDist(a::Real, b::Real, c::Real) = TriangularDist(promote(a, b, c)...)
-# function TriangularDist(a::Integer, b::Integer, c::Integer)
-#     TriangularDist(Float64(a), Float64(b), Float64(c))
-# end
+function TriangularDist(a::Integer, b::Integer, c::Integer)
+    TriangularDist(Float64(a), Float64(b), Float64(c))
+end
 TriangularDist{T<:Real}(a::T, b::T) = TriangularDist{T}(a, b)
 TriangularDist(a::Real, b::Real) = TriangularDist(promote(a, b)...)
-# function TriangularDist(a::Integer, b::Integer)
-#     TriangularDist(Float64(a), Float64(b))
-# end
+function TriangularDist(a::Integer, b::Integer)
+    TriangularDist(Float64(a), Float64(b))
+end
 
 @distr_support TriangularDist d.a d.b
 
@@ -64,7 +64,7 @@ params(d::TriangularDist) = (d.a, d.b, d.c)
 
 mode(d::TriangularDist) = d.c
 
-mean(d::TriangularDist) = (d.a + d.b + d.c) / 3.0
+mean(d::TriangularDist) = (d.a + d.b + d.c) / 3
 
 function median(d::TriangularDist)
     (a, b, c) = params(d)

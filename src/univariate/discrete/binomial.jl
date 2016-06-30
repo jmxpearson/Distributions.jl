@@ -73,22 +73,22 @@ median(d::Binomial) = round(Int,mean(d))
 
 function skewness(d::Binomial)
     n, p1 = params(d)
-    p0 = 1.0 - p1
+    p0 = 1 - p1
     (p0 - p1) / sqrt(n * p0 * p1)
 end
 
 function kurtosis(d::Binomial)
     n, p = params(d)
-    u = p * (1.0 - p)
-    (1.0 - 6.0 * u) / (n * u)
+    u = p * (1 - p)
+    (1 - 6 * u) / (n * u)
 end
 
 function entropy(d::Binomial; approx::Bool=false)
     n, p1 = params(d)
-    (p1 == 0.0 || p1 == 1.0 || n == 0) && return zero(p1)
-    p0 = 1.0 - p1
+    (p1 == 0 || p1 == 1 || n == 0) && return zero(p1)
+    p0 = 1 - p1
     if approx
-        return 0.5 * (log(twoπ * n * p0 * p1) + 1.0)
+        return 0.5 * (log(twoπ * n * p0 * p1) + 1)
     else
         lg = log(p1 / p0)
         lp = n * log(p0)
@@ -113,7 +113,7 @@ immutable RecursiveBinomProbEvaluator <: RecursiveProbabilityEvaluator
     coef::Float64   # p / (1 - p)
 end
 
-RecursiveBinomProbEvaluator(d::Binomial) = RecursiveBinomProbEvaluator(d.n, d.p / (1.0 - d.p))
+RecursiveBinomProbEvaluator(d::Binomial) = RecursiveBinomProbEvaluator(d.n, d.p / (1 - d.p))
 nextpdf(s::RecursiveBinomProbEvaluator, pv::Float64, x::Integer) = ((s.n - x + 1) / x) * s.coef * pv
 
 function _pdf!(r::AbstractArray, d::Binomial, X::UnitRange)
@@ -132,7 +132,7 @@ function _pdf!(r::AbstractArray, d::Binomial, X::UnitRange)
         end
     else
         # fill reversed to avoid 1/0 for d.p==1.
-        rpe = RecursiveBinomProbEvaluator(d.n, (1.0 - d.p) / d.p)
+        rpe = RecursiveBinomProbEvaluator(d.n, (1 - d.p) / d.p)
 
         # fill central part: with non-zero pdf
         if vl <= vr

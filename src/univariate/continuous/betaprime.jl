@@ -12,7 +12,7 @@ relation ship that if $X \sim \operatorname{Beta}(\alpha, \beta)$ then $\frac{X}
 \sim \operatorname{BetaPrime}(\alpha, \beta)$
 
 ```julia
-BetaPrime()        # equivalent to BetaPrime(0.0, 1.0)
+BetaPrime()        # equivalent to BetaPrime(0, 1)
 BetaPrime(a)       # equivalent to BetaPrime(a, a)
 BetaPrime(a, b)    # Beta prime distribution with shape parameters a and b
 
@@ -41,7 +41,7 @@ BetaPrime(α::Integer, β::Integer) = BetaPrime(Float64(α), Float64(β))
 BetaPrime(α::Real) = BetaPrime(α, α)
 BetaPrime() = BetaPrime(1.0, 1.0)
 
-@distr_support BetaPrime 0.0 Inf
+@distr_support BetaPrime 0 Inf
 
 #### Conversions
 function convert{T<:Real}(::Type{BetaPrime{T}}, α::Real, β::Real)
@@ -59,23 +59,23 @@ params(d::BetaPrime) = (d.α, d.β)
 #### Statistics
 
 function mean{T<:Real}(d::BetaPrime{T})
-    ((α, β) = params(d); β > 1.0 ? α / (β - 1.0) : T(NaN))
+    ((α, β) = params(d); β > 1 ? α / (β - 1) : T(NaN))
 end
 
 function mode{T<:Real}(d::BetaPrime{T})
-    ((α, β) = params(d); α > 1.0 ? (α - 1.0) / (β + 1.0) : zero(T))
+    ((α, β) = params(d); α > 1 ? (α - 1) / (β + 1) : zero(T))
 end
 
 function var{T<:Real}(d::BetaPrime{T})
     (α, β) = params(d)
-    β > 2.0 ? α * (α + β - 1.0) / ((β - 2.0) * (β - 1.0)^2) : T(NaN)
+    β > 2 ? α * (α + β - 1) / ((β - 2) * (β - 1)^2) : T(NaN)
 end
 
 function skewness{T<:Real}(d::BetaPrime{T})
     (α, β) = params(d)
-    if β > 3.0
-        s = α + β - 1.0
-        2.0 * (α + s) / (β - 3.0) * sqrt((β - 2.0) / (α * s))
+    if β > 3
+        s = α + β - 1
+        2 * (α + s) / (β - 3) * sqrt((β - 2) / (α * s))
     else
         return T(NaN)
     end
@@ -86,20 +86,20 @@ end
 
 function logpdf(d::BetaPrime, x::Real)
     (α, β) = params(d)
-    (α - 1.0) * log(x) - (α + β) * log1p(x) - lbeta(α, β)
+    (α - 1) * log(x) - (α + β) * log1p(x) - lbeta(α, β)
 end
 
 pdf(d::BetaPrime, x::Real) = exp(logpdf(d, x))
 
-cdf(d::BetaPrime, x::Real) = betacdf(d.α, d.β, x / (1.0 + x))
-ccdf(d::BetaPrime, x::Real) = betaccdf(d.α, d.β, x / (1.0 + x))
-logcdf(d::BetaPrime, x::Real) = betalogcdf(d.α, d.β, x / (1.0 + x))
-logccdf(d::BetaPrime, x::Real) = betalogccdf(d.α, d.β, x / (1.0 + x))
+cdf(d::BetaPrime, x::Real) = betacdf(d.α, d.β, x / (1 + x))
+ccdf(d::BetaPrime, x::Real) = betaccdf(d.α, d.β, x / (1 + x))
+logcdf(d::BetaPrime, x::Real) = betalogcdf(d.α, d.β, x / (1 + x))
+logccdf(d::BetaPrime, x::Real) = betalogccdf(d.α, d.β, x / (1 + x))
 
-quantile(d::BetaPrime, p::Real) = (x = betainvcdf(d.α, d.β, p); x / (1.0 - x))
-cquantile(d::BetaPrime, p::Real) = (x = betainvccdf(d.α, d.β, p); x / (1.0 - x))
-invlogcdf(d::BetaPrime, p::Real) = (x = betainvlogcdf(d.α, d.β, p); x / (1.0 - x))
-invlogccdf(d::BetaPrime, p::Real) = (x = betainvlogccdf(d.α, d.β, p); x / (1.0 - x))
+quantile(d::BetaPrime, p::Real) = (x = betainvcdf(d.α, d.β, p); x / (1 - x))
+cquantile(d::BetaPrime, p::Real) = (x = betainvccdf(d.α, d.β, p); x / (1 - x))
+invlogcdf(d::BetaPrime, p::Real) = (x = betainvlogcdf(d.α, d.β, p); x / (1 - x))
+invlogccdf(d::BetaPrime, p::Real) = (x = betainvlogccdf(d.α, d.β, p); x / (1 - x))
 
 
 #### Sampling

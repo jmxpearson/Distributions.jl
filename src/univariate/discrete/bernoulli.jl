@@ -46,7 +46,7 @@ convert{T <: Real, S <: Real}(::Type{Bernoulli{T}}, d::Bernoulli{S}) = Bernoulli
 #### Parameters
 
 succprob(d::Bernoulli) = d.p
-failprob(d::Bernoulli) = 1.0 - d.p
+failprob(d::Bernoulli) = 1 - d.p
 
 params(d::Bernoulli) = (d.p,)
 
@@ -56,7 +56,7 @@ params(d::Bernoulli) = (d.p,)
 mean(d::Bernoulli) = succprob(d)
 var(d::Bernoulli) =  succprob(d) * failprob(d)
 skewness(d::Bernoulli) = (p0 = failprob(d); p1 = succprob(d); (p0 - p1) / sqrt(p0 * p1))
-kurtosis(d::Bernoulli) = 1.0 / var(d) - 6.0
+kurtosis(d::Bernoulli) = 1 / var(d) - 6
 
 
 mode(d::Bernoulli) = ifelse(succprob(d) > 0.5, 1, 0)
@@ -92,10 +92,10 @@ ccdf(d::Bernoulli, x::Int) = x < 0 ? one(d.p) :
                              x < 1 ? succprob(d) : zero(d.p)
 
 function quantile{T<:Real}(d::Bernoulli{T}, p::Real)
-    0.0 <= p <= 1.0 ? (p <= failprob(d) ? zero(T) : one(T)) : T(NaN)
+    0 <= p <= 1 ? (p <= failprob(d) ? zero(T) : one(T)) : T(NaN)
 end
 function cquantile{T<:Real}(d::Bernoulli{T}, p::Real)
-    0.0 <= p <= 1.0 ? (p >= succprob(d) ? zero(T) : one(T)) : T(NaN)
+    0 <= p <= 1 ? (p >= succprob(d) ? zero(T) : one(T)) : T(NaN)
 end
 
 mgf(d::Bernoulli, t::Real) = failprob(d) + succprob(d) * exp(t)
@@ -137,7 +137,7 @@ end
 function suffstats{T<:Integer}(::Type{Bernoulli}, x::AbstractArray{T}, w::AbstractArray{Float64})
     n = length(x)
     length(w) == n || throw(DimensionMismatch("Inconsistent argument dimensions."))
-    c0 = c1 = 0.0
+    c0 = c1 = 0
     for i = 1:n
         @inbounds xi = x[i]
         @inbounds wi = w[i]

@@ -12,7 +12,7 @@ end
 
 NormalCanon{T<:Real}(η::T, λ::T) = NormalCanon{typeof(η/λ)}(η, λ)
 NormalCanon(η::Real, λ::Real) = NormalCanon(promote(η, λ)...)
-NormalCanon() = NormalCanon(0.0, 1.0, 0.0)
+NormalCanon() = NormalCanon(0, 1, 0)
 
 @distr_support NormalCanon -Inf Inf
 
@@ -22,8 +22,8 @@ convert{T <: Real, S <: Real}(::Type{NormalCanon{T}}, d::NormalCanon{S}) = Norma
 
 ## conversion between Normal and NormalCanon
 
-convert(::Type{Normal}, d::NormalCanon) = Normal(d.μ, 1.0 / sqrt(d.λ))
-convert(::Type{NormalCanon}, d::Normal) = (λ = 1.0 / d.σ^2; NormalCanon(λ * d.μ, λ))
+convert(::Type{Normal}, d::NormalCanon) = Normal(d.μ, 1 / sqrt(d.λ))
+convert(::Type{NormalCanon}, d::Normal) = (λ = 1 / d.σ^2; NormalCanon(λ * d.μ, λ))
 canonform(d::Normal) = convert(NormalCanon, d)
 
 
@@ -41,10 +41,10 @@ mode(d::NormalCanon) = mean(d)
 skewness{T<:Real}(d::NormalCanon{T}) = zero(T)
 kurtosis{T<:Real}(d::NormalCanon{T}) = zero(T)
 
-var(d::NormalCanon) = 1.0 / d.λ
+var(d::NormalCanon) = 1 / d.λ
 std(d::NormalCanon) = sqrt(var(d))
 
-entropy(d::NormalCanon) = 0.5 * (log2π + 1.0 - log(d.λ))
+entropy(d::NormalCanon) = 0.5 * (log2π + 1 - log(d.λ))
 
 
 #### Evaluation

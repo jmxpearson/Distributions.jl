@@ -54,7 +54,7 @@ median(d::Uniform) = mean(d)
 mode(d::Uniform) = mean(d)
 modes(d::Uniform) = Float64[]
 
-var(d::Uniform) = (w = d.b - d.a; w^2 / 12.0)
+var(d::Uniform) = (w = d.b - d.a; w^2 / 12)
 
 skewness{T<:Real}(d::Uniform{T}) = zero(T)
 kurtosis{T<:Real}(d::Uniform{T}) = -1.2*one(T)
@@ -64,7 +64,7 @@ entropy(d::Uniform) = log(d.b - d.a)
 
 #### Evaluation
 
-pdf{T<:Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? 1.0 / (d.b - d.a) : zero(T)
+pdf{T<:Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? 1 / (d.b - d.a) : zero(T)
 logpdf{T<:Real}(d::Uniform{T}, x::Real) = insupport(d, x) ? -log(d.b - d.a) : -T(Inf)
 
 function cdf{T<:Real}(d::Uniform{T}, x::Real)

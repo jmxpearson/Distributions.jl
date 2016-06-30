@@ -13,7 +13,7 @@ end
 NoncentralBeta{T<:Real}(α::T, β::T, λ::T) = NoncentralBeta{T}(α, β, λ)
 NoncentralBeta(α::Real, β::Real, λ::Real) = NoncentralBeta(promote(α, β, λ)...)
 
-@distr_support NoncentralBeta 0.0 1.0
+@distr_support NoncentralBeta 0 1
 
 
 ### Parameters
@@ -28,7 +28,7 @@ params(d::NoncentralBeta) = (d.α, d.β, d.λ)
 @_delegate_statsfuns NoncentralBeta nbeta α β λ
 
 function rand(d::NoncentralBeta)
-    a = rand(NoncentralChisq(2.0 * d.α, d.β))
-    b = rand(Chisq(2.0 * d.β))
+    a = rand(NoncentralChisq(2 * d.α, d.β))
+    b = rand(Chisq(2 * d.β))
     a / (a + b)
 end

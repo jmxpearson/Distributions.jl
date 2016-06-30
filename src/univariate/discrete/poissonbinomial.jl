@@ -27,7 +27,7 @@ immutable PoissonBinomial{T<:Real} <: DiscreteUnivariateDistribution
     pmf::Vector{T}
     function PoissonBinomial(p::AbstractArray)
         for i=1:length(p)
-            if !(0.0 <= p[i] <= 1.0)
+            if !(0 <= p[i] <= 1)
                 error("Each element of p must be in [0, 1].")
             end
         end

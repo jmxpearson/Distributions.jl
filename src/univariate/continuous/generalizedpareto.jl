@@ -14,8 +14,8 @@ $f(x; \xi, \sigma, \mu) = \begin{cases}
 
 
 ```julia
-GeneralizedPareto()             # Generalized Pareto distribution with unit shape and unit scale, i.e. GeneralizedPareto(1.0, 1.0, 0.0)
-GeneralizedPareto(k, s)         # Generalized Pareto distribution with shape k and scale s, i.e. GeneralizedPareto(k, s, 0.0)
+GeneralizedPareto()             # Generalized Pareto distribution with unit shape and unit scale, i.e. GeneralizedPareto(1, 1, 0)
+GeneralizedPareto(k, s)         # Generalized Pareto distribution with shape k and scale s, i.e. GeneralizedPareto(k, s, 0)
 GeneralizedPareto(k, s, m)      # Generalized Pareto distribution with shape k, scale s and location m.
 
 params(d)       # Get the parameters, i.e. (k, s, m)
@@ -51,7 +51,7 @@ GeneralizedPareto(ξ::Real, σ::Real) = GeneralizedPareto(0.0, σ, ξ)
 GeneralizedPareto() = GeneralizedPareto(0.0, 1.0, 1.0)
 
 minimum(d::GeneralizedPareto) = d.μ
-maximum{T<:Real}(d::GeneralizedPareto{T}) = d.ξ < 0.0 ? d.μ - d.σ / d.ξ : Inf
+maximum{T<:Real}(d::GeneralizedPareto{T}) = d.ξ < 0 ? d.μ - d.σ / d.ξ : Inf
 
 #### Conversions
 function convert{T <: Real, S <: Real}(::Type{GeneralizedPareto{T}}, μ::S, σ::S, ξ::S)
@@ -71,11 +71,11 @@ params(d::GeneralizedPareto) = (d.μ, d.σ, d.ξ)
 
 #### Statistics
 
-median(d::GeneralizedPareto) = d.μ + d.σ * expm1(d.ξ * log(2.0)) / d.ξ
+median(d::GeneralizedPareto) = d.μ + d.σ * expm1(d.ξ * log(2)) / d.ξ
 
 function mean{T<:Real}(d::GeneralizedPareto{T})
-    if d.ξ < 1.0
-        return d.μ + d.σ / (1.0 - d.ξ)
+    if d.ξ < 1
+        return d.μ + d.σ / (1 - d.ξ)
     else
         return T(Inf)
     end
@@ -83,7 +83,7 @@ end
 
 function var{T<:Real}(d::GeneralizedPareto{T})
     if d.ξ < 0.5
-        return d.σ^2 / ((1.0 - d.ξ)^2 * (1.0 - 2.0 * d.ξ))
+        return d.σ^2 / ((1 - d.ξ)^2 * (1 - 2 * d.ξ))
     else
         return T(Inf)
     end
@@ -92,8 +92,8 @@ end
 function skewness{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
-    if ξ < (1.0 / 3.0)
-        return 2.0 * (1.0 + ξ) * sqrt(1.0 - 2.0 * ξ) / (1.0 - 3.0 * ξ)
+    if ξ < (1 / 3)
+        return 2 * (1 + ξ) * sqrt(1 - 2 * ξ) / (1 - 3 * ξ)
     else
         return T(Inf)
     end
@@ -103,9 +103,9 @@ function kurtosis{T<:Real}(d::GeneralizedPareto{T})
     (μ, σ, ξ) = params(d)
 
     if ξ < 0.25
-        k1 = (1.0 - 2.0 * ξ) * (2.0 * ξ^2 + ξ + 3.0)
-        k2 = (1.0 - 3.0 * ξ) * (1.0 - 4.0 * ξ)
-        return 3.0 * k1 / k2 - 3.0
+        k1 = (1 - 2 * ξ) * (2 * ξ^2 + ξ + 3)
+        k2 = (1 - 3 * ξ) * (1 - 4 * ξ)
+        return 3 * k1 / k2 - 3
     else
         return T(Inf)
     end
@@ -124,8 +124,8 @@ function logpdf{T<:Real}(d::GeneralizedPareto{T}, x::Real)
         z = (x - μ) / σ
         if abs(ξ) < eps()
             p = -z - log(σ)
-        elseif ξ > 0.0 || (ξ < 0.0 && x < maximum(d))
-            p = (-1.0 - 1.0 / ξ) * log1p(z * ξ) - log(σ)
+        elseif ξ > 0 || (ξ < 0 && x < maximum(d))
+            p = (-1 - 1 / ξ) * log1p(z * ξ) - log(σ)
         end
     end
 
@@ -144,8 +144,8 @@ function logccdf{T<:Real}(d::GeneralizedPareto{T}, x::Real)
         z = (x - μ) / σ
         if abs(ξ) < eps()
             p = -z
-        elseif ξ > 0.0 || (ξ < 0.0 && x < maximum(d))
-            p = (-1.0 / ξ) * log1p(z * ξ)
+        elseif ξ > 0 || (ξ < 0 && x < maximum(d))
+            p = (-1 / ξ) * log1p(z * ξ)
         end
     end
 
@@ -158,11 +158,11 @@ cdf(d::GeneralizedPareto, x::Real) = -expm1(logccdf(d, x))
 function quantile{T<:Real}(d::GeneralizedPareto{T}, p::Real)
     (μ, σ, ξ) = params(d)
 
-    if p == 0.0
+    if p == 0
         z = zero(T)
-    elseif p == 1.0
-        z = ξ < 0.0 ? -1.0 / ξ : T(Inf)
-    elseif 0.0 < p < 1.0
+    elseif p == 1
+        z = ξ < 0 ? -1 / ξ : T(Inf)
+    elseif 0 < p < 1
         if abs(ξ) < eps()
             z = -log1p(-p)
         else
@@ -180,7 +180,7 @@ end
 
 function rand(d::GeneralizedPareto)
     # Generate a Float64 random number uniformly in (0,1].
-    u = 1.0 - rand()
+    u = 1 - rand()
 
     if abs(d.ξ) < eps()
         rd = -log(u)

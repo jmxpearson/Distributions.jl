@@ -37,7 +37,7 @@ mean(d::Hypergeometric) = d.n * d.ns / (d.ns + d.nf)
 function var(d::Hypergeometric)
     N = d.ns + d.nf
     p = d.ns / N
-    d.n * p * (1.0 - p) * (N - d.n) / (N - 1.0)
+    d.n * p * (1 - p) * (N - d.n) / (N - 1)
 end
 mode(d::Hypergeometric) = floor(Int, (d.n + 1) * (d.ns + 1) / (d.ns + d.nf + 2))
 

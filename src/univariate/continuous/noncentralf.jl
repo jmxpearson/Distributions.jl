@@ -14,7 +14,7 @@ NoncentralF{T<:Real}(ν1::T, ν2::T, λ::T) = NoncentralF{T}(ν1, ν2, λ)
 NoncentralF(ν1::Real, ν2::Real, λ::Real) = NoncentralF(promote(ν1, ν2, λ)...)
 NoncentralF(ν1::Integer, ν2::Integer, λ::Integer) = NoncentralF(Float64(ν1), Float64(ν2), Float64(λ))
 
-@distr_support NoncentralF 0.0 Inf
+@distr_support NoncentralF 0 Inf
 
 #### Conversions
 
@@ -33,12 +33,12 @@ params(d::NoncentralF) = (d.ν1, d.ν2, d.λ)
 ### Statistics
 
 function mean{T<:Real}(d::NoncentralF{T})
-    d.ν2 > 2.0 ? d.ν2 / (d.ν2 - 2.0) * (d.ν1 + d.λ) / d.ν1 : T(NaN)
+    d.ν2 > 2 ? d.ν2 / (d.ν2 - 2) * (d.ν1 + d.λ) / d.ν1 : T(NaN)
 end
 
-var{T<:Real}(d::NoncentralF{T}) = d.ν2 > 4.0 ? 2.0 * d.ν2^2 *
-		       ((d.ν1+d.λ)^2 + (d.ν2 - 2.0)*(d.ν1 + 2.0*d.λ)) /
-		       (d.ν1 * (d.ν2 - 2.0)^2 * (d.ν2 - 4.0)) : T(NaN)
+var{T<:Real}(d::NoncentralF{T}) = d.ν2 > 4 ? 2 * d.ν2^2 *
+		       ((d.ν1+d.λ)^2 + (d.ν2 - 2)*(d.ν1 + 2*d.λ)) /
+		       (d.ν1 * (d.ν2 - 2)^2 * (d.ν2 - 4)) : T(NaN)
 
 
 ### Evaluation & Sampling

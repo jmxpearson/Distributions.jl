@@ -26,7 +26,7 @@ immutable DiscreteUniform{T<:Real} <: DiscreteUnivariateDistribution
 
     function DiscreteUniform(a::T, b::T)
         @check_args(DiscreteUniform, a <= b)
-        new(a, b, 1.0 / (b - a + 1))
+        new(a, b, 1 / (b - a + 1))
     end
 
 end
@@ -34,7 +34,7 @@ end
 DiscreteUniform{T<:Real}(a::T, b::T) = DiscreteUniform{T}(a, b)
 DiscreteUniform(a::Real, b::Real) = DiscreteUniform(promote(a, b)...)
 DiscreteUniform(a::Integer, b::Integer) = DiscreteUniform(Float64(a), Float64(b))
-DiscreteUniform(b::Real) = DiscreteUniform(0, b)
+DiscreteUniform(b::Real) = DiscreteUniform(0.0, b)
 DiscreteUniform() = DiscreteUniform(0.0, 1.0)
 
 @distr_support DiscreteUniform d.a d.b
@@ -57,13 +57,13 @@ mean(d::DiscreteUniform) = middle(d.a, d.b)
 
 median(d::DiscreteUniform) = middle(d.a, d.b)
 
-var(d::DiscreteUniform) = (span(d)^2 - 1.0) / 12.0
+var(d::DiscreteUniform) = (span(d)^2 - 1) / 12
 
 skewness{T<:Real}(d::DiscreteUniform{T}) = zero(T)
 
 function kurtosis(d::DiscreteUniform)
     n2 = span(d)^2
-    -1.2 * (n2 + 1.0) / (n2 - 1.0)
+    -1.2 * (n2 + 1) / (n2 - 1)
 end
 
 entropy(d::DiscreteUniform) = log(span(d))
@@ -76,7 +76,7 @@ modes(d::DiscreteUniform) = [d.a:d.b]
 
 cdf{T<:Real}(d::DiscreteUniform{T}, x::Int) = (x < d.a ? zero(T) :
                                    x > d.b ? one(T) :
-                                   (floor(Int,x) - d.a + 1.0) * d.pv)
+                                   (floor(Int,x) - d.a + 1) * d.pv)
 
 pdf{T<:Real}(d::DiscreteUniform{T}, x::Int) = insupport(d, x) ? d.pv : zero(T)
 
@@ -91,7 +91,7 @@ function _pdf!(r::AbstractArray, d::DiscreteUniform, rgn::UnitRange)
     vr = min(vlast, d.b)
     if vl > vfirst
         for i = 1:(vl - vfirst)
-            r[i] = 0.0
+            r[i] = 0
         end
     end
     fm1 = vfirst - 1
@@ -103,7 +103,7 @@ function _pdf!(r::AbstractArray, d::DiscreteUniform, rgn::UnitRange)
     end
     if vr < vlast
         for i = (vr-vfirst+2):length(rgn)
-            r[i] = 0.0
+            r[i] = 0
         end
     end
     return r
@@ -128,7 +128,7 @@ end
 function cf(d::DiscreteUniform, t::Real)
     a, b = d.a, d.b
     u = b - a + 1
-    t == 0 ? complex(1.0) : (im*cos(t*(a+b)/2) + sin(t*(a-b-1)/2)) / (u*sin(t/2))
+    t == 0 ? complex(1) : (im*cos(t*(a+b)/2) + sin(t*(a-b-1)/2)) / (u*sin(t/2))
 end
 
 

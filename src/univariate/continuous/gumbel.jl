@@ -7,8 +7,8 @@ $f(x; \mu, \theta) = \frac{1}{\theta} e^{-(z + e^z)},
 \quad \text{ with } z = \frac{x - \mu}{\theta}$
 
 ```julia
-Gumbel()            # Gumbel distribution with zero location and unit scale, i.e. Gumbel(0.0, 1.0)
-Gumbel(u)           # Gumbel distribution with location u and unit scale, i.e. Gumbel(u, 1.0)
+Gumbel()            # Gumbel distribution with zero location and unit scale, i.e. Gumbel(0, 1)
+Gumbel(u)           # Gumbel distribution with location u and unit scale, i.e. Gumbel(u, 1)
 Gumbel(u, b)        # Gumbel distribution with location u and scale b
 
 params(d)        # Get the parameters, i.e. (u, b)
@@ -85,7 +85,7 @@ logcdf(d::Gumbel, x::Real) = -exp(-zval(d, x))
 
 quantile(d::Gumbel, p::Real) = d.μ - d.θ * log(-log(p))
 
-gradlogpdf(d::Gumbel, x::Real) = - (1.0 + exp((d.μ - x) / d.θ)) / d.θ
+gradlogpdf(d::Gumbel, x::Real) = - (1 + exp((d.μ - x) / d.θ)) / d.θ
 
 
 #### Sampling

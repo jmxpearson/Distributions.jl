@@ -56,7 +56,7 @@ mean(d::SymTriangularDist) = d.μ
 median(d::SymTriangularDist) = d.μ
 mode(d::SymTriangularDist) = d.μ
 
-var(d::SymTriangularDist) = d.σ^2 / 6.0
+var(d::SymTriangularDist) = d.σ^2 / 6
 skewness{T<:Real}(d::SymTriangularDist{T}) = zero(T)
 kurtosis{T<:Real}(d::SymTriangularDist{T}) = -0.6*one(T)
 
@@ -69,50 +69,50 @@ zval(d::SymTriangularDist, x::Real) = (x - d.μ) / d.σ
 xval(d::SymTriangularDist, z::Real) = d.μ + z * d.σ
 
 
-pdf{T<:Real}(d::SymTriangularDist{T}, x::Real) = insupport(d, x) ? (1.0 - abs(zval(d, x))) / scale(d) : zero(T)
+pdf{T<:Real}(d::SymTriangularDist{T}, x::Real) = insupport(d, x) ? (1 - abs(zval(d, x))) / scale(d) : zero(T)
 
 function logpdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
-    insupport(d, x) ? log((1.0 - abs(zval(d, x))) / scale(d)) : -convert(T, T(Inf))
+    insupport(d, x) ? log((1 - abs(zval(d, x))) / scale(d)) : -convert(T, T(Inf))
 end
 
 function cdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? zero(T) :
-    x <= μ ? 0.5 * (1.0 + zval(d, x))^2 :
-    x < μ + σ ? 1.0 - 0.5 * (1.0 - zval(d, x))^2 : one(T)
+    x <= μ ? 0.5 * (1 + zval(d, x))^2 :
+    x < μ + σ ? 1 - 0.5 * (1 - zval(d, x))^2 : one(T)
 end
 
 function ccdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? one(T) :
-    x <= μ ? 1.0 - 0.5 * (1.0 + zval(d, x))^2 :
-    x < μ + σ ? 0.5 * (1.0 - zval(d, x))^2 : zero(T)
+    x <= μ ? 1 - 0.5 * (1 + zval(d, x))^2 :
+    x < μ + σ ? 0.5 * (1 - zval(d, x))^2 : zero(T)
 end
 
 function logcdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? -T(Inf) :
-    x <= μ ? loghalf + 2.0 * log1p(zval(d, x)) :
-    x < μ + σ ? log1p(-0.5 * (1.0 - zval(d, x))^2) : zero(T)
+    x <= μ ? loghalf + 2 * log1p(zval(d, x)) :
+    x < μ + σ ? log1p(-0.5 * (1 - zval(d, x))^2) : zero(T)
 end
 
 function logccdf{T<:Real}(d::SymTriangularDist{T}, x::Real)
     (μ, σ) = params(d)
     x <= μ - σ ? zero(T) :
-    x <= μ ? log1p(-0.5 * (1.0 + zval(d, x))^2) :
-    x < μ + σ ? loghalf + 2.0 * log1p(-zval(d, x)) : -T(Inf)
+    x <= μ ? log1p(-0.5 * (1 + zval(d, x))^2) :
+    x < μ + σ ? loghalf + 2 * log1p(-zval(d, x)) : -T(Inf)
 end
 
-quantile(d::SymTriangularDist, p::Real) = p < 0.5 ? xval(d, sqrt(2.0 * p) - 1.0) :
-                                                       xval(d, 1.0 - sqrt(2.0 * (1.0 - p)))
+quantile(d::SymTriangularDist, p::Real) = p < 0.5 ? xval(d, sqrt(2 * p) - 1) :
+                                                       xval(d, 1 - sqrt(2 * (1 - p)))
 
-cquantile(d::SymTriangularDist, p::Real) = p > 0.5 ? xval(d, sqrt(2.0 * (1.0-p)) - 1.0) :
-                                                        xval(d, 1.0 - sqrt(2.0 * p))
+cquantile(d::SymTriangularDist, p::Real) = p > 0.5 ? xval(d, sqrt(2 * (1-p)) - 1) :
+                                                        xval(d, 1 - sqrt(2 * p))
 
 invlogcdf(d::SymTriangularDist, lp::Real) = lp < loghalf ? xval(d, expm1(0.5*(lp - loghalf))) :
-                                                              xval(d, 1.0 - sqrt(-2.0 * expm1(lp)))
+                                                              xval(d, 1 - sqrt(-2 * expm1(lp)))
 
-invlogccdf(d::SymTriangularDist, lp::Real) = lp > loghalf ? xval(d, sqrt(-2.0 * expm1(lp)) - 1.0) :
+invlogccdf(d::SymTriangularDist, lp::Real) = lp > loghalf ? xval(d, sqrt(-2 * expm1(lp)) - 1) :
                                                                xval(d, -(expm1(0.5 * (lp - loghalf))))
 
 
@@ -120,14 +120,14 @@ function mgf(d::SymTriangularDist, t::Real)
     (μ, σ) = params(d)
     a = σ * t
     a == zero(a) && return one(a)
-    4.0 * exp(μ * t) * (sinh(0.5 * a) / a)^2
+    4 * exp(μ * t) * (sinh(0.5 * a) / a)^2
 end
 
 function cf(d::SymTriangularDist, t::Real)
     (μ, σ) = params(d)
     a = σ * t
     a == zero(a) && return complex(one(a))
-    4.0 * cis(μ * t) * (sin(0.5 * a) / a)^2
+    4 * cis(μ * t) * (sin(0.5 * a) / a)^2
 end
 
 

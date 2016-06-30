@@ -11,7 +11,7 @@ end
 NoncentralChisq{T<:Real}(ν::T, λ::T) = NoncentralChisq{T}(ν, λ)
 NoncentralChisq(ν::Real, λ::Real) = NoncentralChisq(promote(ν, λ)...)
 
-@distr_support NoncentralChisq 0.0 Inf
+@distr_support NoncentralChisq 0 Inf
 
 #### Conversions
 
@@ -30,16 +30,16 @@ params(d::NoncentralChisq) = (d.ν, d.λ)
 ### Statistics
 
 mean(d::NoncentralChisq) = d.ν + d.λ
-var(d::NoncentralChisq) = 2.0*(d.ν + 2.0*d.λ)
-skewness(d::NoncentralChisq) = 2.0*sqrt2*(d.ν + 3.0*d.λ)/sqrt(d.ν + 2.0*d.λ)^3
-kurtosis(d::NoncentralChisq) = 12.0*(d.ν + 4.0*d.λ)/(d.ν + 2.0*d.λ)^2
+var(d::NoncentralChisq) = 2*(d.ν + 2*d.λ)
+skewness(d::NoncentralChisq) = 2*sqrt2*(d.ν + 3*d.λ)/sqrt(d.ν + 2*d.λ)^3
+kurtosis(d::NoncentralChisq) = 12*(d.ν + 4*d.λ)/(d.ν + 2*d.λ)^2
 
 function mgf(d::NoncentralChisq, t::Real)
-    exp(d.λ * t/(1.0 - 2.0 * t))*(1.0 - 2.0 * t)^(-d.ν / 2.0)
+    exp(d.λ * t/(1 - 2 * t))*(1 - 2 * t)^(-d.ν / 2)
 end
 
 function cf(d::NoncentralChisq, t::Real)
-    cis(d.λ * t/(1.0 - 2.0 * im * t))*(1.0 - 2.0 * im * t)^(-d.ν / 2.0)
+    cis(d.λ * t/(1 - 2 * im * t))*(1 - 2 * im * t)^(-d.ν / 2)
 end
 
 

@@ -28,7 +28,7 @@ end
 Chisq{T<:Real}(ν::T) = Chisq{T}(ν)
 Chisq(ν::Integer) = Chisq(Float64(ν))
 
-@distr_support Chisq 0.0 Inf
+@distr_support Chisq 0 Inf
 
 #### Parameters
 
@@ -44,17 +44,17 @@ convert{T <: Real, S <: Real}(::Type{Chisq{T}}, d::Chisq{S}) = Chisq(T(d.ν))
 
 mean(d::Chisq) = d.ν
 
-var(d::Chisq) = 2.0 * d.ν
+var(d::Chisq) = 2 * d.ν
 
-skewness(d::Chisq) = sqrt(8.0 / d.ν)
+skewness(d::Chisq) = sqrt(8 / d.ν)
 
-kurtosis(d::Chisq) = 12.0 / d.ν
+kurtosis(d::Chisq) = 12 / d.ν
 
-mode{T<:Real}(d::Chisq{T}) = d.ν > 2.0 ? d.ν - 2.0 : zero(T)
+mode{T<:Real}(d::Chisq{T}) = d.ν > 2 ? d.ν - 2 : zero(T)
 
 function median(d::Chisq; approx::Bool=false)
     if approx
-        return d.ν * (1.0 - 2.0 / (9.0 * d.ν))^3
+        return d.ν * (1 - 2 / (9 * d.ν))^3
     else
         return quantile(d, 0.5)
     end
@@ -62,7 +62,7 @@ end
 
 function entropy(d::Chisq)
     hν = 0.5 * d.ν
-    hν + logtwo + lgamma(hν) + (1.0 - hν) * digamma(hν)
+    hν + logtwo + lgamma(hν) + (1 - hν) * digamma(hν)
 end
 
 
@@ -70,11 +70,11 @@ end
 
 @_delegate_statsfuns Chisq chisq ν
 
-mgf(d::Chisq, t::Real) = (1.0 - 2.0 * t)^(-d.ν * 0.5)
+mgf(d::Chisq, t::Real) = (1 - 2 * t)^(-d.ν * 0.5)
 
-cf(d::Chisq, t::Real) = (1.0 - 2.0 * im * t)^(-d.ν * 0.5)
+cf(d::Chisq, t::Real) = (1 - 2 * im * t)^(-d.ν * 0.5)
 
-gradlogpdf{T<:Real}(d::Chisq{T}, x::Real) =  x > 0.0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
+gradlogpdf{T<:Real}(d::Chisq{T}, x::Real) =  x > 0 ? (d.ν * 0.5 - 1) / x - 0.5 : zero(T)
 
 
 #### Sampling

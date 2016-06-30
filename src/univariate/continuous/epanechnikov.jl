@@ -62,11 +62,11 @@ end
 function mgf{T<:Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
     a == 0 ? one(T) :
-    3.0 * exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
+    3 * exp(d.μ * t) * (cosh(a) - sinh(a) / a) / a^2
 end
 
 function cf{T<:Real}(d::Epanechnikov{T}, t::Real)
     a = d.σ * t
     a == 0 ? one(T)+zero(T)*im :
-    -3.0 * exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
+    -3 * exp(im * d.μ * t) * (cos(a) - sin(a) / a) / a^2
 end

@@ -27,7 +27,7 @@ immutable Categorical{T<:Real} <: DiscreteUnivariateDistribution
 
     function Categorical(k::Integer)
         @check_args(Categorical, k >= 1)
-        new(k, fill(1.0/k, k))
+        new(k, fill(1/k, k))
     end
 end
 
@@ -95,7 +95,7 @@ function skewness(d::Categorical)
     k = ncategories(d)
     p = probs(d)
     m = categorical_mean(p)
-    s = 0.0
+    s = 0
     for i = 1 : k
         @inbounds s += (i - m)^3 * p[i]
     end
@@ -107,11 +107,11 @@ function kurtosis(d::Categorical)
     k = ncategories(d)
     p = probs(d)
     m = categorical_mean(p)
-    s = 0.0
+    s = 0
     for i = 1 : k
         @inbounds s += (i - m)^4 * p[i]
     end
-    s / abs2(var(d)) - 3.0
+    s / abs2(var(d)) - 3
 end
 
 entropy(d::Categorical) = entropy(d.p)
@@ -197,7 +197,7 @@ end
 
 
 function quantile(d::Categorical, p::Float64)
-    0.0 <= p <= 1.0 || throw(DomainError())
+    0 <= p <= 1 || throw(DomainError())
     k = ncategories(d)
     pv = probs(d)
     i = 1

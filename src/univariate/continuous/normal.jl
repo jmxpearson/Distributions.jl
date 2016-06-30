@@ -31,7 +31,7 @@ end
 #### Outer constructors
 Normal{T<:Real}(μ::T, σ::T) = Normal{T}(μ, σ)
 Normal(μ::Real, σ::Real) = Normal(promote(μ, σ)...)
-Normal(μ::Real) = Normal(μ, one(μ))
+Normal(μ::Real) = Normal(μ, 1.0)
 Normal() = Normal(0.0, 1.0)
 
 typealias Gaussian Normal
@@ -59,7 +59,7 @@ std(d::Normal) = d.σ
 skewness{T<:Real}(d::Normal{T}) = zero(T)
 kurtosis{T<:Real}(d::Normal{T}) = zero(T)
 
-entropy(d::Normal) = 0.5 * (log2π + 1.0) + log(d.σ)
+entropy(d::Normal) = 0.5 * (log2π + 1) + log(d.σ)
 
 
 #### Evaluation
@@ -165,7 +165,7 @@ immutable NormalKnownSigma <: IncompleteDistribution
     σ::Float64
 
     function NormalKnownSigma(σ::Float64)
-        σ > 0.0 || throw(ArgumentError("σ must be a positive value."))
+        σ > 0 || throw(ArgumentError("σ must be a positive value."))
         new(σ)
     end
 end

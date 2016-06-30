@@ -6,8 +6,8 @@ The *Cauchy distribution* with location `μ` and scale `σ` has probability dens
 $f(x; \mu, \sigma) = \frac{1}{\pi \sigma \left(1 + \left(\frac{x - \mu}{\sigma} \right)^2 \right)}$
 
 ```julia
-Cauchy()         # Standard Cauchy distribution, i.e. Cauchy(0.0, 1.0)
-Cauchy(u)        # Cauchy distribution with location u and unit scale, i.e. Cauchy(u, 1.0)
+Cauchy()         # Standard Cauchy distribution, i.e. Cauchy(0, 1)
+Cauchy(u)        # Cauchy distribution with location u and unit scale, i.e. Cauchy(u, 1)
 Cauchy(u, b)     # Cauchy distribution with location u and scale b
 
 params(d)        # Get the parameters, i.e. (u, b)
@@ -73,7 +73,7 @@ entropy(d::Cauchy) = log4π + log(d.σ)
 zval(d::Cauchy, x::Real) = (x - d.μ) / d.σ
 xval(d::Cauchy, z::Real) = d.μ + z * d.σ
 
-pdf(d::Cauchy, x::Real) = 1.0 / (π * scale(d) * (1.0 + zval(d, x)^2))
+pdf(d::Cauchy, x::Real) = 1 / (π * scale(d) * (1 + zval(d, x)^2))
 logpdf(d::Cauchy, x::Real) = - (log1psq(zval(d, x)) + logπ + log(d.σ))
 
 function cdf(d::Cauchy, x::Real)
@@ -105,5 +105,5 @@ cf(d::Cauchy, t::Real) = exp(im * (t * d.μ) - d.σ * abs(t))
 # Note: this is not a Maximum Likelihood estimator
 function fit{T<:Real}(::Type{Cauchy}, x::AbstractArray{T})
     l, m, u = quantile(x, [0.25, 0.5, 0.75])
-    Cauchy(m, (u - l) / 2.0)
+    Cauchy(m, (u - l) / 2)
 end

@@ -12,7 +12,7 @@ property that if $X \sim \operatorname{Gamma}(\alpha)$ and $Y \sim \operatorname
 
 
 ```julia
-Beta()        # equivalent to Beta(1.0, 1.0)
+Beta()        # equivalent to Beta(1, 1)
 Beta(a)       # equivalent to Beta(a, a)
 Beta(a, b)    # Beta distribution with shape parameters a and b
 
@@ -39,9 +39,9 @@ Beta{T<:Real}(α::T, β::T) = Beta{T}(α, β)
 Beta(α::Real, β::Real) = Beta(promote(α, β)...)
 Beta(α::Integer, β::Integer) = Beta(Float64(α), Float64(β))
 Beta(α::Real) = Beta(α, α)
-Beta() = Beta(1.0, 1.0)
+Beta() = Beta(1, 1)
 
-@distr_support Beta 0.0 1.0
+@distr_support Beta 0 1
 
 #### Conversions
 function convert{T<:Real}(::Type{Beta{T}}, α::Real, β::Real)
@@ -62,8 +62,8 @@ mean(d::Beta) = ((α, β) = params(d); α / (α + β))
 
 function mode(d::Beta)
     (α, β) = params(d)
-    (α > 1.0 && β > 1.0) || error("mode is defined only when α > 1 and β > 1.")
-    return (α - 1.0) / (α + β - 2.0)
+    (α > 1 && β > 1) || error("mode is defined only when α > 1 and β > 1.")
+    return (α - 1) / (α + β - 2)
 end
 
 modes(d::Beta) = [mode(d)]
@@ -71,7 +71,7 @@ modes(d::Beta) = [mode(d)]
 function var(d::Beta)
     (α, β) = params(d)
     s = α + β
-    return (α * β) / (abs2(s) * (s + 1.0))
+    return (α * β) / (abs2(s) * (s + 1))
 end
 
 meanlogx(d::Beta) = ((α, β) = params(d); digamma(α) - digamma(α + β))
@@ -85,7 +85,7 @@ function skewness(d::Beta)
         return zero(α)
     else
         s = α + β
-        (2.0 * (β - α) * sqrt(s + 1.0)) / ((s + 2.0) * sqrt(α * β))
+        (2 * (β - α) * sqrt(s + 1)) / ((s + 2) * sqrt(α * β))
     end
 end
 
@@ -93,14 +93,14 @@ function kurtosis(d::Beta)
     α, β = params(d)
     s = α + β
     p = α * β
-    6.0 * (abs2(α - β) * (s + 1.0) - p * (s + 2.0)) / (p * (s + 2.0) * (s + 3.0))
+    6 * (abs2(α - β) * (s + 1) - p * (s + 2)) / (p * (s + 2) * (s + 3))
 end
 
 function entropy(d::Beta)
     α, β = params(d)
     s = α + β
-    lbeta(α, β) - (α - 1.0) * digamma(α) - (β - 1.0) * digamma(β) +
-        (s - 2.0) * digamma(s)
+    lbeta(α, β) - (α - 1) * digamma(α) - (β - 1) * digamma(β) +
+        (s - 2) * digamma(s)
 end
 
 
@@ -109,7 +109,7 @@ end
 @_delegate_statsfuns Beta beta α β
 
 gradlogpdf{T<:Real}(d::Beta{T}, x::Real) =
-    ((α, β) = params(d); 0.0 <= x <= 1.0 ? (α - 1.0) / x - (β - 1.0) / (1 - x) : zero(T))
+    ((α, β) = params(d); 0 <= x <= 1 ? (α - 1) / x - (β - 1) / (1 - x) : zero(T))
 
 
 #### Sampling
@@ -126,7 +126,7 @@ rand(d::Beta) = StatsFuns.Rmath.betarand(d.α, d.β)
 function fit{T<:Real}(::Type{Beta}, x::AbstractArray{T})
     x_bar = mean(x)
     v_bar = varm(x, x_bar)
-    α = x_bar * (((x_bar * (1.0 - x_bar)) / v_bar) - 1.0)
-    β = (1.0 - x_bar) * (((x_bar * (1.0 - x_bar)) / v_bar) - 1.0)
+    α = x_bar * (((x_bar * (1 - x_bar)) / v_bar) - 1)
+    β = (1 - x_bar) * (((x_bar * (1 - x_bar)) / v_bar) - 1)
     Beta(α, β)
 end

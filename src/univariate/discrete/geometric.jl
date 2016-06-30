@@ -168,4 +168,4 @@ function suffstats{T<:Integer}(::Type{Geometric}, x::AbstractArray{T}, w::Abstra
     GeometricStats(sx, tw)
 end
 
-fit_mle(::Type{Geometric}, ss::GeometricStats) = Geometric(1.0 / (ss.sx / ss.tw + 1.0))
+fit_mle(::Type{Geometric}, ss::GeometricStats) = Geometric(1 / (ss.sx / ss.tw + 1))

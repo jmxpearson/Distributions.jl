@@ -7,8 +7,8 @@ $f(x; \alpha, \theta) = \frac{\alpha}{\theta} \left( \frac{x}{\theta} \right)^{\
     \quad x \ge 0$
 
 ```julia
-Weibull()        # Weibull distribution with unit shape and unit scale, i.e. Weibull(1.0, 1.0)
-Weibull(a)       # Weibull distribution with shape a and unit scale, i.e. Weibull(a, 1.0)
+Weibull()        # Weibull distribution with unit shape and unit scale, i.e. Weibull(1, 1)
+Weibull(a)       # Weibull distribution with shape a and unit scale, i.e. Weibull(a, 1)
 Weibull(a, b)    # Weibull distribution with shape a and scale b
 
 params(d)        # Get the parameters, i.e. (a, b)
@@ -37,7 +37,7 @@ Weibull(α::Integer, θ::Integer) = Weibull(Float64(α), Float64(θ))
 Weibull(α::Real) = Weibull(α, 1.0)
 Weibull() = Weibull(1.0, 1.0)
 
-@distr_support Weibull 0.0 Inf
+@distr_support Weibull 0 Inf
 
 #### Conversions
 
@@ -54,18 +54,18 @@ params(d::Weibull) = (d.α, d.θ)
 
 #### Statistics
 
-mean(d::Weibull) = d.θ * gamma(1.0 + 1.0 / d.α)
-median(d::Weibull) = d.θ * logtwo ^ (1.0 / d.α)
-mode{T<:Real}(d::Weibull{T}) = d.α > 1.0 ? (iα = 1.0 / d.α; d.θ * (1.0 - iα) ^ iα) : zero(T)
+mean(d::Weibull) = d.θ * gamma(1 + 1 / d.α)
+median(d::Weibull) = d.θ * logtwo ^ (1 / d.α)
+mode{T<:Real}(d::Weibull{T}) = d.α > 1 ? (iα = 1 / d.α; d.θ * (1 - iα) ^ iα) : zero(T)
 
-var(d::Weibull) = d.θ^2 * gamma(1.0 + 2.0 / d.α) - mean(d)^2
+var(d::Weibull) = d.θ^2 * gamma(1 + 2 / d.α) - mean(d)^2
 
 function skewness(d::Weibull)
     μ = mean(d)
     σ2 = var(d)
     σ = sqrt(σ2)
     r = μ / σ
-    gamma(1.0 + 3.0 / d.α) * (d.θ / σ)^3 - 3.0 * r - r^3
+    gamma(1 + 3 / d.α) * (d.θ / σ)^3 - 3 * r - r^3
 end
 
 function kurtosis(d::Weibull)
@@ -76,44 +76,44 @@ function kurtosis(d::Weibull)
     r = μ / σ
     r2 = r^2
     r4 = r2^2
-    (θ / σ)^4 * gamma(1.0 + 4.0 / α) - 4.0 * γ * r - 6.0 * r2 - r4 - 3.0
+    (θ / σ)^4 * gamma(1 + 4 / α) - 4 * γ * r - 6 * r2 - r4 - 3
 end
 
 function entropy(d::Weibull)
     α, θ = params(d)
-    0.5772156649015328606 * (1.0 - 1.0 / α) + log(θ / α) + 1.0
+    0.5772156649015328606 * (1 - 1 / α) + log(θ / α) + 1
 end
 
 
 #### Evaluation
 
 function pdf{T<:Real}(d::Weibull{T}, x::Real)
-    if x >= 0.0
+    if x >= 0
         α, θ = params(d)
         z = x / θ
-        (α / θ) * z^(α - 1.0) * exp(-z^α)
+        (α / θ) * z^(α - 1) * exp(-z^α)
     else
         zero(T)
     end
 end
 
 function logpdf{T<:Real}(d::Weibull{T}, x::Real)
-    if x >= 0.0
+    if x >= 0
         α, θ = params(d)
         z = x / θ
-        log(α / θ) + (α - 1.0) * log(z) - z^α
+        log(α / θ) + (α - 1) * log(z) - z^α
     else
         -T(Inf)
     end
 end
 
 zv(d::Weibull, x::Real) = (x / d.θ) ^ d.α
-xv(d::Weibull, z::Real) = d.θ * z ^ (1.0 / d.α)
+xv(d::Weibull, z::Real) = d.θ * z ^ (1 / d.α)
 
-cdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0.0 ? -expm1(-zv(d, x)) : zero(T)
-ccdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0.0 ? exp(-zv(d, x)) : one(T)
-logcdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0.0 ? log1mexp(-zv(d, x)) : -T(Inf)
-logccdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0.0 ? -zv(d, x) : zero(T)
+cdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0 ? -expm1(-zv(d, x)) : zero(T)
+ccdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0 ? exp(-zv(d, x)) : one(T)
+logcdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0 ? log1mexp(-zv(d, x)) : -T(Inf)
+logccdf{T<:Real}(d::Weibull{T}, x::Real) = x > 0 ? -zv(d, x) : zero(T)
 
 quantile(d::Weibull, p::Real) = xv(d, -log1p(-p))
 cquantile(d::Weibull, p::Real) = xv(d, -log(p))
@@ -123,7 +123,7 @@ invlogccdf(d::Weibull, lp::Real) = xv(d, -lp)
 function gradlogpdf{T<:Real}(d::Weibull{T}, x::Real)
     if insupport(Weibull, x)
         α, θ = params(d)
-        (α - 1.0) / x - α * x^(α - 1.0) / (θ^α)
+        (α - 1) / x - α * x^(α - 1) / (θ^α)
     else
         zero(T)
     end

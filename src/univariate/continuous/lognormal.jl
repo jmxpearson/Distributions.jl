@@ -36,7 +36,7 @@ LogNormal(μ::Integer, σ::Integer) = LogNormal(Float64(μ), Float64(σ))
 LogNormal(μ::Real) = LogNormal(μ, 1.0)
 LogNormal() = LogNormal(0.0, 1.0)
 
-@distr_support LogNormal 0.0 T(Inf)
+@distr_support LogNormal 0 T(Inf)
 
 #### Conversions
 convert{T <: Real, S <: Real}(::Type{LogNormal{T}}, μ::S, σ::S) = LogNormal(T(μ), T(σ))
@@ -59,13 +59,13 @@ mode(d::LogNormal) = ((μ, σ) = params(d); exp(μ - σ^2))
 function var(d::LogNormal)
     (μ, σ) = params(d)
     σ2 = σ^2
-    (exp(σ2) - 1.0) * exp(2.0 * μ + σ2)
+    (exp(σ2) - 1) * exp(2 * μ + σ2)
 end
 
 function skewness(d::LogNormal)
     σ2 = varlogx(d)
     e = exp(σ2)
-    (e + 2.0) * sqrt(e - 1.0)
+    (e + 2) * sqrt(e - 1)
 end
 
 function kurtosis(d::LogNormal)
@@ -74,12 +74,12 @@ function kurtosis(d::LogNormal)
     e2 = e * e
     e3 = e2 * e
     e4 = e3 * e
-    e4 + 2.0 * e3 + 3.0 * e2 - 6.0
+    e4 + 2 * e3 + 3 * e2 - 6
 end
 
 function entropy(d::LogNormal)
     (μ, σ) = params(d)
-    0.5 * (1.0 + log(twoπ * σ^2)) + μ
+    0.5 * (1 + log(twoπ * σ^2)) + μ
 end
 
 
@@ -95,10 +95,10 @@ function logpdf{T<:Real}(d::LogNormal{T}, x::Real)
     end
 end
 
-cdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normcdf(d.μ, d.σ, log(x)) : zero(T)
-ccdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normccdf(d.μ, d.σ, log(x)) : one(T)
-logcdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normlogcdf(d.μ, d.σ, log(x)) : -T(Inf)
-logccdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0.0 ? normlogccdf(d.μ, d.σ, log(x)) : zero(T)
+cdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0 ? normcdf(d.μ, d.σ, log(x)) : zero(T)
+ccdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0 ? normccdf(d.μ, d.σ, log(x)) : one(T)
+logcdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0 ? normlogcdf(d.μ, d.σ, log(x)) : -T(Inf)
+logccdf{T<:Real}(d::LogNormal{T}, x::Real) = x > 0 ? normlogccdf(d.μ, d.σ, log(x)) : zero(T)
 
 quantile(d::LogNormal, q::Real) = exp(norminvcdf(d.μ, d.σ, q))
 cquantile(d::LogNormal, q::Real) = exp(norminvccdf(d.μ, d.σ, q))
@@ -107,7 +107,7 @@ invlogccdf(d::LogNormal, lq::Real) = exp(norminvlogccdf(d.μ, d.σ, lq))
 
 function gradlogpdf{T<:Real}(d::LogNormal{T}, x::Real)
     (μ, σ) = params(d)
-    x > 0.0 ? - ((log(x) - μ) / (σ^2) + 1.0) / x : zero(T)
+    x > 0 ? - ((log(x) - μ) / (σ^2) + 1) / x : zero(T)
 end
 
 # mgf(d::LogNormal)

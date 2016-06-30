@@ -7,8 +7,8 @@ $f(x; \mu, \sigma) = \sqrt{\frac{\sigma}{2 \pi (x - \mu)^3}}
 \exp \left( - \frac{\sigma}{2 (x - \mu)} \right), \quad x > \mu$
 
 ```julia
-Levy()         # Levy distribution with zero location and unit scale, i.e. Levy(0.0, 1.0)
-Levy(u)        # Levy distribution with location u and unit scale, i.e. Levy(u, 1.0)
+Levy()         # Levy distribution with zero location and unit scale, i.e. Levy(0, 1)
+Levy(u)        # Levy distribution with location u and unit scale, i.e. Levy(u, 1)
 Levy(u, c)     # Levy distribution with location u ans scale c
 
 params(d)      # Get the parameters, i.e. (u, c)
@@ -51,11 +51,11 @@ var{T<:Real}(d::Levy{T}) = T(Inf)
 skewness{T<:Real}(d::Levy{T}) = T(NaN)
 kurtosis{T<:Real}(d::Levy{T}) = T(NaN)
 
-mode(d::Levy) = d.σ / 3.0 + d.μ
+mode(d::Levy) = d.σ / 3 + d.μ
 
-entropy(d::Levy) = (1.0 - 3.0 * digamma(1.0) + log(16π * d.σ^2)) / 2.0
+entropy(d::Levy) = (1 - 3 * digamma(1) + log(16π * d.σ^2)) / 2
 
-median(d::Levy) = d.μ + d.σ / 0.4549364231195728  # 0.454... = (2.0 * erfcinv(0.5)^2)
+median(d::Levy) = d.μ + d.σ / 0.4549364231195728  # 0.454... = (2 * erfcinv(0.5)^2)
 
 
 #### Evaluation
@@ -63,26 +63,26 @@ median(d::Levy) = d.μ + d.σ / 0.4549364231195728  # 0.454... = (2.0 * erfcinv(
 function pdf(d::Levy, x::Real)
     μ, σ = params(d)
     z = x - μ
-    (sqrt(σ) / sqrt2π) * exp((-σ) / (2.0 * z)) / z^1.5
+    (sqrt(σ) / sqrt2π) * exp((-σ) / (2 * z)) / z^1.5
 end
 
 function logpdf(d::Levy, x::Real)
     μ, σ = params(d)
     z = x - μ
-    0.5 * (log(σ) - log2π - σ / z - 3.0 * log(z))
+    0.5 * (log(σ) - log2π - σ / z - 3 * log(z))
 end
 
-cdf(d::Levy, x::Real) = erfc(sqrt(d.σ / (2.0 * (x - d.μ))))
-ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2.0 * (x - d.μ))))
+cdf(d::Levy, x::Real) = erfc(sqrt(d.σ / (2 * (x - d.μ))))
+ccdf(d::Levy, x::Real) = erf(sqrt(d.σ / (2 * (x - d.μ))))
 
-quantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfcinv(p)^2)
-cquantile(d::Levy, p::Real) = d.μ + d.σ / (2.0 * erfinv(p)^2)
+quantile(d::Levy, p::Real) = d.μ + d.σ / (2 * erfcinv(p)^2)
+cquantile(d::Levy, p::Real) = d.μ + d.σ / (2 * erfinv(p)^2)
 
 mgf{T<:Real}(d::Levy{T}, t::Real) = t == zero(t) ? one(T) : T(NaN)
 
 function cf(d::Levy, t::Real)
     μ, σ = params(d)
-    exp(im * μ * t - sqrt(-2.0 * im * σ * t))
+    exp(im * μ * t - sqrt(-2 * im * σ * t))
 end
 
 

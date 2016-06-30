@@ -23,7 +23,7 @@ function quantile{T<:Real}(d::NoncentralHypergeometric{T}, q::Real)
             range = reverse(range)
         end
 
-        qsum, i = 0.0, 0
+        qsum, i = 0, 0
         while qsum < q
             i += 1
             qsum += pdf(d, range[i])
@@ -131,7 +131,7 @@ mean(d::WalleniusNoncentralHypergeometric) = sum(support(d) .* pdf(d, support(d)
 var(d::WalleniusNoncentralHypergeometric)  = sum((support(d) - mean(d)).^2 .* pdf(d, support(d)))
 mode(d::WalleniusNoncentralHypergeometric) = support(d)[indmax(pdf(d, support(d)))]
 
-entropy(d::WalleniusNoncentralHypergeometric) = 1.0
+entropy(d::WalleniusNoncentralHypergeometric) = 1
 
 testfd(d::WalleniusNoncentralHypergeometric) = d.ω^3
 

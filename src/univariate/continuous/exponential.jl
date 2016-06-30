@@ -6,7 +6,7 @@ The *Exponential distribution* with scale parameter `θ` has probability density
 $f(x; \theta) = \frac{1}{\theta} e^{-\frac{x}{\theta}}, \quad x > 0$
 
 ```julia
-Exponential()      # Exponential distribution with unit scale, i.e. Exponential(1.0)
+Exponential()      # Exponential distribution with unit scale, i.e. Exponential(1)
 Exponential(b)     # Exponential distribution with scale b
 
 params(d)          # Get the parameters, i.e. (b,)
@@ -29,7 +29,7 @@ Exponential{T<:Real}(θ::T) = Exponential{T}(θ)
 Exponential(θ::Integer) = Exponential(Float64(θ))
 Exponential() = Exponential(1.0)
 
-@distr_support Exponential 0.0 Inf
+@distr_support Exponential 0 Inf
 
 ### Conversions
 convert{T <: Real, S <: Real}(::Type{Exponential{T}}, θ::S) = Exponential(T(θ))
@@ -39,7 +39,7 @@ convert{T <: Real, S <: Real}(::Type{Exponential{T}}, d::Exponential{S}) = Expon
 #### Parameters
 
 scale(d::Exponential) = d.θ
-rate(d::Exponential) = 1.0 / d.θ
+rate(d::Exponential) = 1 / d.θ
 
 params(d::Exponential) = (d.θ,)
 
@@ -51,10 +51,10 @@ median(d::Exponential) = logtwo * d.θ
 mode{T<:Real}(d::Exponential{T}) = zero(T)
 
 var(d::Exponential) = d.θ^2
-skewness{T<:Real}(d::Exponential{T}) = 2.0*one(T)
-kurtosis{T<:Real}(d::Exponential{T}) = 6.0*one(T)
+skewness{T<:Real}(d::Exponential{T}) = 2*one(T)
+kurtosis{T<:Real}(d::Exponential{T}) = 6*one(T)
 
-entropy(d::Exponential) = 1.0 + log(d.θ)
+entropy(d::Exponential) = 1 + log(d.θ)
 
 
 #### Evaluation
@@ -62,25 +62,25 @@ entropy(d::Exponential) = 1.0 + log(d.θ)
 zval(d::Exponential, x::Real) = x / d.θ
 xval(d::Exponential, z::Real) = z * d.θ
 
-pdf(d::Exponential, x::Real) = (λ = rate(d); x < 0.0 ? zero(λ) : λ * exp(-λ * x))
+pdf(d::Exponential, x::Real) = (λ = rate(d); x < 0 ? zero(λ) : λ * exp(-λ * x))
 function logpdf{T<:Real}(d::Exponential{T}, x::Real)
-    (λ = rate(d); x < 0.0 ? -T(Inf) : log(λ) - λ * x)
+    (λ = rate(d); x < 0 ? -T(Inf) : log(λ) - λ * x)
 end
 
-cdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -expm1(-zval(d, x)) : zero(T)
-ccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? exp(-zval(d, x)) : zero(T)
-logcdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? log1mexp(-zval(d, x)) : -T(Inf)
-logccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -zval(d, x) : zero(T)
+cdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0 ? -expm1(-zval(d, x)) : zero(T)
+ccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0 ? exp(-zval(d, x)) : zero(T)
+logcdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0 ? log1mexp(-zval(d, x)) : -T(Inf)
+logccdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0 ? -zval(d, x) : zero(T)
 
 quantile(d::Exponential, p::Real) = -xval(d, log1p(-p))
 cquantile(d::Exponential, p::Real) = -xval(d, log(p))
 invlogcdf(d::Exponential, lp::Real) = -xval(d, log1mexp(lp))
 invlogccdf(d::Exponential, lp::Real) = -xval(d, lp)
 
-gradlogpdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0.0 ? -rate(d) : zero(T)
+gradlogpdf{T<:Real}(d::Exponential{T}, x::Real) = x > 0 ? -rate(d) : zero(T)
 
-mgf(d::Exponential, t::Real) = 1.0/(1.0 - t * scale(d))
-cf(d::Exponential, t::Real) = 1.0/(1.0 - t * im * scale(d))
+mgf(d::Exponential, t::Real) = 1/(1 - t * scale(d))
+cf(d::Exponential, t::Real) = 1/(1 - t * im * scale(d))
 
 
 #### Sampling

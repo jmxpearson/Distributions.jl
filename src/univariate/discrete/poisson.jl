@@ -62,14 +62,14 @@ function entropy{T<:Real}(d::Poisson{T})
     λ = rate(d)
     if λ == zero(T)
         return zero(T)
-    elseif λ < 50.0
+    elseif λ < 50
         s = zero(T)
         λk = one(T)
         for k = 1:100
             λk *= λ
-            s += λk * lgamma(k + 1.0) / gamma(k + 1.0)
+            s += λk * lgamma(k + 1) / gamma(k + 1)
         end
-        return λ * (1.0 - log(λ)) + exp(-λ) * s
+        return λ * (1 - log(λ)) + exp(-λ) * s
     else
         return 0.5 * log(2 * pi * e * λ) -
                (1 / (12 * λ)) -
@@ -95,12 +95,12 @@ _pdf!(r::AbstractArray, d::Poisson, rgn::UnitRange) = _pdf!(r, d, rgn, Recursive
 
 function mgf(d::Poisson, t::Real)
     λ = rate(d)
-    return exp(λ * (exp(t) - 1.0))
+    return exp(λ * (exp(t) - 1))
 end
 
 function cf(d::Poisson, t::Real)
     λ = rate(d)
-    return exp(λ * (cis(t) - 1.0))
+    return exp(λ * (cis(t) - 1))
 end
 
 

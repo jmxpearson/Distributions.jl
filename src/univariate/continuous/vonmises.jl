@@ -48,7 +48,7 @@ params(d::VonMises) = (d.μ, d.κ)
 mean(d::VonMises) = d.μ
 median(d::VonMises) = d.μ
 mode(d::VonMises) = d.μ
-circvar(d::VonMises) = 1.0 - besseli(1, d.κ) / d.I0κ
+circvar(d::VonMises) = 1 - besseli(1, d.κ) / d.I0κ
 entropy(d::VonMises) = log(twoπ * d.I0κ) - d.κ * (besseli(1, d.κ) / d.I0κ)
 
 cf(d::VonMises, t::Real) = (besseli(abs(t), d.κ) / d.I0κ) * cis(t * d.μ)
@@ -59,7 +59,7 @@ cf(d::VonMises, t::Real) = (besseli(abs(t), d.κ) / d.I0κ) * cis(t * d.μ)
 pdf(d::VonMises, x::Real) = exp(d.κ * cos(x - d.μ)) / (twoπ * d.I0κ)
 logpdf(d::VonMises, x::Real) = d.κ * cos(x - d.μ) - log(d.I0κ) - log2π
 
-cdf(d::VonMises, x::Real) = _vmcdf(d.κ, d.I0κ, x - d.μ, 1.0e-15)
+cdf(d::VonMises, x::Real) = _vmcdf(d.κ, d.I0κ, x - d.μ, 1e-15)
 
 function _vmcdf(κ::Real, I0κ::Real, x::Real, tol::Real)
     j = 1
@@ -70,7 +70,7 @@ function _vmcdf(κ::Real, I0κ::Real, x::Real, tol::Real)
         cj = besseli(j, κ) / j
         s += cj * sin(j * x)
     end
-    return (x + 2.0 * s / I0κ) / twoπ + 0.5
+    return (x + 2 * s / I0κ) / twoπ + 0.5
 end
 
 
