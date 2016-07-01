@@ -144,7 +144,7 @@ function kurtosis{T<:Real}(d::GeneralizedExtremeValue{T})
         g2 = g(d, 2)
         g3 = g(d, 3)
         g4 = g(d, 4)
-        return (g4 - 4g1 * g3 + 6g2 * g1 ^ 2 - 3 * g1 ^ 4) / (g2 - g1^2) ^ 2 - 3
+        return (g4 - 4g1 * g3 + 6g2 * g1^2 - 3 * g1^4) / (g2 - g1^2)^2 - 3
     else
         return T(Inf)
     end
@@ -161,7 +161,7 @@ function quantile(d::GeneralizedExtremeValue, p::Real)
     if abs(ξ) < eps() # ξ == 0
         return μ + σ * (-log(-log(p)))
     else
-        return μ + σ * ((-log(p)) ^ (-ξ) - 1) / ξ
+        return μ + σ * (-log(p)^-ξ - 1) / ξ
     end
 end
 

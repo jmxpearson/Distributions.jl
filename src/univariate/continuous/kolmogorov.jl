@@ -32,15 +32,20 @@ median(d::Kolmogorov) = 0.8275735551899077
 # both series so assume error in table.
 
 function cdf_raw(d::Kolmogorov, x::Real)
-    a = -(pi^2)/(x^2)
+    a = -(pi*pi)/(x*x)
     f = exp(a)
-    u = (1 + f*(1 + f^2))
+    f2 = f*f
+    u = (1 + f*(1 + f2))
     sqrt2π*exp(a/8)*u/x
 end
 
 function ccdf_raw(d::Kolmogorov, x::Real)
-    f = exp(-2x^2)
-    u = (1 - f^3*(1 - f^5*(1 - f^7)))
+    f = exp(-2*x*x)
+    f2 = f*f
+    f3 = f2*f
+    f5 = f2*f3
+    f7 = f2*f5
+    u = (1 - f3*(1 - f5*(1 - f7)))
     2f*u
 end
 
@@ -113,26 +118,27 @@ function rand(d::Kolmogorov)
                     return x
                 end
                 n += 2
-                q = p^(n^2 - 1)
-                w -= n^2*q
+                nsq = n*n
+                q = p^(nsq-1)
+                w -= nsq*q
             end
         end
     else
         while true
             e = randexp()
             u = rand()
-            x = sqrt(t^2 + e/2)
+            x = sqrt(t*t+e/2)
             w = 0
             n = 1
-            z = exp(-2x^2)
+            z = exp(-2*x*x)
             while u > w
                 n += 1
-                w += n^2*z^(n^2 - 1)
+                w += n*n*z^(n*n-1)
                 if u >= w
                     return x
                 end
                 n += 1
-                w -= n^2*z^(n^2 - 1)
+                w -= n*n*z^(n*n-1)
             end
         end
     end
@@ -146,7 +152,7 @@ function rand_trunc_gamma()
         e0 = rand(Exponential(1.2952909208355123))
         e1 = rand(Exponential(2))
         g = tp + e0
-        if (e0^2 <= tp*e1*(g+tp)) || (g/tp - 1 - log(g/tp) <= e1)
+        if (e0*e0 <= tp*e1*(g+tp)) || (g/tp - 1 - log(g/tp) <= e1)
             return g
         end
     end
