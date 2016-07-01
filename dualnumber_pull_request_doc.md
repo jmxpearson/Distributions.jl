@@ -38,8 +38,8 @@
  - triweight
  - uniform
  - weibull
- 
- 
+
+
 **Discrete**
 
 - bernoulli
@@ -70,7 +70,7 @@ Type instabilities remain
 
 
 **Discrete**
- 
+
  - beta binomial
  - fisher noncentral hypergeometric
  - poisson binomial
@@ -114,7 +114,6 @@ Distributions affected:
 - vonmises (besseli at base/special/bessel.jl)
 - betabinomial (beta at base/special/gamma.jl)
 - fisher noncentral hypergeometric (lbeta at base/special/gamma.jl)
-- poisson binomial (atan2 at base/math.jl)
 - skellam (besseli at base/special/bessel.jl)
 
 **sqrt function**
@@ -128,6 +127,7 @@ Distributions affected:
 
 **Miscellaneous**
 
+ - PoissonBinomial distribution indirectly calls hypot function in math.jl, which causes stack overflow with dual numbers.
  - Skipped type instabilites that trace back to quantile_newton function
 	 - Distributions affected:
 		 - biweight
