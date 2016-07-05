@@ -24,7 +24,7 @@ function insupport!{D<:MultivariateDistribution}(r::AbstractArray, d::Union{D,Ty
     size(X) == (length(d),n) ||
         throw(DimensionMismatch("Inconsistent array dimensions."))
     for i in 1:n
-        @inbounds r[i] = insupport(d, slice(X, :, i))
+        @inbounds r[i] = insupport(d, view(X, :, i))
     end
     return r
 end
@@ -40,7 +40,7 @@ function cor(d::MultivariateDistribution)
     C = cov(d)
     n = size(C, 1)
     @assert size(C, 2) == n
-    R = Array(Float64, n, n)
+    R = Array(eltype(C), n, n)
 
     for j = 1:n
         for i = 1:j-1
@@ -73,14 +73,14 @@ end
 
 function _logpdf!(r::AbstractArray, d::MultivariateDistribution, X::AbstractMatrix)
     for i in 1 : size(X,2)
-        @inbounds r[i] = logpdf(d, slice(X,:,i))
+        @inbounds r[i] = logpdf(d, view(X,:,i))
     end
     return r
 end
 
 function _pdf!(r::AbstractArray, d::MultivariateDistribution, X::AbstractMatrix)
     for i in 1 : size(X,2)
-        @inbounds r[i] = pdf(d, slice(X,:,i))
+        @inbounds r[i] = pdf(d, view(X,:,i))
     end
     return r
 end
@@ -100,13 +100,15 @@ end
 function logpdf(d::MultivariateDistribution, X::AbstractMatrix)
     size(X, 1) == length(d) ||
         throw(DimensionMismatch("Inconsistent array dimensions."))
-    _logpdf!(Array(Float64, size(X,2)), d, X)
+    T = promote_type(partype(d), eltype(X))
+    _logpdf!(Array(T, size(X,2)), d, X)
 end
 
 function pdf(d::MultivariateDistribution, X::AbstractMatrix)
     size(X, 1) == length(d) ||
         throw(DimensionMismatch("Inconsistent array dimensions."))
-    _pdf!(Array(Float64, size(X,2)), d, X)
+    T = promote_type(partype(d), eltype(X))
+    _pdf!(Array(T, size(X,2)), d, X)
 end
 
 ## log likelihood
@@ -114,7 +116,7 @@ end
 function _loglikelihood(d::MultivariateDistribution, X::AbstractMatrix)
     ll = 0.0
     for i in 1:size(X, 2)
-        ll += _logpdf(d, slice(X,:,i))
+        ll += _logpdf(d, view(X,:,i))
     end
     return ll
 end

@@ -7,8 +7,14 @@ using StatsFuns
 using StatsBase
 using Compat
 
+import Compat.view
 import Base.Random
 import Base: size, eltype, length, full, convert, show, getindex, scale, scale!, rand, rand!
+if VERSION < v"0.5.0-"
+    export shape
+else
+    import Base.shape
+end
 import Base: sum, mean, median, maximum, minimum, quantile, std, var, cov, cor
 import Base: +, -, .+, .-
 import Base.Math.@horner
@@ -224,6 +230,7 @@ export
     ntrials,            # the number of trials being performed in the experiment
     params,             # get the tuple of parameters
     params!,            # provide storage space to calculate the tuple of parameters for a multivariate distribution like mvlognormal
+    partype,            # returns a type large enough to hold all of a distribution's parameters' element types
     pdf,                # probability density function (ContinuousDistribution)
     pmf,                # probability mass function (DiscreteDistribution)
     probs,              # Get the vector of probabilities
@@ -234,7 +241,6 @@ export
     sampler,            # create a Sampler object for efficient samples
     scale,              # get the scale parameter
     scale!,             # provide storage for the scale parameter (used in multivariate distribution mvlognormal)
-    shape,              # get the shape parameter
     skewness,           # skewness of the distribution
     span,               # the span of the support, e.g. maximum(d) - minimum(d)
     std,                # standard deviation of distribution
